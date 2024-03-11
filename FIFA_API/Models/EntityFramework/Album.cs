@@ -11,7 +11,7 @@ namespace FIFA_API.Models.EntityFramework
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-		[Column("alb_idphoto")]
+		[Column("pht_id")]
 		public int IdPhoto { get; set; }
 
 		[Column("alb_titre")]
