@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIFA_API", "FIFA_API\FIFA_API.csproj", "{D428A3DE-9CAE-401E-8BB1-7725F623AD98}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D428A3DE-9CAE-401E-8BB1-7725F623AD98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D428A3DE-9CAE-401E-8BB1-7725F623AD98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D428A3DE-9CAE-401E-8BB1-7725F623AD98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D428A3DE-9CAE-401E-8BB1-7725F623AD98}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E6560A3-9A33-4B33-BE09-47A06A6F96D0}
+	EndGlobalSection
+EndGlobal
