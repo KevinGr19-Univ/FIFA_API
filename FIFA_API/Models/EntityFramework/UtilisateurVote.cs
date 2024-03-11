@@ -8,7 +8,6 @@ namespace FIFA_API.Models.EntityFramework
 	{
 		[Key]
 		[Column("uvt_idutilisateur")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdUtilisateur;
 
         [Key]
