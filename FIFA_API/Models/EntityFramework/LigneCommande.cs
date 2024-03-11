@@ -8,6 +8,7 @@ namespace FIFA_API.Models.EntityFramework
 	{
 		[Column("lco_id")]
 		[Key()]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
 		[Column("lco_idvariantecouleurproduit")]

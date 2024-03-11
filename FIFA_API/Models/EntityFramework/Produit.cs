@@ -1,7 +1,36 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+
 namespace FIFA_API.Models.EntityFramework
 {
-	public class Produit
+	[Table("t_e_produit_pro")]
+	public partial class Produit
 	{
+        [Key]
+        [Column("pro_id")]
+        public int Id { get; set; }
 
-	}
+        //Foreing Key
+        [Column("pro_idcompetition")]
+        public int IdCompetition { get; set; }
+
+        //Foreing Key
+        [Column("pro_idnation")]
+        public int IdNation { get; set; }
+
+        //Foreing Key
+        [Column("pro_idgenre")]
+        public int IdGenre { get; set; }
+
+        [Column("pro_titre")]
+        [StringLength(150)]
+        public string Titre { get; set; }
+
+        [Column("pro_description")]
+        public string Description { get; set; }
+
+
+    }
 }
