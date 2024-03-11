@@ -11,15 +11,15 @@ namespace FIFA_API.Models.EntityFramework
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-		[Column("lco_idvariantecouleurproduit")]
+		[Column("vcp_id")]
 		[ForeignKey("")]
 		public int IdVarianteCouleurProduit { get; set; }
 
-        [Column("lco_idtailleproduit")]
+        [Column("tlp_id")]
         [ForeignKey("")]
         public int IdTailleProduit { get; set; }
 
-        [Column("lco_idcommande")]
+        [Column("cmd_id")]
         [ForeignKey("")]
         public int IdCommande { get; set; }
 
