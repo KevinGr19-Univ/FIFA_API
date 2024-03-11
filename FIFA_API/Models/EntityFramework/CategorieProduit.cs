@@ -5,7 +5,8 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_e_categorieproduit_ctp")]
 	public class CategorieProduit
 	{
-		[Column("ctp_id")]
+        [Key]
+        [Column("ctp_id")]
 		public int Id { get; set; }
 
 		[Column("ctp_nom")]

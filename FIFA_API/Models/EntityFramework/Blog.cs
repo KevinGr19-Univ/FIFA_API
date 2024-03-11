@@ -7,6 +7,7 @@ namespace FIFA_API.Models.EntityFramework
     [Table("t_e_blog_blg")]
 	public class Blog
 	{
+        [Key]
         [Column("blg_id")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

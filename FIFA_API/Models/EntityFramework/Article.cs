@@ -6,6 +6,7 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_e_article_art")]
 	public class Article
 	{
+        [Key]
         [Column("art_id")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

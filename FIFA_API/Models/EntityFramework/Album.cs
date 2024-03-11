@@ -6,6 +6,7 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_e_album_alb")]
 	public class Album
 	{
+		[Key]
 		[Column("alb_id")]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }

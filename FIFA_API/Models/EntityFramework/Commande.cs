@@ -6,7 +6,8 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_e_commande_cmd")]
 	public class Commande
 	{
-		[Column("cmd_id")]
+        [Key]
+        [Column("cmd_id")]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
