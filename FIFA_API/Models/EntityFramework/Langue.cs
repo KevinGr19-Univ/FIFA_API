@@ -8,7 +8,8 @@ namespace FIFA_API.Models.EntityFramework
 	{
 		[Column("lng_id")]
 		[Key()]
-		public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
 		[Column("lng_nom")]
 		[StringLength(100, ErrorMessage = "La longueur du nom de langue ne doit pas dépasser 100 caractères")]

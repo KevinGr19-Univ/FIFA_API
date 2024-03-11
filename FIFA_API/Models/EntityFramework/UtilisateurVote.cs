@@ -3,12 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_uvt")]
+	[Table("t_j_utilisateur_uvt")]
 	public partial class UtilisateurVote
 	{
 		[Key]
 		[Column("uvt_idutilisateur")]
-		public int IdUtilisateur;
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int IdUtilisateur;
 
         [Key]
         [Column("uvt_idthemevote")]
