@@ -14,8 +14,9 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(100)]
         public string Nom { get; set; } = null!;
 
-        [Column("clr_hexacouleur")]
+        [Column("clr_hexacouleur", TypeName = "char")]
         [StringLength(6)]
+        [RegularExpression(ModelUtils.REGEX_HEXACOLOR)]
         public string HexaCouleur { get; set; } = null!;
     }
 }
