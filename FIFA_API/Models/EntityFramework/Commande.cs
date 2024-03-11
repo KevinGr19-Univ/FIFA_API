@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_commande_cmd")]
-	public class Commande
+	public partial class Commande
 	{
         [Key]
         [Column("cmd_id")]

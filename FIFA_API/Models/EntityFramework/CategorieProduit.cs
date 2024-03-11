@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_categorieproduit_ctp")]
-	public class CategorieProduit
+	public partial class CategorieProduit
 	{
         [Key]
         [Column("ctp_id")]

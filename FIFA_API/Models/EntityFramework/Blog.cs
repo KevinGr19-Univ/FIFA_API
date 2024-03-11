@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_blog_blg")]
-	public class Blog
+	public partial class Blog
 	{
         [Key]
         [Column("blg_id")]

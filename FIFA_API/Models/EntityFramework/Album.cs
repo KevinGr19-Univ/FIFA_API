@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_album_alb")]
-	public class Album
+	public partial class Album
 	{
 		[Key]
 		[Column("alb_id")]
