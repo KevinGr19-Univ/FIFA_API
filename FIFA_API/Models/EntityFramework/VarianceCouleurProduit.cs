@@ -9,7 +9,8 @@ namespace FIFA_API.Models.EntityFramework
 	{
 		[Key]
 		[Column("vcp_id")]
-		public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
 		[Column("vcp_idproduit")]
 		public int IdProduit { get; set; }
