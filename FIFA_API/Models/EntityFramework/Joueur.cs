@@ -19,22 +19,22 @@ namespace FIFA_API.Models.EntityFramework
         public int IdPays { get; set; }
 
         [Column("jou_nom")]
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "Le nom ne doit pas dépasser 100 caractères")]
         public string NomJoueur { get; set; } = null!;
 
         [Column("jou_prenom")]
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "Le prénom ne doit pas dépasser 100 caractères")]
         public string PrenomJoueur { get; set; } = null!;
 
         [Column("jou_datenaissance")]
         public DateTime? DateNaissanceJoueur { get; set; }
 
         [Column("jou_lieunaissance")]
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "Le lieu de naissance ne doit pas dépasser 100 caractères")]
         public string LieuNaissanceJoueur { get; set; } = null!;
 
         [Column("jou_pied")]
-        [StringLength(20)]
+        [StringLength(20, ErrorMessage = "Le pied maître du joueur ne doit pas dépasser 20 caractères")]
         public string PiedJoueur { get; set; } = null!;
 
         [Column("jou_poids")]
@@ -44,15 +44,15 @@ namespace FIFA_API.Models.EntityFramework
         public int TailleJoueur { get; set; }
 
         [Column("jou_poste")]
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "Le poste du juoeur ne doit pas dépasser 50 caractères")]
         public string Postejoueur { get; set; } = null!;
 
         [Column("jou_biographie")]
-        [StringLength(500)]
+        [StringLength(500, ErrorMessage = "La biographie ne doit pas dépasser 500 caractères")]
         public string Biographie { get; set; } = null!;
 
-        [Column("jou_photo")]
-        [StringLength(500)]
-        public string PhotoJoueur { get; set; } = null!;
+        [Column("jou_urlphoto")]
+        [StringLength(500, ErrorMessage = "L'Url de la photo ne doit pas dépasser 500 caractères")]
+        public string UrlPhotoJoueur { get; set; } = null!;
     }
 }

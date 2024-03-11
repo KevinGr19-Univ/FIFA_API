@@ -15,17 +15,17 @@ namespace FIFA_API.Models.EntityFramework
         public int IdPhoto { get; set; }
 
         [Column("doc_titre")]
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "Le titre ne doit pas dépasser 100 caractères")]
         public string TitrePublication { get; set; } = null!;
         [Column("doc_resume")]
-        [StringLength(500)]
+        [StringLength(500, ErrorMessage = "Le résumé ne doit pas dépasser 500 caractères")]
         public string ResumePublication { get; set; } = null!;
 
         [Column("doc_date")]
         public DateTime? DatePublication { get; set; }
 
         [Column("doc_urlpdf")]
-        [StringLength(500)]
+        [StringLength(500, ErrorMessage = "L'URL du pdf ne doit pas dépasser 500 caractères")]
         public string UrlPdf { get; set; } = null!;
     }
 }

@@ -11,11 +11,11 @@ namespace FIFA_API.Models.EntityFramework
         public int Id { get; set; }
 
         [Column("clr_nom")]
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "Le nom ne doit pas dépasser 100 caractères")]
         public string Nom { get; set; } = null!;
 
         [Column("clr_hexacouleur", TypeName = "char")]
-        [StringLength(6)]
+        [StringLength(6, ErrorMessage = "La couleur doit être écrite en Hexa, et doit mesurer 6 caractères")]
         [RegularExpression(ModelUtils.REGEX_HEXACOLOR)]
         public string HexaCouleur { get; set; } = null!;
     }

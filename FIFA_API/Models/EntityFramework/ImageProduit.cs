@@ -11,7 +11,7 @@ namespace FIFA_API.Models.EntityFramework
         public int Id { get; set; }
 
         [Column("doc_url")]
-        [StringLength(500)]
+        [StringLength(500, ErrorMessage = "L'URL du document ne doit pas dépasser 500 caractères")]
         public string UrlImageProduit{ get; set; } = null!;
     }
 }
