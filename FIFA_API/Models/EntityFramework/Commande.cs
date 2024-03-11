@@ -25,7 +25,8 @@ namespace FIFA_API.Models.EntityFramework
 		[StringLength(100, ErrorMessage = "La rue de livraison ne doit pas dépasser 100 caractères")]
 		public string RueLivraison { get; set; }
 
-		[Column("cmd_postallivraison")]
+		[Column("cmd_postallivraison", TypeName = "char")]
+		[StringLength(5)]
 		[RegularExpression(ModelUtils.REGEX_CODEPOSTAL, ErrorMessage = "Le code postal de livraison doit être composé de 5 caractères, chiffres et lettres.")]
         public string PostalLivraison { get; set; }
 
@@ -37,7 +38,8 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(100, ErrorMessage = "La rue de livraison ne doit pas dépasser 100 caractères")]
         public string RueFacturation { get; set; }
 
-		[Column("cmd_postalfacturation")]
+		[Column("cmd_postalfacturation", TypeName = "char")]
+        [StringLength(5)]
         [RegularExpression(ModelUtils.REGEX_CODEPOSTAL, ErrorMessage = "Le code postal de facturation doit être composé de 5 caractères, chiffres et lettres.")]
         public string PostalFacturation { get; set; }
 
