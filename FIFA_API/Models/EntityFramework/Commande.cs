@@ -11,10 +11,10 @@ namespace FIFA_API.Models.EntityFramework
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-		[Column("cmd_idtypelivraison")]
+		[Column("tli_id")]
 		public int IdTypeLivraison { get; set; }
 
-		[Column("cmd_idutilisateur")]
+		[Column("utl_id")]
 		public int IdUtilisateur { get; set; }
 
 		[Column("cmd_villelivraison")]

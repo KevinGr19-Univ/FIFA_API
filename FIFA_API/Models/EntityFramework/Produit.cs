@@ -10,6 +10,7 @@ namespace FIFA_API.Models.EntityFramework
 	{
         [Key]
         [Column("pro_id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         //Foreing Key
@@ -25,7 +26,7 @@ namespace FIFA_API.Models.EntityFramework
         public int IdGenre { get; set; }
 
         [Column("pro_titre")]
-        [StringLength(150)]
+        [StringLength(150, ErrorMessage = "Le Titre ne doit pas dépasser 150 caractères")]
         public string Titre { get; set; }
 
         [Column("pro_description")]
