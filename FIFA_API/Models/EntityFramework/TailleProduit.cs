@@ -11,10 +11,11 @@ namespace FIFA_API.Models.EntityFramework
 	{
         [Key]
         [Column("tlp_id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Column("tlp_nom")]
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "Le Nom ne doit pas dépasser 50 caractères")]
         public string Nom { get; set; }
 
 
