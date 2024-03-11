@@ -45,7 +45,7 @@ namespace FIFA_API.Models.EntityFramework
 
         [Column("jou_poste")]
         [StringLength(50, ErrorMessage = "Le poste du joueur ne doit pas dépasser 50 caractères")]
-        public string Postejoueur { get; set; } = null!;
+        public string PosteJoueur { get; set; } = null!;
 
         [Column("jou_biographie")]
         [StringLength(500, ErrorMessage = "La biographie ne doit pas dépasser 500 caractères")]
