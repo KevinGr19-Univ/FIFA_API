@@ -8,7 +8,8 @@ namespace FIFA_API.Models.EntityFramework
 	{
 		[Column("ntn_id")]
 		[Key()]
-		public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
 		[Column("ntn_nom")]
 		[StringLength(100, ErrorMessage = "Le nom de la nation ne doit dépasser les 100 caractères")]

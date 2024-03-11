@@ -8,7 +8,8 @@ namespace FIFA_API.Models.EntityFramework
 	{
 		[Column("pys_id")]
 		[Key()]
-		public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
 		[Column("pys_nom")]
 		[StringLength(100, ErrorMessage = "Le nom du pays ne doit pas dépasser les 100 caractères")]
