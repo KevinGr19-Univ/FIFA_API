@@ -3,5 +3,7 @@
     public class Nation
     {
         public string Nom { get; set; }
+
+        public ICollection<Produit> Produits { get; set; }
     }
 }
