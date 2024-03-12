@@ -3,8 +3,20 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FIFA_API.Models.LE_CODE_FIRST____
 {
-    public enum Pied { Droitier = 0, Gaucher = 1, Ambidextre = 2 }
-    public enum Poste { Attaquant = 0, Defenseur = 1, GardienDeBut = 2, MilieuDeTerrain = 3 }
+    public enum Pied
+    {
+        Droitier = 0,
+        Gaucher = 1,
+        Ambidextre = 2
+    }
+
+    public enum Poste
+    {
+        Attaquant = 0,
+        Defenseur = 1,
+        ardienDeBut = 2,
+        MilieuDeTerrain = 3
+    }
 
 	[Table("t_e_joueur_jou")]
     public class Joueur
