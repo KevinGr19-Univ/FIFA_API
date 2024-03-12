@@ -8,7 +8,7 @@ namespace FIFA_API.Models.EntityFramework
     {
  
         public int Id { get; set; }
-        public int JoueurId { get; set; }
+        public Joueur Joueur { get; set; }
         public int MatchsJoues { get; set; }
         public int Titularisations { get; set; }
         public int MinutesJouees { get; set; }
