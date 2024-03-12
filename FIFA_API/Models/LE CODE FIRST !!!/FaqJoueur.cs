@@ -7,7 +7,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
     {
         public int Id { get; set; }
 
-        public int Idjoueur { get; set; }
+        public Joueur Joueur { get; set; }
 
         public string Question { get; set; } 
 
