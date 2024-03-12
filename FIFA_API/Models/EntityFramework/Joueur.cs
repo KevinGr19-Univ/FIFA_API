@@ -6,7 +6,7 @@ namespace FIFA_API.Models.EntityFramework
     [Table("t_e_joueur_jou")]
     public partial class Joueur
 	{
-        public enum Pied { droitier, gaucher, ambidextre}
+        public enum Pied { Droitier = 0, Gaucher = 1, Ambidextre = 2}
 
         [Key]
         [Column("jou_id")]
