@@ -6,7 +6,7 @@ namespace FIFA_API.Models.EntityFramework
     [Table("t_e_competition_cmp")]
     public class Competition
     {
-        public ICollection<Produit> Produit { get; set; }
+        public ICollection<Produit> Produits { get; set; }
 
         [Column("cmp_id")]
         [Key()]
