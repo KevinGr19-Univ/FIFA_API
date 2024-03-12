@@ -6,6 +6,8 @@ namespace FIFA_API.Models.EntityFramework
     [Table("t_e_joueur_jou")]
     public partial class Joueur
 	{
+        public enum Pied { droitier, gaucher, ambidextre}
+
         [Key]
         [Column("jou_id")]
         public int Id { get; set; }
@@ -35,8 +37,7 @@ namespace FIFA_API.Models.EntityFramework
 
         [Column("jou_pied")]
         [StringLength(20, ErrorMessage = "Le pied maître du joueur ne doit pas dépasser 20 caractères")]
-        public string PiedJoueur { get; set; } = null!;
-
+        public Pied PiedJoueur { get; set; }
         [Column("jou_poids")]
         public int PoidsJoueur { get; set; }
 
