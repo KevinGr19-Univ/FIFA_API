@@ -78,6 +78,11 @@ namespace FIFA_API.Models.Repository
             return await DbSet.ToListAsync();
         }
 
+        public async Task<ActionResult<T?>> GetByIdAsync(params object[] id)
+        {
+            return await DbSet.FindAsync(id);
+        }
+
         public async Task AddAsync(T elementToAdd)
         {
             await DbSet.AddAsync(elementToAdd);
