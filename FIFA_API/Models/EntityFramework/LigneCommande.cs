@@ -29,6 +29,9 @@ namespace FIFA_API.Models.EntityFramework
         [Column("lco_prix", TypeName="Numeric(10,2)")]
         public int Prix { get; set; }
 
+		[Column("lco_prixpromotion", TypeName = "Numeric(10,2)")]
+        public int PrixPromotion { get; set; }
+
 
     }
 }
