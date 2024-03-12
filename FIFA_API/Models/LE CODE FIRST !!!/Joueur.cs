@@ -8,9 +8,8 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
         public enum Pied { Droitier=0, Gaucher=1, Ambidextre=2 }
         public enum Poste { Attaquant=0, Defenseur=1, GardienDeBut = 2, MilieuDeTerrain=3 }
 
-        public int Id { get; set; }
-        public Club Club { get; set; }
-        public Pays Pays { get; set; }
+        public ICollection<Club> Club { get; set; }
+        public ICollection<Pays> Pays { get; set; }
         public string NomJoueur { get; set; } = null!;
         public string PrenomJoueur { get; set; } = null!;
         public DateTime? DateNaissanceJoueur { get; set; }

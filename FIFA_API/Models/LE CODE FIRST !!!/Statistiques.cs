@@ -6,8 +6,6 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 {
     public abstract class Statistiques
     {
- 
-        public int Id { get; set; }
         public Joueur Joueur { get; set; }
         public int MatchsJoues { get; set; }
         public int Titularisations { get; set; }
