@@ -3,5 +3,7 @@
     public class Blog : Publication
     {
         public string TexteBlog { get; set; }
+
+        public ICollection<Photo> Photos { get; set; }
     }
 }
