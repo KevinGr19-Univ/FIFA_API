@@ -12,5 +12,6 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 
         public ICollection<Produit> Associes { get; set; }
         public ICollection<Couleur> Couleurs { get; set; }
+        public ICollection<TailleProduit> Tailles { get; set; }
     }
 }
