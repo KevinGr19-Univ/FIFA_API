@@ -8,8 +8,6 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 
     public class Joueur
     {
-        public ICollection<Club> Club { get; set; }
-        public ICollection<Pays> Pays { get; set; }
         public string NomJoueur { get; set; } = null!;
         public string PrenomJoueur { get; set; } = null!;
         public DateTime? DateNaissanceJoueur { get; set; }
@@ -22,5 +20,9 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
         public Photo Photo { get; set; } = null!;
         
         public Statistiques Stats { get; set; }
+        public Club Club { get; set; }
+        public Pays Pays { get; set; }
+
+        public ICollection<Trophee> Trophees { get; set; }
     }
 }
