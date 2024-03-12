@@ -2,5 +2,10 @@
 {
     public class LigneCommande
     {
+        public VarianteCouleurProduit VCProduit { get; set; }
+        public TailleProduit Taille { get; set; }
+        public Commande Commande { get; set; }
+        public int Quantite { get; set; }
+        public decimal PrixUnitaire { get; set; }
     }
 }
