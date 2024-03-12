@@ -69,6 +69,7 @@ namespace FIFA_API.Models.Repository
             if (_getDbSet == null)
                 throw new ArgumentException($"Le type {dbContext.GetType().Name} n'a pas de propriété de type {nameof(DbSet<T>)}");
 
+            CacheEntityProperties<T>();
             this.dbContext = dbContext;
         }
 
