@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         RefusAccepte = 6,
     }
 
-	[Table("t_e_statuscommande_sco")]
+	[Table("t_j_statuscommande_sco")]
     public class StatusCommande
     {
         public Commande Commande { get; set; }

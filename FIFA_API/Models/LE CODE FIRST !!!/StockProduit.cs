@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
 {
-	[Table("t_e_stockproduit_spr")]
+	[Table("t_j_stockproduit_spr")]
     public class StockProduit
     {
         public VarianteCouleurProduit VCProduit { get; set; }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
 {
-	[Table("t_e_publication_pub")]
+	[Table("t_g_publication_pub")]
     public abstract class Publication
     {
 		[Column("pub_titre")]

@@ -21,25 +21,25 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_joueur_jou")]
     public class Joueur
     {
-		[Column("jou_nomjoueur")]
-        public string NomJoueur { get; set; } = null!;
+		[Column("jou_nom")]
+        public string Nom { get; set; } = null!;
 
-		[Column("jou_prenomjoueur")]
-        public string PrenomJoueur { get; set; } = null!;
+		[Column("jou_prenom")]
+        public string Prenom { get; set; } = null!;
 
-		[Column("jou_datenaissancejoueur")]
-        public DateTime? DateNaissanceJoueur { get; set; }
+		[Column("jou_datenaissance")]
+        public DateTime? DateNaissance { get; set; }
 
-		[Column("jou_lieunaissancejoueur")]
-        public string LieuNaissanceJoueur { get; set; } = null!;
+		[Column("jou_lieunaissance")]
+        public string LieuNaissance { get; set; } = null!;
 
-        public Pied PiedJoueur { get; set; }
+        public Pied Pied { get; set; }
 
-		[Column("jou_poidsjoueur")]
-        public int PoidsJoueur { get; set; }
+		[Column("jou_poids")]
+        public int Poids { get; set; }
 
-		[Column("jou_taillejoueur")]
-        public int TailleJoueur { get; set; }
+		[Column("jou_taille")]
+        public int Taille { get; set; }
 
         public Poste PosteJoueur { get; set; } 
 
