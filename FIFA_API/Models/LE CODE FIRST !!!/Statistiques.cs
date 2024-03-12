@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.LE_CODE_FIRST____
 {
-    public abstract class StatistiquesJoueur
+    public abstract class Statistiques
     {
  
         public int Id { get; set; }
