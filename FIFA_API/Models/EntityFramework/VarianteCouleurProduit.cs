@@ -24,6 +24,7 @@ namespace FIFA_API.Models.EntityFramework
         public int IdCouleur { get; set; }
 
 		[Column("vcp_prix")]
+        [Precision(7,2)]
         public decimal Prix { get; set; }
 
         [Column("vcp_images", TypeName = "varchar[]")]

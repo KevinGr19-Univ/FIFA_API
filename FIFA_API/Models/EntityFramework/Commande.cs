@@ -43,6 +43,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public Adresse AdresseFacturation { get; set; }
 
 		[Column("cmd_prixlivraison")]
+        [Precision(7,2)]
         public decimal PrixLivraison { get; set; }
 
 		[Column("cmd_dateexpedition")]

@@ -16,8 +16,8 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom de la couleur ne doit pas dépasser 50 caractères.")]
         public string Nom { get; set; }
 
-
 		[Column("col_codehexa")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "Le code hexa doit faire 6 caractères de long.")]
         [RegularExpression(ModelUtils.REGEX_HEXACOLOR, ErrorMessage = "Le code hexadécimal de couleur doit être au format hexadécimal.")]
         public string CodeHexa { get; set; }
 

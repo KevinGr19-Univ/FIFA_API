@@ -19,7 +19,7 @@ namespace FIFA_API.Models.EntityFramework
     }
 
     [Table("t_e_joueur_jou")]
-    public class Joueur
+    public partial class Joueur
     {
         public const int MAX_NOM_LENGTH = 100;
         public const int MAX_BIO_LENGTH = 500;
@@ -93,8 +93,10 @@ namespace FIFA_API.Models.EntityFramework
         public Pays Pays { get; set; }
 
         [InverseProperty(nameof(FaqJoueur.Joueur))]
-        public ICollection<FaqJoueur> FaqJoueurs { get; set; }
+        public virtual ICollection<FaqJoueur> FaqJoueurs { get; set; }
 
-        public ICollection<Trophee> Trophees { get; set; }
+        public virtual ICollection<Trophee> Trophees { get; set; }
+
+        public virtual ICollection<Photo> Photos { get; set; }
     }
 }

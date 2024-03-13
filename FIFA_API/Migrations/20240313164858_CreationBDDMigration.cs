@@ -19,11 +19,12 @@ namespace FIFA_API.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     adr_ville = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     adr_rue = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    adr_codepostal = table.Column<string>(type: "char(5)", maxLength: 5, nullable: false)
+                    adr_codepostal = table.Column<string>(type: "character(5)", fixedLength: true, maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_e_adresse_adr", x => x.adr_id);
+                    table.CheckConstraint("ck_adr_codepostal", "adr_codepostal ~ '^([0-9]{2}|2[AB])[0-9]{3}$'");
                 });
 
             migrationBuilder.CreateTable(
@@ -125,6 +126,20 @@ namespace FIFA_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "t_e_photo_pht",
+                columns: table => new
+                {
+                    pht_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    pht_nom = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    pht_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_e_photo_pht", x => x.pht_id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "t_e_trophee_tph",
                 columns: table => new
                 {
@@ -145,11 +160,12 @@ namespace FIFA_API.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     tli_nom = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     tli_maxbusinessdays = table.Column<int>(type: "integer", nullable: false),
-                    tli_prix = table.Column<decimal>(type: "numeric", nullable: false)
+                    tli_prix = table.Column<decimal>(type: "numeric(7,2)", precision: 7, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_e_typelivraison_tli", x => x.tli_id);
+                    table.CheckConstraint("ck_tli_prix", "tli_prix > 0");
                 });
 
             migrationBuilder.CreateTable(
@@ -229,7 +245,7 @@ namespace FIFA_API.Migrations
                     utl_mail = table.Column<string>(type: "text", nullable: false),
                     utl_surnom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     utl_datenaissance = table.Column<DateTime>(type: "date", nullable: false),
-                    utl_motdepasse = table.Column<string>(type: "text", nullable: false),
+                    utl_motdepasse = table.Column<string>(type: "character(60)", fixedLength: true, maxLength: 60, nullable: false),
                     utl_role = table.Column<int>(type: "integer", nullable: false),
                     utl_derniereconnexion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     utl_dateverificationemail = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -238,6 +254,7 @@ namespace FIFA_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_e_utilisateur_utl", x => x.utl_id);
+                    table.CheckConstraint("ck_utl_telephone", "utl_telephone ~ '^0[1-9][0-9]{8}$'");
                     table.ForeignKey(
                         name: "FK_t_e_utilisateur_utl_t_e_langue_lan_lan_id",
                         column: x => x.lan_id,
@@ -259,18 +276,84 @@ namespace FIFA_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "t_e_joueur_jou",
+                columns: table => new
+                {
+                    jou_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    jou_nom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    jou_prenom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    jou_datenaissance = table.Column<DateTime>(type: "date", nullable: true),
+                    jou_lieunaissance = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    jou_pied = table.Column<int>(type: "integer", nullable: false),
+                    jou_poids = table.Column<int>(type: "integer", nullable: false),
+                    jou_taille = table.Column<int>(type: "integer", nullable: false),
+                    jou_poste = table.Column<int>(type: "integer", nullable: false),
+                    jou_biographie = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    pht_id = table.Column<int>(type: "integer", nullable: false),
+                    clb_id = table.Column<int>(type: "integer", nullable: false),
+                    pys_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_e_joueur_jou", x => x.jou_id);
+                    table.CheckConstraint("ck_jou_poids", "jou_poids > 0");
+                    table.CheckConstraint("ck_jou_taille", "jou_taille > 0");
+                    table.ForeignKey(
+                        name: "FK_t_e_joueur_jou_t_e_club_clb_clb_id",
+                        column: x => x.clb_id,
+                        principalTable: "t_e_club_clb",
+                        principalColumn: "clb_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_e_joueur_jou_t_e_pays_pys_pys_id",
+                        column: x => x.pys_id,
+                        principalTable: "t_e_pays_pys",
+                        principalColumn: "pys_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_e_joueur_jou_t_e_photo_pht_pht_id",
+                        column: x => x.pht_id,
+                        principalTable: "t_e_photo_pht",
+                        principalColumn: "pht_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_g_publication_pub",
+                columns: table => new
+                {
+                    pub_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    pub_titre = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    pub_resume = table.Column<string>(type: "character varying(600)", maxLength: 600, nullable: false),
+                    pub_datepublication = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    pht_id = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_g_publication_pub", x => x.pub_id);
+                    table.ForeignKey(
+                        name: "FK_t_g_publication_pub_t_e_photo_pht_pht_id",
+                        column: x => x.pht_id,
+                        principalTable: "t_e_photo_pht",
+                        principalColumn: "pht_id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "t_e_couleur_col",
                 columns: table => new
                 {
                     col_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     col_nom = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    col_codehexa = table.Column<string>(type: "text", nullable: false),
+                    col_codehexa = table.Column<string>(type: "character(6)", fixedLength: true, maxLength: 6, nullable: false),
                     ProduitId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_e_couleur_col", x => x.col_id);
+                    table.CheckConstraint("ck_col_codehexa", "col_codehexa ~ '^[0-9A-F]{6}$'");
                     table.ForeignKey(
                         name: "FK_t_e_couleur_col_t_e_produit_prd_ProduitId",
                         column: x => x.ProduitId,
@@ -307,7 +390,7 @@ namespace FIFA_API.Migrations
                     utl_id = table.Column<int>(type: "integer", nullable: false),
                     adr_livraison_id = table.Column<int>(type: "integer", nullable: false),
                     adr_facuration_id = table.Column<int>(type: "integer", nullable: false),
-                    cmd_prixlivraison = table.Column<decimal>(type: "numeric", nullable: false),
+                    cmd_prixlivraison = table.Column<decimal>(type: "numeric(7,2)", precision: 7, scale: 2, nullable: false),
                     cmd_dateexpedition = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     cmd_datecommande = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     cmd_datelivraison = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -316,6 +399,7 @@ namespace FIFA_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_e_commande_cmd", x => x.cmd_id);
+                    table.CheckConstraint("ck_cmd_prixlivraison", "cmd_prixlivraison > 0");
                     table.ForeignKey(
                         name: "FK_t_e_commande_cmd_t_e_adresse_adr_adr_facuration_id",
                         column: x => x.adr_facuration_id,
@@ -343,146 +427,6 @@ namespace FIFA_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "t_j_variantecouleurproduit_vcp",
-                columns: table => new
-                {
-                    prd_id = table.Column<int>(type: "integer", nullable: false),
-                    col_id = table.Column<int>(type: "integer", nullable: false),
-                    vcp_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    vcp_prix = table.Column<decimal>(type: "numeric", nullable: false),
-                    vcp_images = table.Column<List<string>>(type: "varchar[]", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_t_j_variantecouleurproduit_vcp", x => x.vcp_id);
-                    table.ForeignKey(
-                        name: "FK_t_j_variantecouleurproduit_vcp_t_e_couleur_col_col_id",
-                        column: x => x.col_id,
-                        principalTable: "t_e_couleur_col",
-                        principalColumn: "col_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_j_variantecouleurproduit_vcp_t_e_produit_prd_prd_id",
-                        column: x => x.prd_id,
-                        principalTable: "t_e_produit_prd",
-                        principalColumn: "prd_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "t_e_voteutilisateur_vtl",
-                columns: table => new
-                {
-                    utl_id = table.Column<int>(type: "integer", nullable: false),
-                    col_id = table.Column<int>(type: "integer", nullable: false),
-                    tpr_id = table.Column<int>(type: "integer", nullable: false),
-                    vtl_rankvote = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_t_e_voteutilisateur_vtl", x => new { x.utl_id, x.col_id, x.tpr_id });
-                    table.ForeignKey(
-                        name: "FK_t_e_voteutilisateur_vtl_t_e_couleur_col_col_id",
-                        column: x => x.col_id,
-                        principalTable: "t_e_couleur_col",
-                        principalColumn: "col_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_e_voteutilisateur_vtl_t_e_tailleproduit_tpr_tpr_id",
-                        column: x => x.tpr_id,
-                        principalTable: "t_e_tailleproduit_tpr",
-                        principalColumn: "tpr_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_e_voteutilisateur_vtl_t_e_utilisateur_utl_utl_id",
-                        column: x => x.utl_id,
-                        principalTable: "t_e_utilisateur_utl",
-                        principalColumn: "utl_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "t_j_statuscommande_sco",
-                columns: table => new
-                {
-                    cmd_id = table.Column<int>(type: "integer", nullable: false),
-                    sco_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    sco_commentaire = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    Code = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_t_j_statuscommande_sco", x => x.cmd_id);
-                    table.ForeignKey(
-                        name: "FK_t_j_statuscommande_sco_t_e_commande_cmd_cmd_id",
-                        column: x => x.cmd_id,
-                        principalTable: "t_e_commande_cmd",
-                        principalColumn: "cmd_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "t_e_lignecommande_lco",
-                columns: table => new
-                {
-                    lco_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    lco_quantite = table.Column<int>(type: "integer", nullable: false),
-                    lco_prixunitaire = table.Column<decimal>(type: "numeric(2)", precision: 2, nullable: false),
-                    prd_id = table.Column<int>(type: "integer", nullable: false),
-                    tpr_id = table.Column<int>(type: "integer", nullable: false),
-                    cmd_id = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_t_e_lignecommande_lco", x => x.lco_id);
-                    table.ForeignKey(
-                        name: "FK_t_e_lignecommande_lco_t_e_commande_cmd_cmd_id",
-                        column: x => x.cmd_id,
-                        principalTable: "t_e_commande_cmd",
-                        principalColumn: "cmd_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_e_lignecommande_lco_t_e_tailleproduit_tpr_tpr_id",
-                        column: x => x.tpr_id,
-                        principalTable: "t_e_tailleproduit_tpr",
-                        principalColumn: "tpr_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_e_lignecommande_lco_t_j_variantecouleurproduit_vcp_prd_id",
-                        column: x => x.prd_id,
-                        principalTable: "t_j_variantecouleurproduit_vcp",
-                        principalColumn: "vcp_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "t_j_stockproduit_spr",
-                columns: table => new
-                {
-                    vcp_id = table.Column<int>(type: "integer", nullable: false),
-                    tpr_id = table.Column<int>(type: "integer", nullable: false),
-                    spr_stocks = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_t_j_stockproduit_spr", x => new { x.vcp_id, x.tpr_id });
-                    table.ForeignKey(
-                        name: "FK_t_j_stockproduit_spr_t_e_tailleproduit_tpr_tpr_id",
-                        column: x => x.tpr_id,
-                        principalTable: "t_e_tailleproduit_tpr",
-                        principalColumn: "tpr_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_j_stockproduit_spr_t_j_variantecouleurproduit_vcp_vcp_id",
-                        column: x => x.vcp_id,
-                        principalTable: "t_j_variantecouleurproduit_vcp",
-                        principalColumn: "vcp_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "JoueurTrophee",
                 columns: table => new
                 {
@@ -492,6 +436,12 @@ namespace FIFA_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_JoueurTrophee", x => new { x.JoueursId, x.TropheesId });
+                    table.ForeignKey(
+                        name: "FK_JoueurTrophee_t_e_joueur_jou_JoueursId",
+                        column: x => x.JoueursId,
+                        principalTable: "t_e_joueur_jou",
+                        principalColumn: "jou_id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_JoueurTrophee_t_e_trophee_tph_TropheesId",
                         column: x => x.TropheesId,
@@ -513,41 +463,11 @@ namespace FIFA_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_e_faqjoueur_faq", x => x.faq_id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "t_e_joueur_jou",
-                columns: table => new
-                {
-                    jou_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    jou_nom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    jou_prenom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    jou_datenaissance = table.Column<DateTime>(type: "date", nullable: true),
-                    jou_lieunaissance = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    jou_pied = table.Column<int>(type: "integer", nullable: false),
-                    jou_poids = table.Column<int>(type: "integer", nullable: false),
-                    jou_taille = table.Column<int>(type: "integer", nullable: false),
-                    jou_poste = table.Column<int>(type: "integer", nullable: false),
-                    jou_biographie = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    pht_id = table.Column<int>(type: "integer", nullable: false),
-                    clb_id = table.Column<int>(type: "integer", nullable: false),
-                    pys_id = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_t_e_joueur_jou", x => x.jou_id);
                     table.ForeignKey(
-                        name: "FK_t_e_joueur_jou_t_e_club_clb_clb_id",
-                        column: x => x.clb_id,
-                        principalTable: "t_e_club_clb",
-                        principalColumn: "clb_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_e_joueur_jou_t_e_pays_pys_pys_id",
-                        column: x => x.pys_id,
-                        principalTable: "t_e_pays_pys",
-                        principalColumn: "pys_id",
+                        name: "FK_t_e_faqjoueur_faq_t_e_joueur_jou_jou_id",
+                        column: x => x.jou_id,
+                        principalTable: "t_e_joueur_jou",
+                        principalColumn: "jou_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -564,6 +484,10 @@ namespace FIFA_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_e_statistiques_stt", x => x.jou_id);
+                    table.CheckConstraint("ck_stt_buts", "stt_buts > 0");
+                    table.CheckConstraint("ck_stt_matchsjoues", "stt_matchsjoues > 0");
+                    table.CheckConstraint("ck_stt_minutesjouees", "stt_minutesjouees > 0");
+                    table.CheckConstraint("ck_stt_titularisations", "stt_titularisations > 0");
                     table.ForeignKey(
                         name: "FK_t_e_statistiques_stt_t_e_joueur_jou_jou_id",
                         column: x => x.jou_id,
@@ -573,40 +497,27 @@ namespace FIFA_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "t_e_photo_pht",
+                name: "t_j_joueurphoto_jop",
                 columns: table => new
                 {
-                    pht_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    pht_nom = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    pht_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    AlbumId = table.Column<int>(type: "integer", nullable: true),
-                    BlogId = table.Column<int>(type: "integer", nullable: true)
+                    PhotosId = table.Column<int>(type: "integer", nullable: false),
+                    _joueursId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_t_e_photo_pht", x => x.pht_id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "t_g_publication_pub",
-                columns: table => new
-                {
-                    pub_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    pub_titre = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    pub_resume = table.Column<string>(type: "character varying(600)", maxLength: 600, nullable: false),
-                    pub_datepublication = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    pht_id = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_t_g_publication_pub", x => x.pub_id);
+                    table.PrimaryKey("PK_t_j_joueurphoto_jop", x => new { x.PhotosId, x._joueursId });
                     table.ForeignKey(
-                        name: "FK_t_g_publication_pub_t_e_photo_pht_pht_id",
-                        column: x => x.pht_id,
+                        name: "FK_t_j_joueurphoto_jop_t_e_joueur_jou__joueursId",
+                        column: x => x._joueursId,
+                        principalTable: "t_e_joueur_jou",
+                        principalColumn: "jou_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_joueurphoto_jop_t_e_photo_pht_PhotosId",
+                        column: x => x.PhotosId,
                         principalTable: "t_e_photo_pht",
-                        principalColumn: "pht_id");
+                        principalColumn: "pht_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -677,6 +588,246 @@ namespace FIFA_API.Migrations
                         column: x => x.pub_id,
                         principalTable: "t_g_publication_pub",
                         principalColumn: "pub_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_variantecouleurproduit_vcp",
+                columns: table => new
+                {
+                    prd_id = table.Column<int>(type: "integer", nullable: false),
+                    col_id = table.Column<int>(type: "integer", nullable: false),
+                    vcp_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    vcp_prix = table.Column<decimal>(type: "numeric(7,2)", precision: 7, scale: 2, nullable: false),
+                    vcp_images = table.Column<List<string>>(type: "varchar[]", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_j_variantecouleurproduit_vcp", x => x.vcp_id);
+                    table.CheckConstraint("ck_vcp_prix", "vcp_prix > 0");
+                    table.ForeignKey(
+                        name: "FK_t_j_variantecouleurproduit_vcp_t_e_couleur_col_col_id",
+                        column: x => x.col_id,
+                        principalTable: "t_e_couleur_col",
+                        principalColumn: "col_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_variantecouleurproduit_vcp_t_e_produit_prd_prd_id",
+                        column: x => x.prd_id,
+                        principalTable: "t_e_produit_prd",
+                        principalColumn: "prd_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_voteutilisateur_vtl",
+                columns: table => new
+                {
+                    utl_id = table.Column<int>(type: "integer", nullable: false),
+                    col_id = table.Column<int>(type: "integer", nullable: false),
+                    tpr_id = table.Column<int>(type: "integer", nullable: false),
+                    vtl_rankvote = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_e_voteutilisateur_vtl", x => new { x.utl_id, x.col_id, x.tpr_id });
+                    table.ForeignKey(
+                        name: "FK_t_e_voteutilisateur_vtl_t_e_couleur_col_col_id",
+                        column: x => x.col_id,
+                        principalTable: "t_e_couleur_col",
+                        principalColumn: "col_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_e_voteutilisateur_vtl_t_e_tailleproduit_tpr_tpr_id",
+                        column: x => x.tpr_id,
+                        principalTable: "t_e_tailleproduit_tpr",
+                        principalColumn: "tpr_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_e_voteutilisateur_vtl_t_e_utilisateur_utl_utl_id",
+                        column: x => x.utl_id,
+                        principalTable: "t_e_utilisateur_utl",
+                        principalColumn: "utl_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_statuscommande_sco",
+                columns: table => new
+                {
+                    cmd_id = table.Column<int>(type: "integer", nullable: false),
+                    sco_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    sco_commentaire = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Code = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_j_statuscommande_sco", x => x.cmd_id);
+                    table.ForeignKey(
+                        name: "FK_t_j_statuscommande_sco_t_e_commande_cmd_cmd_id",
+                        column: x => x.cmd_id,
+                        principalTable: "t_e_commande_cmd",
+                        principalColumn: "cmd_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_albumphoto_alp",
+                columns: table => new
+                {
+                    PhotosId = table.Column<int>(type: "integer", nullable: false),
+                    _albumsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_j_albumphoto_alp", x => new { x.PhotosId, x._albumsId });
+                    table.ForeignKey(
+                        name: "FK_t_j_albumphoto_alp_t_e_photo_pht_PhotosId",
+                        column: x => x.PhotosId,
+                        principalTable: "t_e_photo_pht",
+                        principalColumn: "pht_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_albumphoto_alp_t_h_album_alb__albumsId",
+                        column: x => x._albumsId,
+                        principalTable: "t_h_album_alb",
+                        principalColumn: "pub_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_articlephoto_arp",
+                columns: table => new
+                {
+                    PhotosId = table.Column<int>(type: "integer", nullable: false),
+                    _articlesId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_j_articlephoto_arp", x => new { x.PhotosId, x._articlesId });
+                    table.ForeignKey(
+                        name: "FK_t_j_articlephoto_arp_t_e_photo_pht_PhotosId",
+                        column: x => x.PhotosId,
+                        principalTable: "t_e_photo_pht",
+                        principalColumn: "pht_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_articlephoto_arp_t_h_article_art__articlesId",
+                        column: x => x._articlesId,
+                        principalTable: "t_h_article_art",
+                        principalColumn: "pub_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_articlevideo_arv",
+                columns: table => new
+                {
+                    VideosId = table.Column<int>(type: "integer", nullable: false),
+                    _articlesId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_j_articlevideo_arv", x => new { x.VideosId, x._articlesId });
+                    table.ForeignKey(
+                        name: "FK_t_j_articlevideo_arv_t_e_video_vid_VideosId",
+                        column: x => x.VideosId,
+                        principalTable: "t_e_video_vid",
+                        principalColumn: "vid_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_articlevideo_arv_t_h_article_art__articlesId",
+                        column: x => x._articlesId,
+                        principalTable: "t_h_article_art",
+                        principalColumn: "pub_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_blogphoto_blp",
+                columns: table => new
+                {
+                    PhotosId = table.Column<int>(type: "integer", nullable: false),
+                    _blogsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_j_blogphoto_blp", x => new { x.PhotosId, x._blogsId });
+                    table.ForeignKey(
+                        name: "FK_t_j_blogphoto_blp_t_e_photo_pht_PhotosId",
+                        column: x => x.PhotosId,
+                        principalTable: "t_e_photo_pht",
+                        principalColumn: "pht_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_blogphoto_blp_t_h_blog_blg__blogsId",
+                        column: x => x._blogsId,
+                        principalTable: "t_h_blog_blg",
+                        principalColumn: "pub_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_lignecommande_lco",
+                columns: table => new
+                {
+                    lco_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    lco_quantite = table.Column<int>(type: "integer", nullable: false),
+                    lco_prixunitaire = table.Column<decimal>(type: "numeric(7,2)", precision: 7, scale: 2, nullable: false),
+                    prd_id = table.Column<int>(type: "integer", nullable: false),
+                    tpr_id = table.Column<int>(type: "integer", nullable: false),
+                    cmd_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_e_lignecommande_lco", x => x.lco_id);
+                    table.CheckConstraint("ck_lco_prixunitaire", "lco_prixunitaire >= 0");
+                    table.CheckConstraint("ck_lco_quantite", "lco_quantite > 0");
+                    table.ForeignKey(
+                        name: "FK_t_e_lignecommande_lco_t_e_commande_cmd_cmd_id",
+                        column: x => x.cmd_id,
+                        principalTable: "t_e_commande_cmd",
+                        principalColumn: "cmd_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_e_lignecommande_lco_t_e_tailleproduit_tpr_tpr_id",
+                        column: x => x.tpr_id,
+                        principalTable: "t_e_tailleproduit_tpr",
+                        principalColumn: "tpr_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_e_lignecommande_lco_t_j_variantecouleurproduit_vcp_prd_id",
+                        column: x => x.prd_id,
+                        principalTable: "t_j_variantecouleurproduit_vcp",
+                        principalColumn: "vcp_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_stockproduit_spr",
+                columns: table => new
+                {
+                    vcp_id = table.Column<int>(type: "integer", nullable: false),
+                    tpr_id = table.Column<int>(type: "integer", nullable: false),
+                    spr_stocks = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_j_stockproduit_spr", x => new { x.vcp_id, x.tpr_id });
+                    table.CheckConstraint("ck_spr_stocks", "spr_stocks > 0");
+                    table.ForeignKey(
+                        name: "FK_t_j_stockproduit_spr_t_e_tailleproduit_tpr_tpr_id",
+                        column: x => x.tpr_id,
+                        principalTable: "t_e_tailleproduit_tpr",
+                        principalColumn: "tpr_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_stockproduit_spr_t_j_variantecouleurproduit_vcp_vcp_id",
+                        column: x => x.vcp_id,
+                        principalTable: "t_j_variantecouleurproduit_vcp",
+                        principalColumn: "vcp_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -769,16 +920,6 @@ namespace FIFA_API.Migrations
                 column: "tpr_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_e_photo_pht_AlbumId",
-                table: "t_e_photo_pht",
-                column: "AlbumId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_t_e_photo_pht_BlogId",
-                table: "t_e_photo_pht",
-                column: "BlogId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_t_e_produit_prd_cmp_id",
                 table: "t_e_produit_prd",
                 column: "cmp_id");
@@ -851,6 +992,31 @@ namespace FIFA_API.Migrations
                 column: "pht_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_t_j_albumphoto_alp__albumsId",
+                table: "t_j_albumphoto_alp",
+                column: "_albumsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_j_articlephoto_arp__articlesId",
+                table: "t_j_articlephoto_arp",
+                column: "_articlesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_j_articlevideo_arv__articlesId",
+                table: "t_j_articlevideo_arv",
+                column: "_articlesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_j_blogphoto_blp__blogsId",
+                table: "t_j_blogphoto_blp",
+                column: "_blogsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_j_joueurphoto_jop__joueursId",
+                table: "t_j_joueurphoto_jop",
+                column: "_joueursId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_t_j_stockproduit_spr_tpr_id",
                 table: "t_j_stockproduit_spr",
                 column: "tpr_id");
@@ -865,52 +1031,10 @@ namespace FIFA_API.Migrations
                 table: "t_j_variantecouleurproduit_vcp",
                 columns: new[] { "prd_id", "col_id" },
                 unique: true);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_JoueurTrophee_t_e_joueur_jou_JoueursId",
-                table: "JoueurTrophee",
-                column: "JoueursId",
-                principalTable: "t_e_joueur_jou",
-                principalColumn: "jou_id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_t_e_faqjoueur_faq_t_e_joueur_jou_jou_id",
-                table: "t_e_faqjoueur_faq",
-                column: "jou_id",
-                principalTable: "t_e_joueur_jou",
-                principalColumn: "jou_id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_t_e_joueur_jou_t_e_photo_pht_pht_id",
-                table: "t_e_joueur_jou",
-                column: "pht_id",
-                principalTable: "t_e_photo_pht",
-                principalColumn: "pht_id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_t_e_photo_pht_t_h_album_alb_AlbumId",
-                table: "t_e_photo_pht",
-                column: "AlbumId",
-                principalTable: "t_h_album_alb",
-                principalColumn: "pub_id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_t_e_photo_pht_t_h_blog_blg_BlogId",
-                table: "t_e_photo_pht",
-                column: "BlogId",
-                principalTable: "t_h_blog_blg",
-                principalColumn: "pub_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_t_g_publication_pub_t_e_photo_pht_pht_id",
-                table: "t_g_publication_pub");
-
             migrationBuilder.DropTable(
                 name: "JoueurTrophee");
 
@@ -924,16 +1048,25 @@ namespace FIFA_API.Migrations
                 name: "t_e_statistiques_stt");
 
             migrationBuilder.DropTable(
-                name: "t_e_video_vid");
-
-            migrationBuilder.DropTable(
                 name: "t_e_voteutilisateur_vtl");
 
             migrationBuilder.DropTable(
-                name: "t_h_article_art");
+                name: "t_h_document_doc");
 
             migrationBuilder.DropTable(
-                name: "t_h_document_doc");
+                name: "t_j_albumphoto_alp");
+
+            migrationBuilder.DropTable(
+                name: "t_j_articlephoto_arp");
+
+            migrationBuilder.DropTable(
+                name: "t_j_articlevideo_arv");
+
+            migrationBuilder.DropTable(
+                name: "t_j_blogphoto_blp");
+
+            migrationBuilder.DropTable(
+                name: "t_j_joueurphoto_jop");
 
             migrationBuilder.DropTable(
                 name: "t_j_statuscommande_sco");
@@ -943,6 +1076,18 @@ namespace FIFA_API.Migrations
 
             migrationBuilder.DropTable(
                 name: "t_e_trophee_tph");
+
+            migrationBuilder.DropTable(
+                name: "t_h_album_alb");
+
+            migrationBuilder.DropTable(
+                name: "t_e_video_vid");
+
+            migrationBuilder.DropTable(
+                name: "t_h_article_art");
+
+            migrationBuilder.DropTable(
+                name: "t_h_blog_blg");
 
             migrationBuilder.DropTable(
                 name: "t_e_joueur_jou");
@@ -955,6 +1100,9 @@ namespace FIFA_API.Migrations
 
             migrationBuilder.DropTable(
                 name: "t_j_variantecouleurproduit_vcp");
+
+            migrationBuilder.DropTable(
+                name: "t_g_publication_pub");
 
             migrationBuilder.DropTable(
                 name: "t_e_club_clb");
@@ -970,6 +1118,9 @@ namespace FIFA_API.Migrations
 
             migrationBuilder.DropTable(
                 name: "t_e_couleur_col");
+
+            migrationBuilder.DropTable(
+                name: "t_e_photo_pht");
 
             migrationBuilder.DropTable(
                 name: "t_e_langue_lan");
@@ -991,18 +1142,6 @@ namespace FIFA_API.Migrations
 
             migrationBuilder.DropTable(
                 name: "t_e_nation_nat");
-
-            migrationBuilder.DropTable(
-                name: "t_e_photo_pht");
-
-            migrationBuilder.DropTable(
-                name: "t_h_album_alb");
-
-            migrationBuilder.DropTable(
-                name: "t_h_blog_blg");
-
-            migrationBuilder.DropTable(
-                name: "t_g_publication_pub");
         }
     }
 }

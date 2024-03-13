@@ -17,5 +17,9 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(500, ErrorMessage = "L'url de la vidéo ne doit pas dépasser les 500 caractères")]
         [Column("vid_url")]
         public string Url { get; set; }
+
+        #region Many-to-many
+        private ICollection<Article> _articles;
+        #endregion
     }
 }

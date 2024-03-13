@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int Quantite { get; set; }
 
 		[Column("lco_prixunitaire")]
-        [Precision(2)]
+        [Precision(7,2)]
         public decimal PrixUnitaire { get; set; }
 
         //VarianteCouleurProduit

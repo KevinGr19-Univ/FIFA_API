@@ -27,6 +27,7 @@ namespace FIFA_API.Models.EntityFramework
         public TailleProduit Taille { get; set; }
 
         [Column("vtl_rankvote")]
+        [Range(0, 5, ErrorMessage = "Le rank de vote doit être entre 0 et 5.")]
         public int RankVote { get; set; }
     }
 }

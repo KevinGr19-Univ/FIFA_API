@@ -57,8 +57,8 @@ namespace FIFA_API.Models.EntityFramework
 		[Column("utl_datenaissance", TypeName = "date")]
         public DateTime DateNaissance { get; set; }
 
-        [RegularExpression(ModelUtils.REGEX_PASSWORD, ErrorMessage = "Le mot de passe doit contenir entre 12 et 20 caractères avec au moins 1 lettre majuscule, 1 chiffre et 1 caractère spécial")]
         [Column("utl_motdepasse")]
+        [StringLength(60, MinimumLength = 60)]
         public string MotDePasse { get; set; }
 
         [Column("utl_role")]

@@ -8,12 +8,12 @@ using System.ComponentModel.DataAnnotations.Schema;
     [Index(nameof(Nom), IsUnique = true)]
     public class Trophee
     {
+        public const int MAX_NOM_LENGTH = 60;
+
         public Trophee()
         {
             Joueurs = new HashSet<Joueur>();
         }
-
-        public const int MAX_NOM_LENGTH = 60;
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("tph_id")]

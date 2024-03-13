@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Razor.Language.Intermediate;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -42,7 +44,7 @@ namespace FIFA_API.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Server:localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
+                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
             }
         }
 
@@ -58,9 +60,103 @@ namespace FIFA_API.Models.EntityFramework
                 entity.HasKey(vtl => new { vtl.IdUtilisateur, vtl.IdCouleur, vtl.IdTaille });
             });
 
+            modelBuilder.Entity<Photo>(entity =>
+            {
+                entity.HasMany<Album>("_albums")
+                    .WithMany(alb => alb.Photos)
+                    .UsingEntity("t_j_albumphoto_alp");
+
+                entity.HasMany<Article>("_articles")
+                    .WithMany(art => art.Photos)
+                    .UsingEntity("t_j_articlephoto_arp");
+
+                entity.HasMany<Blog>("_blogs")
+                    .WithMany(blg => blg.Photos)
+                    .UsingEntity("t_j_blogphoto_blp");
+
+                entity.HasMany<Joueur>("_joueurs")
+                    .WithMany(jou => jou.Photos)
+                    .UsingEntity("t_j_joueurphoto_jop");
+            });
+
+            modelBuilder.Entity<Video>(entity =>
+            {
+                entity.HasMany<Article>("_articles")
+                    .WithMany(art => art.Videos)
+                    .UsingEntity("t_j_articlevideo_arv");
+            });
+
+            modelBuilder.Entity<Adresse>(entity =>
+            {
+                entity.Property(adr => adr.CodePostal).IsFixedLength();
+
+                entity.HasCheckConstraint("ck_adr_codepostal", $"adr_codepostal ~ '{ModelUtils.REGEX_CODEPOSTAL}'");
+            });
+
+            modelBuilder.Entity<Utilisateur>(entity =>
+            {
+                entity.Property(utl => utl.MotDePasse).IsFixedLength();
+
+                entity.HasCheckConstraint("ck_utl_telephone", $"utl_telephone ~ '{ModelUtils.REGEX_TELEPHONE}'");
+            });
+
+            modelBuilder.Entity<Couleur>(entity =>
+            {
+                entity.Property(col => col.CodeHexa).IsFixedLength();
+
+                entity.HasCheckConstraint("ck_col_codehexa", $"col_codehexa ~ '{ModelUtils.REGEX_HEXACOLOR}'");
+            });
+
+            modelBuilder.Entity<Commande>(entity =>
+            {
+                GreaterThanZero(entity, "cmd_prixlivraison");
+            });
+
+            modelBuilder.Entity<LigneCommande>(entity =>
+            {
+                GreaterThanZero(entity, "lco_quantite");
+                GreaterOrEqualThanZero(entity, "lco_prixunitaire");
+            });
+
+            modelBuilder.Entity<Joueur>(entity =>
+            {
+                GreaterThanZero(entity, "jou_poids", "jou_taille");
+            });
+
+            modelBuilder.Entity<Statistiques>(entity =>
+            {
+                GreaterThanZero(entity, "stt_matchsjoues", "stt_titularisations", "stt_minutesjouees", "stt_buts");
+            });
+
+            modelBuilder.Entity<StockProduit>(entity =>
+            {
+                GreaterThanZero(entity, "spr_stocks");
+            });
+
+            modelBuilder.Entity<TypeLivraison>(entity =>
+            {
+                GreaterThanZero(entity, "tli_prix");
+            });
+
+            modelBuilder.Entity<VarianteCouleurProduit>(entity =>
+            {
+                GreaterThanZero(entity, "vcp_prix");
+            });
+
             OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder builder);
+
+        #region Utils
+        private void GreaterThanZero(EntityTypeBuilder entity, params string[] columnNames) => GTZRequest(entity, ">", columnNames);
+        private void GreaterOrEqualThanZero(EntityTypeBuilder entity, params string[] columnNames) => GTZRequest(entity, ">=", columnNames);
+
+        private void GTZRequest(EntityTypeBuilder entity, string symbol, params string[] columnNames)
+        {
+            foreach (string columnName in columnNames)
+                entity.HasCheckConstraint($"ck_{columnName}", $"{columnName} {symbol} 0");
+        }
+        #endregion
     }
 }

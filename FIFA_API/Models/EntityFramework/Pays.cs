@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_pays_pys")]
     public class Pays
     {
+        public const int MAX_NOM_LENGTH = 50;
+
         public Pays()
         {
             Utilisateurs = new HashSet<Utilisateur>();
@@ -16,7 +18,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int Id { get; set; }
 
         [Column("pys_nom")]
-        [StringLength(50, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères")]
+        [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères")]
         public string Nom { get; set; }
 
         [InverseProperty(nameof(Utilisateur.Pays))]
