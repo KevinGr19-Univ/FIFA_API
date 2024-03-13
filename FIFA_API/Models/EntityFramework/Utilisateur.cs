@@ -46,7 +46,8 @@ namespace FIFA_API.Models.EntityFramework
         [Column("utl_prenom")]
         public string Prenom { get; set; }
 
-        [EmailAddress(ErrorMessage = "L'addresse Email doit convenir aux normes des adresses email")]
+        [Required]
+        [EmailAddress(ErrorMessage = "L'addresse email doit convenir aux normes des adresses email")]
         [Column("utl_mail")]
         public string Mail { get; set; }
 
@@ -57,6 +58,7 @@ namespace FIFA_API.Models.EntityFramework
 		[Column("utl_datenaissance", TypeName = "date")]
         public DateTime DateNaissance { get; set; }
 
+        [Required]
         [RegularExpression(ModelUtils.REGEX_PASSWORD, ErrorMessage = "Le mot de passe doit contenir entre 12 et 20 caractères avec au moins 1 lettre majuscule, 1 chiffre et 1 caractère spécial")]
         [Column("utl_motdepasse")]
         public string MotDePasse { get; set; }
