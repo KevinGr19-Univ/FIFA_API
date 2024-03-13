@@ -63,10 +63,10 @@ namespace FIFA_API.Models.EntityFramework
 
         public RoleUtilisateur Role { get; set; }
 
-		[Column("utl_derniereconnexion", TypeName = "date")]
+		[Column("utl_derniereconnexion")]
         public DateTime DerniereConnexion { get; set; }
 
-		[Column("utl_dateverificationemail", TypeName = "date")]
+		[Column("utl_dateverificationemail")]
         public DateTime DateVerificationEmail { get; set; }
 
 		[Column("utl_doubleauthentification")]
