@@ -19,6 +19,5 @@ namespace FIFA_API.Models.EntityFramework
 
         [Column("vtl_rankvote")]
         public int RankVote { get; set; }
-
     }
 }
