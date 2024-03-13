@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
         //VarianteCouleurProduit
 
-        [Column("vcp_idvcproduit")]
+        [Column("vcp_id")]
         public int IdVCProduit {  get; set; }
 
         [ForeignKey(nameof(IdVCProduit))]
@@ -18,7 +18,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 
         //Taille
-        [Column("tpr_idtaille")]
+        [Column("tpr_id")]
         public int IdTaille { get; set; }
 
         [ForeignKey(nameof(IdTaille))]
@@ -28,7 +28,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
         //Commande
 
-        [Column("cmd_idcommande")]
+        [Column("cmd_id")]
         public int IdCommande { get; set; }
 
         [ForeignKey(nameof(IdCommande))]

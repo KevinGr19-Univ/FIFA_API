@@ -52,7 +52,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 
 
         //Photo
-        [Column("pht_idphoto")]
+        [Column("pht_id")]
         public int IdPhoto { get; set; }
 
         [ForeignKey(nameof(IdPhoto))]
@@ -60,7 +60,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 
 
         //Statistiques
-        [Column("stt_idstatistiques")]
+        [Column("stt_id")]
         public int IdStatistiques { get; set; }
 
         [ForeignKey(nameof(IdStatistiques))]
@@ -68,7 +68,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 
 
         //Club
-        [Column("clb_idclub")]
+        [Column("clb_id")]
         public int IdClub {  get; set; }
 
         [ForeignKey(nameof(IdClub))]
@@ -77,7 +77,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 
 
         //Pays
-        [Column("pys_idpays")]
+        [Column("pys_id")]
         public int IdPays { get; set; }
 
         [ForeignKey(nameof(IdPays))]
