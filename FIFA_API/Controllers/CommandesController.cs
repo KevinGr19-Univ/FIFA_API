@@ -15,7 +15,7 @@ namespace FIFA_API.Controllers
     public class CommandesController : ControllerBase
     {
         private readonly FifaDbContext _context;
-        private readonly IRepository<Commande> _repository;
+        
 
         public CommandesController(FifaDbContext context)
         {
