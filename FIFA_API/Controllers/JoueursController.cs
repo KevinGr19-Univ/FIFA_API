@@ -33,6 +33,7 @@ namespace FIFA_API.Controllers
             return await _repository.GetAllAsync();
         }
 
+
         // GET: api/Joueurs/5
         /// <summary>
         /// Recupere un joueur par son ID.
@@ -40,7 +41,10 @@ namespace FIFA_API.Controllers
         /// <param name="id">L'ID du joueur à recuperer.</param>
         /// <returns>Le joueur correspondant à l'ID.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Joueur>> GetJoueur(int id)
+        [ActionName("GetJoueurById")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Joueur>> GetJoueurById(int id)
         {
             var joueur = await _repository.GetByIdAsync(id);
 
@@ -61,6 +65,9 @@ namespace FIFA_API.Controllers
         /// <param name="id">L'ID du joueur à mettre à jour.</param>
         /// <param name="joueur">Les nouvelles données mis à jour du joueur.</param>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> PutJoueur(int id, Joueur joueur)
         {
 
@@ -87,8 +94,15 @@ namespace FIFA_API.Controllers
         /// </summary>
         /// <param name="joueur">Les données du joueur à ajouter.</param>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<Joueur>> PostJoueur(Joueur joueur)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await _repository.AddAsync(joueur);
 
             return CreatedAtAction("GetJoueur", new { id = joueur.Id }, joueur);
@@ -100,6 +114,8 @@ namespace FIFA_API.Controllers
         /// </summary>
         /// <param name="id">L'ID du joueur à supprimer.</param>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteJoueur(int id)
         {
             var result = await _repository.GetByIdAsync(id);
