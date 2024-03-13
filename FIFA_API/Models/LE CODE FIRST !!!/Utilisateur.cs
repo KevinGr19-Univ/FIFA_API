@@ -1,3 +1,4 @@
+using FIFA_API.Models.EntityFramework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,9 +16,26 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_utilisateur_utl")]
     public class Utilisateur
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("utl_id")]
         public int Id { get; set; }
+
+        [Column("lan_id")]
+        public int IdLangue { get; set; }
+        [ForeignKey(nameof(IdLangue))]
+        public Langue Langue { get; set; }
+
+        [Column("pys_idpays")]
+        public int IdPays { get; set; }
+        [ForeignKey(nameof(IdPays))]
+        public Pays Pays { get; set; }
+
+        [Column("utl_idpaysfavori")]
+        public int IdPaysFavori { get; set; }
+        [ForeignKey(nameof(IdPaysFavori))]
+        public Pays PaysFavori { get; set; }
+
+
         [Column("utl_stripeid")]
         public string StripeId { get; set; }
 

@@ -6,9 +6,37 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_lignecommande_lco")]
     public class LigneCommande
     {
+
+        //VarianteCouleurProduit
+
+        [Column("vcp_idvcproduit")]
+        public int IdVCProduit {  get; set; }
+
+        [ForeignKey(nameof(IdVCProduit))]
         public VarianteCouleurProduit VCProduit { get; set; }
+
+
+
+        //Taille
+        [Column("tpr_idtaille")]
+        public int IdTaille { get; set; }
+
+        [ForeignKey(nameof(IdTaille))]
         public TailleProduit Taille { get; set; }
+
+
+
+        //Commande
+
+        [Column("cmd_idcommande")]
+        public int IdCommande { get; set; }
+
+        [ForeignKey(nameof(IdCommande))]
         public Commande Commande { get; set; }
+
+
+
+
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("lco_id")]

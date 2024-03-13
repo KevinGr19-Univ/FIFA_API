@@ -6,10 +6,8 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_statistiques_stt")]
     public partial class Statistiques
     {
-        [Key]
-        [Column("stt_id")]
-        public int Id { get; set; }
-        public Joueur Joueur { get; set; }
+        [Key, Column("jou_id")]
+        public int IdJoueur { get; set; }
 
 		[Column("stt_matchsjoues")]
         public int MatchsJoues { get; set; }
@@ -23,5 +21,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 		[Column("stt_buts")]
         public int Buts { get; set; }
 
+        [ForeignKey(nameof(IdJoueur))]
+        public Joueur Joueur { get; set; }
     }
 }

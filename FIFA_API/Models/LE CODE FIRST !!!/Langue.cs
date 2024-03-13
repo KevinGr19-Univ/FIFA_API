@@ -3,17 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
 {
-	[Table("t_e_photo_pht")]
-    public class Photo
+	[Table("t_e_langue_lan")]
+    public class Langue
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("pht_id")]
+        [Column("lan_id")]
         public int Id { get; set; }
-        [Column("pht_nom")]
-        public string Nom { get; set; }
 
-		[Column("pht_url")]
-        public string Url { get; set; }
+        [Column("lan_nom")]
+        public string Nom { get; set; }
 
     }
 }
