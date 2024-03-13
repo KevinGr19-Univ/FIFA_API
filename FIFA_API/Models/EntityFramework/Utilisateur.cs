@@ -38,7 +38,7 @@ namespace FIFA_API.Models.EntityFramework
         [Column("utl_stripeid")]
         public string StripeId { get; set; }
 
-        [StringLength(50, ErrorMessage = "Le nom de la vidéo ne doit pas dépasser les 50 caractères")]
+        [RegularExpression(ModelUtils.REGEX_TEL)]
         [Column("utl_telephone")]
         public string Telephone { get; set; }
 
