@@ -11,6 +11,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int Id { get; set; }
 
         [Column("cmp_nom")]
+        [StringLength(100, ErrorMessage = "Le nom de la compétition ne doit pas dépasser 100 caractères.")]
         public string Nom { get; set; }
 
         public ICollection<Produit> Produits { get; set; }
