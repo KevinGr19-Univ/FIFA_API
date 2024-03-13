@@ -1,9 +1,11 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_j_variantecouleurproduit_vcp")]
+    [Index(nameof(IdProduit), nameof(IdCouleur), IsUnique = true)]
     public class VarianteCouleurProduit
     {
         public VarianteCouleurProduit()
