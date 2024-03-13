@@ -26,7 +26,7 @@ namespace FIFA_API.Models.EntityFramework
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<Produit> Produits { get; set; }
         public virtual DbSet<Publication> Publications { get; set; }
-        public virtual DbSet<Statistiques> Statistiquess { get; set; }
+        public virtual DbSet<Statistiques> Statistiques { get; set; }
         public virtual DbSet<StatusCommande> StatusCommandes { get; set; }
         public virtual DbSet<StockProduit> StockProduits { get; set; }
         public virtual DbSet<TailleProduit> TailleProduits { get; set; }
@@ -41,7 +41,7 @@ namespace FIFA_API.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                
+                //optionsBuilder.UseNpgsql("Server:localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
             }
         }
 
