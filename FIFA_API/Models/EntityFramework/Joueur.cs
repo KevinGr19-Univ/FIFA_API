@@ -84,6 +84,8 @@ namespace FIFA_API.Models.EntityFramework
         public Pays Pays { get; set; }
 
 
+        [InverseProperty(nameof(FaqJoueur.Joueur))]
+        public ICollection<FaqJoueur> FaqJoueurs { get; set; }
 
         public ICollection<Trophee> Trophees { get; set; }
     }

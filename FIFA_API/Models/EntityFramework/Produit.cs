@@ -4,16 +4,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_produit_prd")]
-    public class Produit
+    public partial class Produit
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("prd_id")]
         public int Id { get; set; }
 
 		[Column("prd_titre")]
+        [StringLength(100, ErrorMessage = "Le titre ne doit pas dépasser 100 caractères")]
         public string Titre { get; set; }
 
 		[Column("prd_description")]
+        [StringLength(200, ErrorMessage = "La description ne doit pas dépasser 200 caractères")]
         public string Description { get; set; }
 
         [Column("cmp_id")]
@@ -34,8 +36,8 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdGenre))]
         public Genre Genre { get; set; }
 
-        public ICollection<Produit> Associes { get; set; }
-        public ICollection<Couleur> Couleurs { get; set; }
-        public ICollection<TailleProduit> Tailles { get; set; }
+        public virtual ICollection<Produit> Associes { get; set; }
+        public virtual ICollection<Couleur> Couleurs { get; set; }
+        public virtual ICollection<TailleProduit> Tailles { get; set; }
     }
 }

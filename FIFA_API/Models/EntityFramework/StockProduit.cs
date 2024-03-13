@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_j_stockproduit_spr")]
-    public class StockProduit
+    public partial class StockProduit
     {
         [Key, Column("prd_id", Order = 0)]
         public int IdProduit { get; set; }

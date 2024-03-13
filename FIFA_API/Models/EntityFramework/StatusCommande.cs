@@ -16,8 +16,10 @@ using System.ComponentModel.DataAnnotations.Schema;
     }
 
 	[Table("t_j_statuscommande_sco")]
-    public class StatusCommande
+    public partial class StatusCommande
     {
+        public const int MAX_COMMENTAIRE_LENGTH = 500;
+
         [Key, Column("cmd_id")]
         public int IdCommande { get; set; }
 
@@ -25,6 +27,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public DateTime Date { get; set; }
 
 		[Column("sco_commentaire")]
+        [StringLength(MAX_COMMENTAIRE_LENGTH, ErrorMessage = "Le commentaire ne doit pas dépasser 500 caractères.")]
         public string Commentaire { get; set; }
 
         [ForeignKey(nameof(IdCommande))]
