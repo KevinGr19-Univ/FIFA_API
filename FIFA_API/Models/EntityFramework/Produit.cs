@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_produit_prd")]
-    public class Produit
+    public partial class Produit
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("prd_id")]
@@ -34,8 +34,8 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdGenre))]
         public Genre Genre { get; set; }
 
-        public ICollection<Produit> Associes { get; set; }
-        public ICollection<Couleur> Couleurs { get; set; }
-        public ICollection<TailleProduit> Tailles { get; set; }
+        public virtual ICollection<Produit> Associes { get; set; }
+        public virtual ICollection<Couleur> Couleurs { get; set; }
+        public virtual ICollection<TailleProduit> Tailles { get; set; }
     }
 }

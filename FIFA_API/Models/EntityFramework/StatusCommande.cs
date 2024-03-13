@@ -16,7 +16,7 @@ using System.ComponentModel.DataAnnotations.Schema;
     }
 
 	[Table("t_j_statuscommande_sco")]
-    public class StatusCommande
+    public partial class StatusCommande
     {
         [Key, Column("cmd_id")]
         public int IdCommande { get; set; }
