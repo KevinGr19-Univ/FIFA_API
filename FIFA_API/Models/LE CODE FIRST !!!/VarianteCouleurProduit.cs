@@ -6,15 +6,22 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_j_variantecouleurproduit_vcp")]
     public class VarianteCouleurProduit
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("vcp_id")]
-        public int Id { get; set; }
-        public Produit Produit { get; set; }
-        public Couleur Couleur { get; set; }
+        [Key, Column("prd_id", Order = 0)]
+        public int IdProduit { get; set; }
+
+        [Key, Column("col_id", Order = 1)]
+        public int IdCouleur { get; set; }
 
 		[Column("vcp_prix")]
         public decimal Prix { get; set; }
 
-        public ICollection<string> ImageUrls { get; set; }
+        [Column("vcp_images")]
+        public List<string> ImageUrls { get; set; }
+
+        [ForeignKey(nameof(IdProduit))]
+        public Produit Produit { get; set; }
+
+        [ForeignKey(nameof(IdCouleur))]
+        public Couleur Couleur { get; set; }
     }
 }

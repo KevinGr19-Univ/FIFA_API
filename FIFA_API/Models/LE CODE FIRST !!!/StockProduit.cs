@@ -6,10 +6,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_j_stockproduit_spr")]
     public class StockProduit
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("spr_id")]
-        public int Id { get; set; }
+        [Key, Column("prd_id", Order = 0)]
+        public int IdProduit { get; set; }
+
+        [Key, Column("col_id", Order = 1)]
+        public int IdCouleur { get; set; }
+
+        [Key, Column("tpr_id", Order = 2)]
+        public int IdTaille { get; set; }
+
         public VarianteCouleurProduit VCProduit { get; set; }
+
+        [ForeignKey(nameof(IdTaille))]
         public TailleProduit Taille { get; set; }
 
 		[Column("spr_stocks")]

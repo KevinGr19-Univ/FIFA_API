@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,11 +18,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_j_statuscommande_sco")]
     public class StatusCommande
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("sco_id")]
-        public int Id { get; set; }
-        public Commande Commande { get; set; }
-        public CodeStatusCommande Code { get; set; }
+        [Key, Column("cmd_id")]
+        public int IdCommande { get; set; }
 
 		[Column("sco_date")]
         public DateTime Date { get; set; }
@@ -29,5 +27,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 		[Column("sco_commentaire")]
         public string Commentaire { get; set; }
 
+        [ForeignKey(nameof(IdCommande))]
+        public Commande Commande { get; set; }
+
+        public CodeStatusCommande Code { get; set; }
     }
 }
