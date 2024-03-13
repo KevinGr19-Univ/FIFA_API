@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
     public class Couleur
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("clb_id")]
+        [Column("col_id")]
         public int Id { get; set; }
 
         [Column("col_nom")]
