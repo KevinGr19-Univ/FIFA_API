@@ -6,6 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_pays_pys")]
     public class Pays
     {
+        public Pays()
+        {
+            Utilisateurs = new HashSet<Utilisateur>();
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("pys_id")]
         public int Id { get; set; }

@@ -6,6 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_nation_nat")]
     public partial class Nation
     {
+        public Nation()
+        {
+            Produits = new HashSet<Produit>();
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("nat_id")]
         public int Id { get; set; }

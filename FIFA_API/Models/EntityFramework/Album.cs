@@ -5,6 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_h_album_alb")]
     public class Album : Publication
     {
+        public Album()
+        {
+            Photos = new HashSet<Photo>();
+        }
+
         public ICollection<Photo> Photos { get; set; }
     }
 }

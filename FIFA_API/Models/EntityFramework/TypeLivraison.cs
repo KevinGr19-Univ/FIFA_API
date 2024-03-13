@@ -5,6 +5,11 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_e_typelivraison_tli")]
     public class TypeLivraison
     {
+        public TypeLivraison()
+        {
+            Commandes = new HashSet<Commande>();
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("tli_id")]
         public int Id { get; set; }
