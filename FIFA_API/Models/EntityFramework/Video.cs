@@ -1,20 +1,19 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-﻿namespace FIFA_API.Models.LE_CODE_FIRST____
+namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_couleur_col")]
-    public class Couleur
+	[Table("t_e_video_vid")]
+    public class Video
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("col_id")]
+        [Column("vid_id")]
         public int Id { get; set; }
-
-        [Column("col_nom")]
+        [Column("vid_nom")]
         public string Nom { get; set; }
 
-		[Column("col_codehexa")]
-        public string CodeHexa { get; set; }
+		[Column("vid_url")]
+        public string Url { get; set; }
 
     }
 }

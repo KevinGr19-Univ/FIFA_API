@@ -1,18 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-﻿namespace FIFA_API.Models.LE_CODE_FIRST____
+﻿namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_club_clb")]
-    public class Club
+	[Table("t_e_tailleproduit_tpr")]
+    public class TailleProduit
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("clb_id")]
+        [Column("tpr_id")]
         public int Id { get; set; }
-
-        [Column("clb_nom")]
+        [Column("tpr_nom")]
         public string Nom { get; set; }
-
 
     }
 }
