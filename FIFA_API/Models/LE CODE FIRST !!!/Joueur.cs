@@ -14,7 +14,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
     {
         Attaquant = 0,
         Defenseur = 1,
-        ardienDeBut = 2,
+        GardienDeBut = 2,
         MilieuDeTerrain = 3
     }
 

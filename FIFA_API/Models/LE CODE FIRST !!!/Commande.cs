@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_commande_cmd")]
     public class Commande
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("cmd_id")]
         public int Id { get; set; }
 

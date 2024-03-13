@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_competition_cmp")]
     public class Competition
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("cmp_id")]
         public int Id { get; set; }
 

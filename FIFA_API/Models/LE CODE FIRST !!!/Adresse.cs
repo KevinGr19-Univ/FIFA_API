@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
@@ -5,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_adresse_adr")]
     public class Adresse
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("adr_id")]
         public int Id { get; set; }
 
