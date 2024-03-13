@@ -45,7 +45,7 @@ namespace FIFA_API.Models.EntityFramework
 
 
 
-        [Column("jou_datenaissance")]
+        [Column("jou_datenaissance", TypeName = "date")]
         public DateTime? DateNaissance { get; set; }
 
 
