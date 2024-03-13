@@ -7,7 +7,16 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
     public class FaqJoueur
     {
 
+        //Joueur
+        [Column("jou_id")]
+        public int IdJoueur { get; set; }
+
+        [ForeignKey(nameof(IdJoueur))]
         public Joueur Joueur { get; set; }
+
+
+
+
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("faq_id")]

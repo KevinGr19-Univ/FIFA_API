@@ -18,7 +18,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
         MilieuDeTerrain = 3
     }
 
-	[Table("t_e_joueur_jou")]
+    [Table("t_e_joueur_jou")]
     public class Joueur
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -28,33 +28,62 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
         [Column("jou_nom")]
         public string Nom { get; set; } = null!;
 
-		[Column("jou_prenom")]
+        [Column("jou_prenom")]
         public string Prenom { get; set; } = null!;
 
-		[Column("jou_datenaissance")]
+        [Column("jou_datenaissance")]
         public DateTime? DateNaissance { get; set; }
 
-		[Column("jou_lieunaissance")]
+        [Column("jou_lieunaissance")]
         public string LieuNaissance { get; set; } = null!;
 
         public Pied Pied { get; set; }
 
-		[Column("jou_poids")]
+        [Column("jou_poids")]
         public int Poids { get; set; }
 
-		[Column("jou_taille")]
+        [Column("jou_taille")]
         public int Taille { get; set; }
 
-        public Poste PosteJoueur { get; set; } 
+        public Poste PosteJoueur { get; set; }
 
-		[Column("jou_biographie")]
+        [Column("jou_biographie")]
         public string Biographie { get; set; } = null!;
 
+
+        //Photo
+        [Column("pht_idphoto")]
+        public int IdPhoto { get; set; }
+
+        [ForeignKey(nameof(IdPhoto))]
         public Photo Photo { get; set; } = null!;
-        
+
+
+        //Statistiques
+        [Column("stt_idstatistiques")]
+        public int IdStatistiques { get; set; }
+
+        [ForeignKey(nameof(IdStatistiques))]
         public Statistiques Stats { get; set; }
+
+
+        //Club
+        [Column("clb_idclub")]
+        public int IdClub {  get; set; }
+
+        [ForeignKey(nameof(IdClub))]
         public Club Club { get; set; }
+
+
+
+        //Pays
+        [Column("pys_idpays")]
+        public int IdPays { get; set; }
+
+        [ForeignKey(nameof(IdPays))]
         public Pays Pays { get; set; }
+
+
 
         public ICollection<Trophee> Trophees { get; set; }
     }
