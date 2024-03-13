@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_j_stockproduit_spr")]
     public class StockProduit
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("spr_id")]
         public int Id { get; set; }
         public VarianteCouleurProduit VCProduit { get; set; }

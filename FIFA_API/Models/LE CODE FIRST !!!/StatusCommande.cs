@@ -17,7 +17,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_j_statuscommande_sco")]
     public class StatusCommande
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("sco_id")]
         public int Id { get; set; }
         public Commande Commande { get; set; }

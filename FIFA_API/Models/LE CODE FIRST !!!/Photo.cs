@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_photo_pht")]
     public class Photo
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("pht_id")]
         public int Id { get; set; }
         [Column("pht_nom")]

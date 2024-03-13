@@ -6,7 +6,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_j_variantecouleurproduit_vcp")]
     public class VarianteCouleurProduit
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("vcp_id")]
         public int Id { get; set; }
         public Produit Produit { get; set; }

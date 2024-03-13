@@ -15,7 +15,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_utilisateur_utl")]
     public class Utilisateur
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("utl_id")]
         public int Id { get; set; }
         [Column("utl_stripeid")]

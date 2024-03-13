@@ -6,7 +6,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_video_vid")]
     public class Video
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("vid_id")]
         public int Id { get; set; }
         [Column("vid_nom")]

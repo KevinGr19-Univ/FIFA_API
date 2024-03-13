@@ -6,7 +6,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_statistiques_stt")]
     public partial class Statistiques
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("stt_id")]
         public int Id { get; set; }
         public Joueur Joueur { get; set; }
