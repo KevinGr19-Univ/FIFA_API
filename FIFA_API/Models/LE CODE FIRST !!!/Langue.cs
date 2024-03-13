@@ -13,5 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("lan_nom")]
         public string Nom { get; set; }
 
+
+        public ICollection<Utilisateur> Utilisateurs { get; set; }
     }
 }

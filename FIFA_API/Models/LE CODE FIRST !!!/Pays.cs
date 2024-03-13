@@ -14,5 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Nom { get; set; }
 
 
+        public ICollection<Utilisateur> Utilisateurs { get; set; }
+
     }
 }
