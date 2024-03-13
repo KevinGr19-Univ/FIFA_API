@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_h_album_alb")]
     public class Album : Publication
     {
+        [Column("alb_id")]
+        public int Id { get; set; }
+
         public ICollection<Photo> Photos { get; set; }
     }
 }

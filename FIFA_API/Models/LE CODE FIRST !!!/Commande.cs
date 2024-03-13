@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
@@ -5,6 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_commande_cmd")]
     public class Commande
     {
+        [Key]
+        [Column("cmd_id")]
+        public int Id { get; set; }
+
         public TypeLivraison TypeLivraison { get; set; }
         public Utilisateur Utilisateur { get; set; }
         public Adresse AdresseLivraison { get; set; }

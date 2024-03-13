@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
@@ -5,7 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_categorieproduit_cpr")]
     public class CategorieProduit
     {
-		[Column("cpr_nom")]
+        [Key]
+        [Column("cpr_id")]
+        public int Id { get; set; }
+
+        [Column("cpr_nom")]
         public string Nom { get; set; }
 
 

@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_adresse_adr")]
     public class Adresse
     {
+        [Column("adr_id")]
+        public int Id { get; set; }
+
 		[Column("adr_ville")]
         public string Ville { get; set; }
 
