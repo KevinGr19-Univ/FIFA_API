@@ -6,6 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_langue_lan")]
     public class Langue
     {
+        public Langue()
+        {
+            Utilisateurs = new HashSet<Utilisateur>();
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("lan_id")]
         public int Id { get; set; }

@@ -6,6 +6,13 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_e_produit_prd")]
     public partial class Produit
     {
+        public Produit()
+        {
+            Associes = new HashSet<Produit>();
+            Couleurs = new HashSet<Couleur>();
+            Tailles = new HashSet<TailleProduit>();
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("prd_id")]
         public int Id { get; set; }
@@ -27,6 +34,9 @@ namespace FIFA_API.Models.EntityFramework
         [Column("gen_id")]
         public int IdGenre { get; set; }
 
+        [Column("cpr_id")]
+        public int IdCategorieProduit { get; set; }
+
         [ForeignKey(nameof(IdCompetition))]
         public Competition Competition { get; set; }
 
@@ -35,6 +45,9 @@ namespace FIFA_API.Models.EntityFramework
 
         [ForeignKey(nameof(IdGenre))]
         public Genre Genre { get; set; }
+
+        [ForeignKey(nameof(IdCategorieProduit))]
+        public CategorieProduit Categorie { get; set; }
 
         public virtual ICollection<Produit> Associes { get; set; }
         public virtual ICollection<Couleur> Couleurs { get; set; }

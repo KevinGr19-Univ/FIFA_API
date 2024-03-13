@@ -8,16 +8,19 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_e_adresse_adr")]
     public class Adresse
     {
+        public const int MAX_VILLE_LENGTH = 100;
+        public const int MAX_RUE_LENGTH = 100;
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("adr_id")]
         public int Id { get; set; }
 
 		[Column("adr_ville")]
-        [StringLength(100, ErrorMessage = "Le nom de la ville ne doit pas dépasser les 100 caractères")]
+        [StringLength(MAX_VILLE_LENGTH, ErrorMessage = "Le nom de la ville ne doit pas dépasser les 100 caractères")]
         public string Ville { get; set; }
 
 		[Column("adr_rue")]
-        [StringLength(100, ErrorMessage = "Le nom de la rue ne doit pas dépasser les 100 caractères")]
+        [StringLength(MAX_RUE_LENGTH, ErrorMessage = "Le nom de la rue ne doit pas dépasser les 100 caractères")]
         public string Rue { get; set; }
 
 		[Column("adr_codepostal", TypeName = "char")]

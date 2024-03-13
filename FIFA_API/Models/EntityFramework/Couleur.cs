@@ -6,12 +6,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_couleur_col")]
     public class Couleur
     {
+        public const int MAX_NOM_LENGTH = 50;
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("col_id")]
         public int Id { get; set; }
 
         [Column("col_nom")]
-        [StringLength(50, ErrorMessage = "Le nom de la couleur ne doit pas dépasser 50 caractères.")]
+        [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom de la couleur ne doit pas dépasser 50 caractères.")]
         public string Nom { get; set; }
 
 

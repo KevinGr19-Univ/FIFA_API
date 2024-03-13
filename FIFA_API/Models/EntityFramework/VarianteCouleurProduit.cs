@@ -6,6 +6,11 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_j_variantecouleurproduit_vcp")]
     public class VarianteCouleurProduit
     {
+        public VarianteCouleurProduit()
+        {
+            ImageUrls = new List<string>();
+        }
+
         [Key, Column("prd_id", Order = 0)]
         public int IdProduit { get; set; }
 
@@ -16,7 +21,7 @@ namespace FIFA_API.Models.EntityFramework
         public decimal Prix { get; set; }
 
         [Column("vcp_images")]
-        public List<string> ImageUrls { get; set; }
+        public IList<string> ImageUrls { get; set; }
 
         [ForeignKey(nameof(IdProduit))]
         public Produit Produit { get; set; }

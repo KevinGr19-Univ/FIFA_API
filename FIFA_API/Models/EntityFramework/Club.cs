@@ -8,12 +8,14 @@ using System.ComponentModel.DataAnnotations.Schema;
     [Index(nameof(Nom),IsUnique =true)]
     public class Club
     {
+        public const int MAX_NOM_LENGTH = 100;
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("clb_id")]
         public int Id { get; set; }
 
         [Column("clb_nom")]
-        [StringLength(100, ErrorMessage = "Le nom du club ne doit pas dépasser les 100 caractères")]
+        [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom du club ne doit pas dépasser les 100 caractères")]
         public string Nom { get; set; }
 
 
