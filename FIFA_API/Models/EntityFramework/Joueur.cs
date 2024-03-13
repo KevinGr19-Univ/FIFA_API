@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace FIFA_API.Models.LE_CODE_FIRST____
+namespace FIFA_API.Models.EntityFramework
 {
     public enum Pied
     {

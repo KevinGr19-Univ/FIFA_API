@@ -1,18 +1,19 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-﻿namespace FIFA_API.Models.LE_CODE_FIRST____
+﻿namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_competition_cmp")]
-    public class Competition
+	[Table("t_e_photo_pht")]
+    public class Photo
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("cmp_id")]
+        [Column("pht_id")]
         public int Id { get; set; }
-
-        [Column("cmp_nom")]
+        [Column("pht_nom")]
         public string Nom { get; set; }
 
-        public ICollection<Produit> Produits { get; set; }
+		[Column("pht_url")]
+        public string Url { get; set; }
+
     }
 }

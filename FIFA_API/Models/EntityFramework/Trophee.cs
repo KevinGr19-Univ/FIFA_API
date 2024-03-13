@@ -1,19 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FIFA_API.Models.LE_CODE_FIRST____
+﻿namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_video_vid")]
-    public class Video
+	[Table("t_e_trophee_tph")]
+    public class Trophee
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("vid_id")]
+        [Column("tph_id")]
         public int Id { get; set; }
-        [Column("vid_nom")]
+        [Column("tph_nom")]
         public string Nom { get; set; }
 
-		[Column("vid_url")]
-        public string Url { get; set; }
-
+        public ICollection<Joueur> Joueurs { get; set; }
     }
 }

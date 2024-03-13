@@ -1,18 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-﻿namespace FIFA_API.Models.LE_CODE_FIRST____
+namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_photo_pht")]
-    public class Photo
+	[Table("t_e_video_vid")]
+    public class Video
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("pht_id")]
+        [Column("vid_id")]
         public int Id { get; set; }
-        [Column("pht_nom")]
+        [Column("vid_nom")]
         public string Nom { get; set; }
 
-		[Column("pht_url")]
+		[Column("vid_url")]
         public string Url { get; set; }
 
     }
