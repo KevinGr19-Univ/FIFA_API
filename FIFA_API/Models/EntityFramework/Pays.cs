@@ -11,10 +11,9 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int Id { get; set; }
 
         [Column("pys_nom")]
+        [StringLength(50, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères")]
         public string Nom { get; set; }
 
-
         public ICollection<Utilisateur> Utilisateurs { get; set; }
-
     }
 }
