@@ -13,10 +13,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("cmp_nom")]
         public string Nom { get; set; }
 
-        [Column("prd_id")]
-        public int IdProduit { get; set; }
-
-        [ForeignKey(nameof(IdProduit))]
         public ICollection<Produit> Produits { get; set; }
     }
 }

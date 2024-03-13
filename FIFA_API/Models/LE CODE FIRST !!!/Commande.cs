@@ -22,7 +22,16 @@ using System.ComponentModel.DataAnnotations.Schema;
         [ForeignKey(nameof(IdUtilisateur))]
         public Utilisateur Utilisateur { get; set; }
 
+        [Column("adr_id1")]
+        public int IdAdresseLivraison { get; set; }
+
+        [ForeignKey(nameof(IdAdresseLivraison))]
         public Adresse AdresseLivraison { get; set; }
+        
+        [Column("adr_id2")]
+        public int IdAdresseFacturation { get; set; }
+
+        [ForeignKey(nameof(IdAdresseFacturation))]
         public Adresse AdresseFacturation { get; set; }
 
 		[Column("cmd_prixlivraison")]
@@ -40,16 +49,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 		[Column("cmd_urlfacture")]
         public string UrlFacture { get; set; }
 
-        [Column("lco_id")]
-        public int IdLigneCommande { get; set; }
-
-        [ForeignKey(nameof(IdLigneCommande))]
         public ICollection<LigneCommande> Lignes { get; set; }
 
-        [Column("sco_id")]
-        public int IdStatusCommande { get; set; }
-
-        [ForeignKey(nameof(IdStatusCommande))]
         public ICollection<StatusCommande> Status { get; set; }
     }
 }

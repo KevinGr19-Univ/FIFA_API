@@ -13,15 +13,14 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("cpr_nom")]
         public string Nom { get; set; }
 
+        [Column("cpr_id2")]
+        public int IdCategorieProduitParent { get; set; }
 
+        [ForeignKey(nameof(IdCategorieProduitParent))]
         public CategorieProduit? Parent { get; set; }
 
         public ICollection<CategorieProduit> SousCategories { get; set; }
 
-        [Column("prd_id")]
-        public int IdProduits { get; set; }
-
-        [ForeignKey(nameof(IdProduits))]
         public ICollection<Produit> Produits { get; set; }
     }
 }
