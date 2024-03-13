@@ -17,5 +17,6 @@ namespace FIFA_API.Models.EntityFramework
 		[Column("tli_prix")]
         public decimal Prix { get; set; }
 
+        public virtual ICollection<Commande> Commandes { get; set; }
     }
 }

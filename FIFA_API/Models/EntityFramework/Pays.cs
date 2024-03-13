@@ -12,7 +12,5 @@ using System.ComponentModel.DataAnnotations.Schema;
 
         [Column("pys_nom")]
         public string Nom { get; set; }
-
-
     }
 }
