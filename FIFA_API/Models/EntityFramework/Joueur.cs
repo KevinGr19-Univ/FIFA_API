@@ -75,7 +75,7 @@ namespace FIFA_API.Models.EntityFramework
         public Photo Photo { get; set; } = null!;
 
         //Statistiques
-        [ForeignKey(nameof(Id))]
+        [InverseProperty(nameof(Statistiques.Joueur))]
         public Statistiques? Stats { get; set; }
 
         //Club

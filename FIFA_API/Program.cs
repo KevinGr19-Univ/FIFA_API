@@ -1,3 +1,6 @@
+using FIFA_API.Models.EntityFramework;
+using Moq;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
