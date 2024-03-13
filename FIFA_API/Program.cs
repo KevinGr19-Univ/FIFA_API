@@ -1,5 +1,6 @@
 using FIFA_API.Models.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<FifaDbContext>(svp => new Mock<FifaDbContext>().Object);
 
 var app = builder.Build();
 
