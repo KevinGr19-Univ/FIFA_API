@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
 {
 	[Table("t_e_nation_nat")]
-    public class Nation
+    public partial class Nation
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("nat_id")]
@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("nat_nom")]
         public string Nom { get; set; }
 
-
-        public ICollection<Produit> Produits { get; set; }
+        [InverseProperty(nameof(Produit.Nation))]
+        public virtual ICollection<Produit> Produits { get; set; }
     }
 }
