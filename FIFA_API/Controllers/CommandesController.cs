@@ -14,46 +14,44 @@ namespace FIFA_API.Controllers
     [ApiController]
     public class CommandesController : ControllerBase
     {
-        private readonly FifaDbContext _context;
+        private readonly BaseRepository<Commande> _dataRepository;
         
 
-        public CommandesController(FifaDbContext context)
+        public CommandesController(BaseRepository<Commande> dataRepository)
         {
-            _context = context;
+            _dataRepository = dataRepository;
         }
 
         // GET: api/Commandes
         [HttpGet]
+
         public async Task<ActionResult<IEnumerable<Commande>>> GetCommandes()
         {
-          if (_context.Commandes == null)
-          {
-              return NotFound();
-          }
-            return await _context.Commandes.ToListAsync();
+            return await _dataRepository.GetAllAsync();
         }
 
         // GET: api/Commandes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Commande>> GetCommande(int id)
+        [ActionName("GetUtilisateurById")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Commande>> GetCommandeById(int id)
         {
-          if (_context.Commandes == null)
-          {
-              return NotFound();
-          }
-            var commande = await _context.Commandes.FindAsync(id);
-
-            if (commande == null)
+            var result = await _dataRepository.GetByIdAsync(id);
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return commande;
+            return result;
         }
 
         // PUT: api/Commandes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> PutCommande(int id, Commande commande)
         {
             if (id != commande.Id)
@@ -61,65 +59,51 @@ namespace FIFA_API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(commande).State = EntityState.Modified;
-
-            try
+            var commandeToUpdate = await _dataRepository.GetByIdAsync(id);
+            if (commandeToUpdate == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!CommandeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                await _dataRepository.UpdateAsync(commandeToUpdate.Value, commande);
+                return NoContent();
             }
-
-            return NoContent();
         }
 
         // POST: api/Commandes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<Commande>> PostCommande(Commande commande)
         {
-          if (_context.Commandes == null)
-          {
-              return Problem("Entity set 'FifaDbContext.Commandes' is null.");
-          }
-            _context.Commandes.Add(commande);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCommande", new { id = commande.Id }, commande);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await _dataRepository.AddAsync(commande);
+            return CreatedAtAction(nameof(GetCommandeById), new { id = commande.Id }, commande);
         }
 
         // DELETE: api/Commandes/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteCommande(int id)
         {
-            if (_context.Commandes == null)
+            var result = await _dataRepository.GetByIdAsync(id);
+            if (result == null)
             {
                 return NotFound();
             }
-            var commande = await _context.Commandes.FindAsync(id);
-            if (commande == null)
-            {
-                return NotFound();
-            }
-
-            _context.Commandes.Remove(commande);
-            await _context.SaveChangesAsync();
-
+            await _dataRepository.DeleteAsync(result.Value);
             return NoContent();
         }
 
-        private bool CommandeExists(int id)
-        {
-            return (_context.Commandes?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        //private bool CommandeExists(int id)
+        //{
+        //    return (_context.Commandes?.Any(e => e.Id == id)).GetValueOrDefault();
+        //}
     }
 }
