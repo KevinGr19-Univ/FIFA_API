@@ -34,11 +34,12 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdPaysFavori))]
         public Pays PaysFavori { get; set; }
 
-
+        [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dépasser les 100 caractères")]
         [Column("utl_stripeid")]
         public string StripeId { get; set; }
 
-		[Column("utl_telephone")]
+        [StringLength(50, ErrorMessage = "Le nom de la vidéo ne doit pas dépasser les 50 caractères")]
+        [Column("utl_telephone")]
         public string Telephone { get; set; }
 
 		[Column("utl_prenom")]

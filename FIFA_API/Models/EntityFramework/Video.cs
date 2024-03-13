@@ -10,9 +10,10 @@ namespace FIFA_API.Models.EntityFramework
         [Column("vid_id")]
         public int Id { get; set; }
         [Column("vid_nom")]
+        [StringLength(500, ErrorMessage = "Le nom de la vidéo ne doit pas dépasser les 500 caractères")]
         public string Nom { get; set; }
-
-		[Column("vid_url")]
+        [StringLength(500, ErrorMessage = "L'url de la vidéo ne doit pas dépasser les 500 caractères")]
+        [Column("vid_url")]
         public string Url { get; set; }
 
     }
