@@ -14,6 +14,5 @@ namespace FIFA_API.Models.EntityFramework
 
 		[Column("vid_url")]
         public string Url { get; set; }
-
     }
 }

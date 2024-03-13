@@ -11,9 +11,11 @@ namespace FIFA_API.Models.EntityFramework
         public int Id { get; set; }
 
 		[Column("prd_titre")]
+        [StringLength(100, ErrorMessage = "Le titre ne doit pas dépasser 100 caractères")]
         public string Titre { get; set; }
 
 		[Column("prd_description")]
+        [StringLength(200, ErrorMessage = "La description ne doit pas dépasser 200 caractères")]
         public string Description { get; set; }
 
         [Column("cmp_id")]
