@@ -14,14 +14,18 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
     {
         Attaquant = 0,
         Defenseur = 1,
-        ardienDeBut = 2,
+        GardienDeBut = 2,
         MilieuDeTerrain = 3
     }
 
 	[Table("t_e_joueur_jou")]
     public class Joueur
     {
-		[Column("jou_nom")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("jou_id")]
+        public int Id { get; set; }
+
+        [Column("jou_nom")]
         public string Nom { get; set; } = null!;
 
 		[Column("jou_prenom")]

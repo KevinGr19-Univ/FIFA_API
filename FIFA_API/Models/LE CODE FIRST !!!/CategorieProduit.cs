@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_categorieproduit_cpr")]
     public class CategorieProduit
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("cpr_id")]
         public int Id { get; set; }
 
