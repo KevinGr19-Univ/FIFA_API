@@ -1,9 +1,11 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_j_variantecouleurproduit_vcp")]
+    [Index(nameof(IdProduit), nameof(IdCouleur), IsUnique = true)]
     public class VarianteCouleurProduit
     {
         public VarianteCouleurProduit()
@@ -11,17 +13,21 @@ namespace FIFA_API.Models.EntityFramework
             ImageUrls = new List<string>();
         }
 
-        [Key, Column("prd_id", Order = 0)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("vcp_id")]
+        public int Id { get; set; }
+
+        [Column("prd_id", Order = 0)]
         public int IdProduit { get; set; }
 
-        [Key, Column("col_id", Order = 1)]
+        [Column("col_id", Order = 1)]
         public int IdCouleur { get; set; }
 
 		[Column("vcp_prix")]
         public decimal Prix { get; set; }
 
         [Column("vcp_images")]
-        public IList<string> ImageUrls { get; set; }
+        public List<string> ImageUrls { get; set; }
 
         [ForeignKey(nameof(IdProduit))]
         public Produit Produit { get; set; }

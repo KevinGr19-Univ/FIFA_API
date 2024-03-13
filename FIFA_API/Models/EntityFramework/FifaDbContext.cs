@@ -4,6 +4,7 @@ namespace FIFA_API.Models.EntityFramework
 {
     public partial class FifaDbContext : DbContext
     {
+        public FifaDbContext() { }
         public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options) { }
 
         public virtual DbSet<Adresse> Adresses { get; set; }
@@ -41,13 +42,21 @@ namespace FIFA_API.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //optionsBuilder.UseNpgsql("Server:localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
+                optionsBuilder.UseNpgsql("Server:localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<StockProduit>(entity =>
+            {
+                entity.HasKey(spr => new { spr.IdVCProduit, spr.IdTaille });
+            });
+
+            modelBuilder.Entity<VoteUtilisateur>(entity =>
+            {
+                entity.HasKey(vtl => new { vtl.IdUtilisateur, vtl.IdCouleur, vtl.IdTaille });
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }

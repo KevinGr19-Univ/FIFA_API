@@ -22,7 +22,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(100, ErrorMessage = "Le nom de la catégorie ne doit pas dépasser les 100 caractères")]
         public string Nom { get; set; }
 
-        [Column("cpr_id2")]
+        [Column("cpr_idparent")]
         public int IdCategorieProduitParent { get; set; }
 
         [ForeignKey(nameof(IdCategorieProduitParent))]

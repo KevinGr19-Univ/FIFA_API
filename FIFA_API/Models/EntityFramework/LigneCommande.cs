@@ -19,7 +19,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public decimal PrixUnitaire { get; set; }
 
         //VarianteCouleurProduit
-        [Column("vcp_id")]
+        [Column("prd_id")]
         public int IdVCProduit { get; set; }
 
         [ForeignKey(nameof(IdVCProduit))]

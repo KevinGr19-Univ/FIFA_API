@@ -19,6 +19,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(50, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères")]
         public string Nom { get; set; }
 
+        [InverseProperty(nameof(Utilisateur.Pays))]
         public ICollection<Utilisateur> Utilisateurs { get; set; }
     }
 }

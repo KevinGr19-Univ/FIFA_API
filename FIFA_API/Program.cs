@@ -1,5 +1,4 @@
 using FIFA_API.Models.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 
 var builder = WebApplication.CreateBuilder(args);

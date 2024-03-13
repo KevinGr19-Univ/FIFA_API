@@ -61,6 +61,7 @@ namespace FIFA_API.Models.EntityFramework
         [Column("utl_motdepasse")]
         public string MotDePasse { get; set; }
 
+        [Column("utl_role")]
         public RoleUtilisateur Role { get; set; }
 
 		[Column("utl_derniereconnexion")]
