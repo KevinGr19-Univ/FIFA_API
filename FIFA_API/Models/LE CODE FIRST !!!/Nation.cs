@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_nation_nat")]
     public class Nation
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("nat_id")]
         public int Id { get; set; }
 

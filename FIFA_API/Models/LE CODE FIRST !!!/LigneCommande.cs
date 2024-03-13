@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public TailleProduit Taille { get; set; }
         public Commande Commande { get; set; }
 
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("lco_id")]
         public int Id { get; set; }
 
