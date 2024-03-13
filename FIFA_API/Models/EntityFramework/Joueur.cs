@@ -75,11 +75,8 @@ namespace FIFA_API.Models.EntityFramework
         public Photo Photo { get; set; } = null!;
 
         //Statistiques
-        [Column("stt_idjoueur")]
-        public int IdJoueur { get; set; }
-
-        [ForeignKey(nameof(IdJoueur))]
-        public Statistiques Stats { get; set; }
+        [ForeignKey(nameof(Id))]
+        public Statistiques? Stats { get; set; }
 
         //Club
         [Column("clb_id")]

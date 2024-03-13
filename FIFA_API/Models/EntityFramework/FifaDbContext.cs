@@ -4,6 +4,7 @@ namespace FIFA_API.Models.EntityFramework
 {
     public partial class FifaDbContext : DbContext
     {
+        public FifaDbContext() { }
         public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options) { }
 
         public virtual DbSet<Adresse> Adresses { get; set; }
@@ -47,7 +48,15 @@ namespace FIFA_API.Models.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<StockProduit>(entity =>
+            {
+                entity.HasKey(spr => new { spr.IdVCProduit, spr.IdTaille });
+            });
+
+            modelBuilder.Entity<VoteUtilisateur>(entity =>
+            {
+                entity.HasKey(vtl => new { vtl.IdUtilisateur, vtl.IdCouleur, vtl.IdTaille });
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }
