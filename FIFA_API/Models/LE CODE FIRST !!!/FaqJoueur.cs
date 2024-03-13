@@ -9,7 +9,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 
         public Joueur Joueur { get; set; }
 
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("faq_id")]
         public int Id { get; set; }
 

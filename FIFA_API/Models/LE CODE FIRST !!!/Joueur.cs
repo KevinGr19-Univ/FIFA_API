@@ -21,7 +21,7 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_joueur_jou")]
     public class Joueur
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("jou_id")]
         public int Id { get; set; }
 
