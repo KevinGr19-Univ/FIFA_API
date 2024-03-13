@@ -1,4 +1,3 @@
-using FIFA_API.Models.EntityFramework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
