@@ -21,7 +21,11 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_joueur_jou")]
     public class Joueur
     {
-		[Column("jou_nom")]
+        [Key]
+        [Column("jou_id")]
+        public int Id { get; set; }
+
+        [Column("jou_nom")]
         public string Nom { get; set; } = null!;
 
 		[Column("jou_prenom")]

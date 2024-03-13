@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
@@ -9,7 +10,11 @@ using System.ComponentModel.DataAnnotations.Schema;
         public TailleProduit Taille { get; set; }
         public Commande Commande { get; set; }
 
-		[Column("lco_quantite")]
+        [Key]
+        [Column("lco_id")]
+        public int Id { get; set; }
+
+        [Column("lco_quantite")]
         public int Quantite { get; set; }
 
 		[Column("lco_prixunitaire")]
