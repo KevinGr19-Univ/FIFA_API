@@ -11,6 +11,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int Id { get; set; }
 
         [Column("gen_nom")]
+        [StringLength(50, ErrorMessage = "Le nom du genre ne peut pas dépasser 50 caractères.")]
         public string Nom { get; set; }
 
 
