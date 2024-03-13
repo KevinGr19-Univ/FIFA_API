@@ -60,10 +60,10 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 
 
         //Statistiques
-        [Column("stt_id")]
-        public int IdStatistiques { get; set; }
+        [Column("stt_idjoueur")]
+        public int IdJoueur { get; set; }
 
-        [ForeignKey(nameof(IdStatistiques))]
+        [ForeignKey(nameof(IdJoueur))]
         public Statistiques Stats { get; set; }
 
 
