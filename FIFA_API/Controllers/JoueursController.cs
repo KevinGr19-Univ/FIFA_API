@@ -102,13 +102,14 @@ namespace FIFA_API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteJoueur(int id)
         {
-            var joueur = await _repository.GetByIdAsync(id);
-            if (joueur == null)
+            var result = await _repository.GetByIdAsync(id);
+
+            if (result == null)
             {
                 return NotFound();
             }
 
-            await _repository.DeleteAsync(joueur.Value);
+            await _repository.DeleteAsync(result.Value);
 
             return NoContent();
         }
