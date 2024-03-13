@@ -22,7 +22,7 @@ namespace FIFA_API.Models.EntityFramework
         public virtual DbSet<Langue> Langues { get; set; }
         public virtual DbSet<LigneCommande> LigneCommandes { get; set; }
         public virtual DbSet<Nation> Nations { get; set; }
-        public virtual DbSet<Pays> Payss { get; set; }
+        public virtual DbSet<Pays> Pays { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<Produit> Produits { get; set; }
         public virtual DbSet<Publication> Publications { get; set; }
