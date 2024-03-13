@@ -1,9 +1,11 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_commande_cmd")]
+    [Index(nameof(UrlFacture),IsUnique =true)]
     public class Commande
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -46,7 +48,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 		[Column("cmd_datelivraison")]
         public DateTime? DateLivraison { get; set; }
 
-		[Column("cmd_urlfacture")]
+		[Column("cmd_urlfacture", TypeName ="text")]
         public string UrlFacture { get; set; }
 
         public ICollection<LigneCommande> Lignes { get; set; }
