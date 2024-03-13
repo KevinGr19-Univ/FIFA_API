@@ -41,7 +41,7 @@ namespace FIFA_API.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //optionsBuilder.UseNpgsql("Server:localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
+                optionsBuilder.UseNpgsql("Server:localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
             }
         }
 
