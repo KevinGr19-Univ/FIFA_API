@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿using FIFA_API.Models.EntityFramework;
@@ -7,6 +8,9 @@ namespace FIFA_API.Models.LE_CODE_FIRST____
 	[Table("t_e_produit_prd")]
     public class Produit
     {
+        [Key]
+        [Column("prd_id")]
+        public int Id { get; set; }
         public Competition Competition { get; set; }
         public Nation Nation { get; set; }
         public Genre Genre { get; set; }

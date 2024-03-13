@@ -1,6 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-﻿namespace FIFA_API.Models.LE_CODE_FIRST____
+namespace FIFA_API.Models.LE_CODE_FIRST____
 {
     //Ajouter les roles
     public enum RoleUtilisateur
@@ -14,8 +15,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_e_utilisateur_utl")]
     public class Utilisateur
     {
-
-		[Column("utl_stripeid")]
+        [Key]
+        [Column("utl_id")]
+        public int Id { get; set; }
+        [Column("utl_stripeid")]
         public string StripeId { get; set; }
 
 		[Column("utl_telephone")]

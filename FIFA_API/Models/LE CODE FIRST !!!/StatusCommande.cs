@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.LE_CODE_FIRST____
@@ -16,6 +17,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_j_statuscommande_sco")]
     public class StatusCommande
     {
+        [Key]
+        [Column("sco_id")]
+        public int Id { get; set; }
         public Commande Commande { get; set; }
         public CodeStatusCommande Code { get; set; }
 
