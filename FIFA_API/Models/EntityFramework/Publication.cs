@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_g_publication_pub")]
-    public abstract class Publication
+    public abstract partial class Publication
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("pub_id")]
