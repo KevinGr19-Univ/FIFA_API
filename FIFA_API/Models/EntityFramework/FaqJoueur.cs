@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_faqjoueur_faq")]
-    public class FaqJoueur
+    public partial class FaqJoueur
     {
         public const int MAX_QUESTION_LENGTH = 500;
         public const int MAX_REPONSE_LENGTH = 500;

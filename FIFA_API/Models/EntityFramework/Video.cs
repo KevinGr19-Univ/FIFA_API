@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_video_vid")]
-    public class Video
+    public partial class Video
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("vid_id")]

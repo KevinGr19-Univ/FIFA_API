@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_competition_cmp")]
-    public class Competition
+    public partial class Competition
     {
         public const int MAX_NOM_LENGTH = 100;
 
@@ -16,6 +16,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom de la compétition ne doit pas dépasser 100 caractères.")]
         public string Nom { get; set; }
 
-        public ICollection<Produit> Produits { get; set; }
+        public virtual ICollection<Produit> Produits { get; set; }
     }
 }

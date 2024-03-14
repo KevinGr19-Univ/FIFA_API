@@ -13,7 +13,7 @@ namespace FIFA_API.Models.EntityFramework
     }
 
 	[Table("t_e_utilisateur_utl")]
-    public class Utilisateur
+    public partial class Utilisateur
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("utl_id")]
@@ -26,13 +26,15 @@ namespace FIFA_API.Models.EntityFramework
 
         [Column("pys_idpays")]
         public int IdPays { get; set; }
+
         [ForeignKey(nameof(IdPays))]
         public Pays Pays { get; set; }
 
         [Column("utl_idpaysfavori")]
-        public int IdPaysFavori { get; set; }
+        public int? IdPaysFavori { get; set; }
+
         [ForeignKey(nameof(IdPaysFavori))]
-        public Pays PaysFavori { get; set; }
+        public Pays? PaysFavori { get; set; }
 
         [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dépasser les 100 caractères")]
         [Column("utl_stripeid")]
@@ -68,7 +70,7 @@ namespace FIFA_API.Models.EntityFramework
         public DateTime DerniereConnexion { get; set; }
 
 		[Column("utl_dateverificationemail")]
-        public DateTime DateVerificationEmail { get; set; }
+        public DateTime? DateVerificationEmail { get; set; }
 
 		[Column("utl_doubleauthentification")]
         public bool DoubleAuthentification { get; set; }

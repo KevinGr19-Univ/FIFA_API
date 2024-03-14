@@ -73,23 +73,23 @@ namespace FIFA_API.Models.Repository
             this.dbContext = dbContext;
         }
 
-        public async Task<ActionResult<IEnumerable<T>>> GetAllAsync()
+        public virtual async Task<ActionResult<IEnumerable<T>>> GetAllAsync()
         {
             return await DbSet.ToListAsync();
         }
 
-        public async Task<ActionResult<T?>> GetByIdAsync(params object[] id)
+        public virtual async Task<ActionResult<T?>> GetByIdAsync(params object[] id)
         {
             return await DbSet.FindAsync(id);
         }
 
-        public async Task AddAsync(T elementToAdd)
+        public virtual async Task AddAsync(T elementToAdd)
         {
             await DbSet.AddAsync(elementToAdd);
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(T elementToUpdate, T sourceElement)
+        public virtual async Task UpdateAsync(T elementToUpdate, T sourceElement)
         {
             dbContext.Entry(elementToUpdate).State = EntityState.Modified;
 
@@ -99,7 +99,7 @@ namespace FIFA_API.Models.Repository
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(T elementToDelete)
+        public virtual async Task DeleteAsync(T elementToDelete)
         {
             DbSet.Remove(elementToDelete);
             await dbContext.SaveChangesAsync();

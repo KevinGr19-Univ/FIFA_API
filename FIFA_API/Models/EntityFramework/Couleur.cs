@@ -4,9 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_couleur_col")]
-    public class Couleur
+    public partial class Couleur
     {
         public const int MAX_NOM_LENGTH = 50;
+
+        public Couleur()
+        {
+            Produits = new HashSet<Produit>();
+        }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("col_id")]
@@ -21,5 +26,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         [RegularExpression(ModelUtils.REGEX_HEXACOLOR, ErrorMessage = "Le code hexadécimal de couleur doit être au format hexadécimal.")]
         public string CodeHexa { get; set; }
 
+        public virtual ICollection<Produit> Produits { get; set; }
     }
 }

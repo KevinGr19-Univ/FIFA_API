@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_pays_pys")]
-    public class Pays
+    public partial class Pays
     {
         public const int MAX_NOM_LENGTH = 50;
 
@@ -22,6 +22,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Nom { get; set; }
 
         [InverseProperty(nameof(Utilisateur.Pays))]
-        public ICollection<Utilisateur> Utilisateurs { get; set; }
+        public virtual ICollection<Utilisateur> Utilisateurs { get; set; }
     }
 }

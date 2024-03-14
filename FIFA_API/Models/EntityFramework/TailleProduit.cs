@@ -6,8 +6,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 {
 	[Table("t_e_tailleproduit_tpr")]
     [Index(nameof(Nom), IsUnique = true)]
-    public class TailleProduit
+    public partial class TailleProduit
     {
+        public TailleProduit()
+        {
+            Produits = new HashSet<Produit>();
+        }
+
         public const int MAX_NOM_LENGTH = 50;
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,5 +23,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères.")]
         public string Nom { get; set; }
 
+        public virtual ICollection<Produit> Produits { get; set; }
     }
 }

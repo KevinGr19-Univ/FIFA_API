@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 {
 	[Table("t_e_club_clb")]
     [Index(nameof(Nom),IsUnique =true)]
-    public class Club
+    public partial class Club
     {
         public const int MAX_NOM_LENGTH = 100;
 

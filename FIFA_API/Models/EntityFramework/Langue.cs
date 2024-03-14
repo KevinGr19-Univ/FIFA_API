@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_langue_lan")]
-    public class Langue
+    public partial class Langue
     {
         public const int MAX_NOM_LENGTH = 50;
 
@@ -22,6 +22,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Nom { get; set; }
 
         [InverseProperty(nameof(Utilisateur.Langue))]
-        public ICollection<Utilisateur> Utilisateurs { get; set; }
+        public virtual ICollection<Utilisateur> Utilisateurs { get; set; }
     }
 }

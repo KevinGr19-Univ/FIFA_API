@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_genre_gen")]
-    public class Genre
+    public partial class Genre
     {
         public const int MAX_NOM_GENRE = 50;
 

@@ -6,7 +6,7 @@ namespace FIFA_API.Models.EntityFramework
 {
 
 	[Table("t_e_voteutilisateur_vtl")]
-    public class VoteUtilisateur
+    public partial class VoteUtilisateur
     {
         [Column("utl_id", Order = 0)]
         public int IdUtilisateur { get; set; }

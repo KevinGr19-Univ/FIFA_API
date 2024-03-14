@@ -50,6 +50,8 @@ namespace FIFA_API.Models.EntityFramework
         public CategorieProduit Categorie { get; set; }
 
         public virtual ICollection<Produit> Associes { get; set; }
+        public virtual ICollection<Produit> AssociesTo { get; set; }
+
         public virtual ICollection<Couleur> Couleurs { get; set; }
         public virtual ICollection<TailleProduit> Tailles { get; set; }
     }
