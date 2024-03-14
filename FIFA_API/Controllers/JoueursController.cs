@@ -78,7 +78,8 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _repository.UpdateAsync(joueur, joueur);
+                var oldJoueur  = await _repository.GetByIdAsync(id);
+                await _repository.UpdateAsync(oldJoueur.Value, joueur);
             }
             catch (Exception)
             {
@@ -105,7 +106,7 @@ namespace FIFA_API.Controllers
 
             await _repository.AddAsync(joueur);
 
-            return CreatedAtAction("GetJoueur", new { id = joueur.Id }, joueur);
+            return CreatedAtAction("GetJoueurById", new { id = joueur.Id }, joueur);
         }
 
         // DELETE: api/Joueurs/5
