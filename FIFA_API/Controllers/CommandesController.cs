@@ -48,6 +48,15 @@ namespace FIFA_API.Controllers
 
         // PUT: api/Commandes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifier une commande.
+        /// </summary>
+        /// <returns>Http response</returns>
+        /// <param name="id">L'id de la commande que vous voulez modifier.</param>
+        /// <param name="commande">La nouvelle commande.</param>
+        /// <response code="204">La commande a été modifiée.</response>
+        /// <response code="404">La commande n'a pas été trouvée.</response>
+        /// <response code="400">La nouvelle commande n'a pas le même id que l'ancienne.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
