@@ -14,7 +14,7 @@ namespace FIFA_API.Controllers
     [ApiController]
     public class CommandesController : ControllerBase
     {
-        private readonly BaseRepository<Commande> _dataRepository;
+        private readonly IRepository<Commande> _dataRepository;
         
 
         public CommandesController(BaseRepository<Commande> dataRepository)
@@ -23,14 +23,25 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Commandes
+        /// <summary>
+        /// Récupérer toutes les commandes.
+        /// </summary>
+        /// <returns>Http response</returns>
+        /// <response code="200">Les commandes ont été récupéré.</response>
         [HttpGet]
-
         public async Task<ActionResult<IEnumerable<Commande>>> GetCommandes()
         {
             return await _dataRepository.GetAllAsync();
         }
 
         // GET: api/Commandes/5
+        /// <summary>
+        /// Récupérer une commande grâce à son id.
+        /// </summary>
+        /// <returns>Http response</returns>
+        /// <param name="id">L'id de la commande que vous voulez récupérer.</param>
+        /// <response code="200">La commande a été récupéré.</response>
+        /// <response code="404">La commande n'a pas été trouvé.</response>
         [HttpGet("{id}")]
         [ActionName("GetCommandeById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -47,7 +58,15 @@ namespace FIFA_API.Controllers
         }
 
         // PUT: api/Commandes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifier une commande.
+        /// </summary>
+        /// <returns>Http response</returns>
+        /// <param name="id">L'id de la commande que vous voulez modifier.</param>
+        /// <param name="commande">La nouvelle commande.</param>
+        /// <response code="204">La commande a été modifié.</response>
+        /// <response code="404">La commande n'a pas été trouvé.</response>
+        /// <response code="400">La nouvelle commande n'a pas le même id que l'ancienne.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -72,7 +91,13 @@ namespace FIFA_API.Controllers
         }
 
         // POST: api/Commandes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Insérer une commande.
+        /// </summary>
+        /// <returns>Http response</returns>
+        /// <param name="commande">La commande à insérer.</param>
+        /// <response code="201">La commande a été inséré.</response>
+        /// <response code="400">La commande n'a pas les paramètres nécessaires pour être inséré.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -87,6 +112,13 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/Commandes/5
+        /// <summary>
+        /// Supprimer une commande grâce à son id.
+        /// </summary>
+        /// <returns>Http response</returns>
+        /// <param name="id">L'id de la commande que vous voulez supprimer.</param>
+        /// <response code="204">La commande a été supprimé.</response>
+        /// <response code="404">La commande n'a pas été trouvé.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
