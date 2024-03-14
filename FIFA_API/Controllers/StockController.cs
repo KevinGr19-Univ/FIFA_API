@@ -26,7 +26,7 @@ namespace FIFA_API.Controllers
             _repository = repository;   
         }
 
-        // GET: api/Stock
+        // GET: api/Stocks
         /// <summary>
         /// Recupere la liste des stocks.
         /// </summary>
@@ -37,7 +37,7 @@ namespace FIFA_API.Controllers
             return await _repository.GetAllAsync();
         }
 
-        // GET: api/Stock/1/1
+        // GET: api/Stocks/1/1
         /// <summary>
         /// Recupere le stock avec idvariante et idtaille.
         /// </summary>
@@ -60,7 +60,7 @@ namespace FIFA_API.Controllers
             return stock.Value;
         }
 
-        // PUT: api/Stock/1/1
+        // PUT: api/Stocks/1/1
         /// <summary>
         /// Met à jour un stock existant.
         /// </summary>
@@ -92,7 +92,7 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
-        // POST: api/Stock
+        // POST: api/Stocks
         /// <summary>
         /// Ajoute un nouveau stock.
         /// </summary>
@@ -112,7 +112,7 @@ namespace FIFA_API.Controllers
             return CreatedAtAction("GetStock", new { idvariante = stock.IdVCProduit, idtaille = stock.IdTaille }, stock);
         }
 
-        // DELETE: api/Stock/1/1
+        // DELETE: api/Stocks/1/1
         /// <summary>
         /// Supprime un stock existant.
         /// </summary>
