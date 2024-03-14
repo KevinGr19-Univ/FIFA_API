@@ -109,7 +109,7 @@ namespace FIFA_API.Controllers
 
             await _repository.AddAsync(stock);
 
-            return CreatedAtAction("GetJoueur", new { idvariante = stock.IdVCProduit, idtaille = stock.IdTaille }, stock);
+            return CreatedAtAction("GetStock", new { idvariante = stock.IdVCProduit, idtaille = stock.IdTaille }, stock);
         }
 
         // DELETE: api/Stock/1/1
