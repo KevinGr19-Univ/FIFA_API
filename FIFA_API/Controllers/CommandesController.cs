@@ -14,7 +14,7 @@ namespace FIFA_API.Controllers
     [ApiController]
     public class CommandesController : ControllerBase
     {
-        private readonly BaseRepository<Commande> _dataRepository;
+        private readonly IRepository<Commande> _dataRepository;
         
 
         public CommandesController(BaseRepository<Commande> dataRepository)
@@ -39,7 +39,7 @@ namespace FIFA_API.Controllers
         /// Récupérer une commande grâce à son id.
         /// </summary>
         /// <returns>Http response</returns>
-        /// <param name="id">L'id de la commande que vous voulez modifier.</param>
+        /// <param name="id">L'id de la commande que vous voulez récupérer.</param>
         /// <response code="200">La commande a été récupéré.</response>
         /// <response code="404">La commande n'a pas été trouvé.</response>
         [HttpGet("{id}")]
@@ -95,7 +95,7 @@ namespace FIFA_API.Controllers
         /// Insérer une commande.
         /// </summary>
         /// <returns>Http response</returns>
-        /// <param name="commande">La commande a inséré.</param>
+        /// <param name="commande">La commande à insérer.</param>
         /// <response code="201">La commande a été inséré.</response>
         /// <response code="400">La commande n'a pas les paramètres nécessaires pour être inséré.</response>
         [HttpPost]
