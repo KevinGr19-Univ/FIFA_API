@@ -27,6 +27,9 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Joueurs
+        /// <summary>
+        /// Recupere la liste des joueurs.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetJoueurs()
         {
