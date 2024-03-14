@@ -11,78 +11,75 @@ using NuGet.Protocol.Core.Types;
 
 namespace FIFA_API.Controllers
 {
-
     /// <summary>
-    /// Controleur pour gérer les opérations sur les joueurs.
+    /// Controleur pour gérer les opérations sur les nations.
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class JoueursController : ControllerBase
+    public class NationsController : ControllerBase
     {
-        private readonly IRepository<Joueur> _repository;
 
-        public JoueursController(IRepository<Joueur> repository)
+        private readonly IRepository<Nation> _repository;
+
+        public NationsController(IRepository<Nation> repository)
         {
-            _repository = repository;   
+            _repository = repository;
         }
 
-        // GET: api/Joueurs
+
+        // GET: api/Nations
         /// <summary>
-        /// Recupere la liste des joueurs.
+        /// Recupere la liste des nations.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Joueur>>> GetJoueurs()
+        public async Task<ActionResult<IEnumerable<Nation>>> GetNations()
         {
             return await _repository.GetAllAsync();
         }
 
 
-        // GET: api/Joueurs/5
+        // GET: api/Nations/5
         /// <summary>
-        /// Recupere un joueur par son ID.
+        /// Recupere une nation par son ID.
         /// </summary>
-        /// <param name="id">L'ID du joueur à recuperer.</param>
-        /// <returns>Le joueur correspondant à l'ID.</returns>
+        /// <param name="id">L'ID de la nation à recuperer.</param>
+        /// <returns>La nation correspondant à l'ID.</returns>
         [HttpGet("{id}")]
-        [ActionName("GetJoueurById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Joueur>> GetJoueurById(int id)
+        public async Task<ActionResult<Nation>> GetNationById(int id)
         {
-            var joueur = await _repository.GetByIdAsync(id);
+            var nation = await _repository.GetByIdAsync(id);
 
-            if (joueur == null)
+            if (nation == null)
             {
                 return NotFound();
             }
 
-            return joueur;
-
+            return nation.Value;
 
         }
 
-        // PUT: api/Joueurs/5
+        // PUT: api/Nations/5
         /// <summary>
-        /// Met à jour un joueur existant.
+        /// Met à jour une nation existante.
         /// </summary>
-        /// <param name="id">L'ID du joueur à mettre à jour.</param>
-        /// <param name="joueur">Les nouvelles données mis à jour du joueur.</param>
+        /// <param name="id">L'ID de la nation à mettre à jour.</param>
+        /// <param name="nation">Les nouvelles données mis à jour de la nation.</param>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> PutJoueur(int id, Joueur joueur)
+        public async Task<IActionResult> PutNation(int id, Nation nation)
         {
-
-            if (id != joueur.Id)
+            if (id != nation.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                var oldJoueur  = await _repository.GetByIdAsync(id);
-                await _repository.UpdateAsync(oldJoueur.Value, joueur);
+                var oldnation = await _repository.GetByIdAsync(id);
+                await _repository.UpdateAsync(oldnation.Value, nation);
             }
             catch (Exception)
             {
@@ -92,35 +89,39 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
-        // POST: api/Joueurs
+
+
+        // POST: api/Nations
         /// <summary>
-        /// Ajoute un nouveau joueur.
+        /// Ajoute une nouvelle nation.
         /// </summary>
-        /// <param name="joueur">Les données du joueur à ajouter.</param>
+        /// <param name="nation">Les données de la nation à ajouter.</param>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Joueur>> PostJoueur(Joueur joueur)
+        public async Task<ActionResult<Nation>> PostNation(Nation nation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _repository.AddAsync(joueur);
+            await _repository.AddAsync(nation);
 
-            return CreatedAtAction("GetJoueurById", new { id = joueur.Id }, joueur);
+            return CreatedAtAction("GetNationById", new { id = nation.Id }, nation);
         }
 
-        // DELETE: api/Joueurs/5
+
+
+        // DELETE: api/Nations/5
         /// <summary>
-        /// Supprime un joueur existant.
+        /// Supprime une nation existante.
         /// </summary>
-        /// <param name="id">L'ID du joueur à supprimer.</param>
+        /// <param name="id">L'ID de la nation à supprimer.</param>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteJoueur(int id)
+        public async Task<IActionResult> DeleteNation(int id)
         {
             var result = await _repository.GetByIdAsync(id);
 
@@ -133,6 +134,7 @@ namespace FIFA_API.Controllers
 
             return NoContent();
         }
+
 
     }
 }
