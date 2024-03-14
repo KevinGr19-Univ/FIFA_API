@@ -45,6 +45,7 @@ namespace FIFA_API.Controllers
         /// <param name="id">L'ID de la nation à recuperer.</param>
         /// <returns>La nation correspondant à l'ID.</returns>
         [HttpGet("{id}")]
+        [ActionName("GetNationById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Nation>> GetNationById(int id)
         {
