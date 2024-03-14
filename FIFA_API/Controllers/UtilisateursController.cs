@@ -30,6 +30,13 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Utilisateurs/GetUtilisateurById
+        /// <summary>
+        /// Récupère un utilisateur par son ID.
+        /// </summary>
+        /// <param name="id">L'ID de l'utilisateur à recuperer.</param>
+        /// <returns>L'utilisateur correspondant à l'ID.</returns>
+        /// <response code="404">Quand l'on ne trouve pas l'utilisateur.</response>
+        /// <response code="200">Retourne l'utilisateur.</response>
         [HttpGet("{id}")]
         [ActionName("GetUtilisateurById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -45,8 +52,17 @@ namespace FIFA_API.Controllers
             return result;
         }
         // GET: api/Utilisateurs/GetUtilisateurByEmail
+        /// <summary>
+        /// Récupère un utilisateur avec son email.
+        /// </summary>
+        /// <param name="email">L'email de l'utilisateur à recuperer.</param>
+        /// <returns>L'utilisateur correspondant à l'email.</returns>
+        /// <response code="404">Quand l'on ne trouve pas l'utilisateur.</response>
+        /// <response code="200">Retourne l'utilisateur.</response>
         [HttpGet("{email}")]
         [ActionName("GetUtilisateurByEmail")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetByEmailAsync(string email)
         {
             var result = await dataRepository.GetByEmailAsync(email);
@@ -60,14 +76,14 @@ namespace FIFA_API.Controllers
 
         // PUT: api/Utilisateurs/5
         /// <summary>
-        /// Replace an user.
+        /// Met à jour un utilisateur existant.
         /// </summary>
         /// <returns>Http response</returns>
-        /// <param name="id">The id of the user you want to replace</param>
-        /// <param name="serie">The values of the replaced user</param>
-        /// <response code="204">When the user is replaced</response>
-        /// <response code="404">When the user is not found</response>
-        /// <response code="400">Bad request, when the user id does not match the given id</response>
+        /// <param name="id">L'ID de l'utilisateur à mettre à jour.</param>
+        /// <param name="utilisateur">Les nouvelles données mis à jour de l'utilisateur.</param>
+        /// <response code="204">Quand l'utilisateur est mis à jour.</response>
+        /// <response code="404">Quand l'on ne trouve pas l'utilisateur.</response>
+        /// <response code="400">Mauvaise requête, quand l'ID utilisateur ne correspond pas à l'ID donné.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -93,12 +109,12 @@ namespace FIFA_API.Controllers
 
         // POST: api/Utilisateurs
         /// <summary>
-        /// Create an user.
+        /// Ajoute un nouvel utilisateur.
         /// </summary>
         /// <returns>Http response</returns>
-        /// <param name="serie">The user you want to create</param>
-        /// <response code="201">When the user is created</response>
-        /// <response code="400">Bad request, when there is an error in one of the parameters</response>
+        /// <param name="utilisateur">Les données de l'utilisateur à ajouter.</param>
+        /// <response code="201">Création de l'utilisateur.</response>
+        /// <response code="400">Mauvaise requête, erreur dans l'un des paramètres.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -114,12 +130,12 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Utilisateurs/5
         /// <summary>
-        /// Delete an user.
+        /// Supprime un joueur existant.
         /// </summary>
         /// <returns>Http response</returns>
-        /// <param name="id">The id of the user you want to delete</param>
-        /// <response code="204">When the user is deleted</response>
-        /// <response code="404">When the user is not found</response>
+        /// <param name="id">L'ID de l'utilisateur à supprimer.</param>
+        /// <response code="204">Quand l'utilisateur est supprimé.</response>
+        /// <response code="404">Quand l'on ne trouve pas l'utilisateur.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
