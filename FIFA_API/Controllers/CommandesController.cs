@@ -32,7 +32,7 @@ namespace FIFA_API.Controllers
 
         // GET: api/Commandes/5
         [HttpGet("{id}")]
-        [ActionName("GetUtilisateurById")]
+        [ActionName("GetCommandeById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Commande>> GetCommandeById(int id)
