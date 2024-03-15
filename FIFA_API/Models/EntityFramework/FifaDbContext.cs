@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Xml.Linq;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -152,6 +154,27 @@ namespace FIFA_API.Models.EntityFramework
                 GreaterThanZero(entity, "vcp_prix");
             });
 
+            foreach(var entity in mb.Model.GetEntityTypes())
+            {
+                string tableName = entity.GetTableName()!.Split("_")[2];
+
+                foreach(var fk in entity.GetDeclaredForeignKeys())
+                {
+                    string fkName = GetConstraintName("FK", tableName, fk.Properties);
+
+                    Console.WriteLine(fkName);
+                    fk.SetConstraintName(fkName);
+                }
+
+                foreach(var ix in entity.GetIndexes())
+                {
+                    string ixName = GetConstraintName("IX", tableName, ix.Properties);
+
+                    Console.WriteLine(ixName);
+                    ix.SetDatabaseName(ixName);
+                }
+            }
+
             OnModelCreatingPartial(mb);
         }
 
@@ -179,8 +202,11 @@ namespace FIFA_API.Models.EntityFramework
         private void GTZRequest(EntityTypeBuilder entity, string symbol, params string[] columnNames)
         {
             foreach (string columnName in columnNames)
-                entity.HasCheckConstraint($"ck_{columnName}", $"{columnName} {symbol} 0");
+                entity.HasCheckConstraint($"ck_{entity.Metadata.GetTableName()}_{columnName}", $"{columnName} {symbol} 0");
         }
+
+        private string GetConstraintName(string prefix, string tableName, IReadOnlyList<IMutableProperty> properties)
+            => $"{prefix}_{tableName}_{string.Join("_", properties.Select(p => p.GetColumnBaseName()))}";
         #endregion
     }
 }
