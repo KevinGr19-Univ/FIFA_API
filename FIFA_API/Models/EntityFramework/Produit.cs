@@ -8,9 +8,11 @@ namespace FIFA_API.Models.EntityFramework
     {
         public Produit()
         {
-            Associes = new HashSet<Produit>();
             Couleurs = new HashSet<Couleur>();
             Tailles = new HashSet<TailleProduit>();
+
+            Associes = new HashSet<ProduitProduit>();
+            AssociesTo = new HashSet<ProduitProduit>();
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -49,8 +51,11 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdCategorieProduit))]
         public CategorieProduit Categorie { get; set; }
 
-        public virtual ICollection<Produit> Associes { get; set; }
-        public virtual ICollection<Produit> AssociesTo { get; set; }
+        [InverseProperty(nameof(ProduitProduit.Produit1))]
+        public virtual ICollection<ProduitProduit> Associes { get; set; }
+
+        [InverseProperty(nameof(ProduitProduit.Produit2))]
+        public virtual ICollection<ProduitProduit> AssociesTo { get; set; }
 
         public virtual ICollection<Couleur> Couleurs { get; set; }
         public virtual ICollection<TailleProduit> Tailles { get; set; }

@@ -1,4 +1,5 @@
 
+using FIFA_API.Models.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,6 +7,7 @@ namespace FIFA_API.Models.EntityFramework
 {
 
 	[Table("t_e_voteutilisateur_vtl")]
+    [ComposedKey(nameof(IdUtilisateur), nameof(IdCouleur), nameof(IdTaille))]
     public partial class VoteUtilisateur
     {
         [Column("utl_id", Order = 0)]

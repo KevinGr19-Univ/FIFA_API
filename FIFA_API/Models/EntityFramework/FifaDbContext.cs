@@ -1,13 +1,24 @@
-﻿using Microsoft.AspNetCore.Razor.Language.Intermediate;
+﻿using FIFA_API.Models.Annotations;
+using FIFA_API.Models.Utils;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Npgsql;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace FIFA_API.Models.EntityFramework
 {
     public partial class FifaDbContext : DbContext
     {
+        static FifaDbContext()
+        {
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<RoleUtilisateur>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<CodeStatusCommande>();
+        }
+
         public FifaDbContext() { }
         public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options) { }
 
@@ -32,6 +43,7 @@ namespace FIFA_API.Models.EntityFramework
         public virtual DbSet<PosteJoueur> PostesJoueur { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<Produit> Produits { get; set; }
+        public virtual DbSet<ProduitProduit> ProduitAssocies { get; set; }
         public virtual DbSet<Publication> Publications { get; set; }
         public virtual DbSet<Statistiques> Statistiques { get; set; }
         public virtual DbSet<StatusCommande> StatusCommandes { get; set; }
@@ -54,16 +66,30 @@ namespace FIFA_API.Models.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.Entity<StockProduit>(entity =>
-            {
-                entity.HasKey(spr => new { spr.IdVCProduit, spr.IdTaille });
-            });
+            mb.HasPostgresEnum<RoleUtilisateur>();
+            mb.HasPostgresEnum<CodeStatusCommande>();
 
-            mb.Entity<VoteUtilisateur>(entity =>
-            {
-                entity.HasKey(vtl => new { vtl.IdUtilisateur, vtl.IdCouleur, vtl.IdTaille });
-            });
+            AddComposedPrimaryKeys(mb);
+            AddManyToManyRelations(mb);
+            AddDatabaseCheckConstraints(mb);
+            AddDeleteBehaviors(mb);
+            RenameConstraintsAuto(mb);
 
+            OnModelCreatingPartial(mb);
+        }
+
+        private void AddComposedPrimaryKeys(ModelBuilder mb)
+        {
+            foreach(var entity in mb.Model.GetEntityTypes())
+            {
+                if (entity.IsPropertyBag) continue;
+                ComposedKeyAttribute? cKey = entity.ClrType.GetCustomAttribute<ComposedKeyAttribute>();
+                if (cKey != null) mb.Entity(entity.ClrType).HasKey(cKey.keys);
+            }
+        }
+
+        private void AddManyToManyRelations(ModelBuilder mb)
+        {
             mb.Entity<Photo>(entity =>
             {
                 ManyToMany<Photo, Album>(entity, "_albums", "Photos", "pht_id", "pub_id");
@@ -79,42 +105,45 @@ namespace FIFA_API.Models.EntityFramework
 
             mb.Entity<Trophee>(entity =>
             {
-                ManyToMany<Trophee, Joueur>(entity, "Joueurs", "Trophees", "tph_id", "jou_id");
+                ManyToMany<Trophee, Joueur>(entity,
+                    new()
+                    {
+                        PropertyName = "Joueurs",
+                        ColumnName = "jou_id",
+                        DeleteBehavior = DeleteBehavior.Restrict
+                    },
+                    new()
+                    {
+                        PropertyName = "Trophees",
+                        ColumnName = "tph_id",
+                        DeleteBehavior = DeleteBehavior.SetNull
+                    });
             });
 
             mb.Entity<Produit>(entity =>
             {
-                entity.HasMany<Produit>("Associes")
-                    .WithMany("AssociesTo")
-                    .UsingEntity("t_j_produitassocies_pas", j =>
-                    {
-                        j.Property<int>("AssociesId").HasColumnName("prd_id1");
-                        j.Property<int>("AssociesToId").HasColumnName("prd_id2");
-                        j.HasKey("AssociesId", "AssociesToId");
-                    });
-
                 ManyToMany<Produit, Couleur>(entity, "Couleurs", "Produits", "prd_id", "col_id");
                 ManyToMany<Produit, TailleProduit>(entity, "Tailles", "Produits", "prd_id", "tpr_id");
             });
+        }
 
+        private void AddDatabaseCheckConstraints(ModelBuilder mb)
+        {
             mb.Entity<Adresse>(entity =>
             {
                 entity.Property(adr => adr.CodePostal).IsFixedLength();
-
                 entity.HasCheckConstraint("ck_adr_codepostal", $"adr_codepostal ~ '{ModelUtils.REGEX_CODEPOSTAL}'");
             });
 
             mb.Entity<Utilisateur>(entity =>
             {
                 entity.Property(utl => utl.MotDePasse).IsFixedLength();
-
                 entity.HasCheckConstraint("ck_utl_telephone", $"utl_telephone ~ '{ModelUtils.REGEX_TELEPHONE}'");
             });
 
             mb.Entity<Couleur>(entity =>
             {
                 entity.Property(col => col.CodeHexa).IsFixedLength();
-
                 entity.HasCheckConstraint("ck_col_codehexa", $"col_codehexa ~ '{ModelUtils.REGEX_HEXACOLOR}'");
             });
 
@@ -153,29 +182,45 @@ namespace FIFA_API.Models.EntityFramework
             {
                 GreaterThanZero(entity, "vcp_prix");
             });
+        }
 
-            foreach(var entity in mb.Model.GetEntityTypes())
+        public const DeleteBehavior DEFAULT_DELETE = DeleteBehavior.Restrict;
+        public const DeleteBehavior DEFAULT_DELETE_MANY_TO_MANY = DeleteBehavior.Cascade;
+
+        private void AddDeleteBehaviors(ModelBuilder mb)
+        {
+            foreach(var fk in mb.Model.GetEntityTypes().SelectMany(e => e.GetDeclaredForeignKeys()))
+            {
+                if (fk.DeclaringEntityType.IsPropertyBag) continue; // Class-less -> No attribute
+
+                DeleteBehavior? deleteBehavior = fk.GetNavigations()
+                    .Select(n => n.PropertyInfo)
+                    .Select(p => p.GetCustomAttribute<OnDeleteAttribute>())
+                    .Where(a => a != null)
+                    .FirstOrDefault()?.deleteBehavior;
+
+                fk.DeleteBehavior = deleteBehavior ?? DEFAULT_DELETE;
+            }
+        }
+
+        private void RenameConstraintsAuto(ModelBuilder mb)
+        {
+            foreach (var entity in mb.Model.GetEntityTypes())
             {
                 string tableName = entity.GetTableName()!.Split("_")[2];
 
-                foreach(var fk in entity.GetDeclaredForeignKeys())
+                foreach (var fk in entity.GetDeclaredForeignKeys())
                 {
                     string fkName = GetConstraintName("FK", tableName, fk.Properties);
-
-                    Console.WriteLine(fkName);
                     fk.SetConstraintName(fkName);
                 }
 
-                foreach(var ix in entity.GetIndexes())
+                foreach (var ix in entity.GetIndexes())
                 {
                     string ixName = GetConstraintName("IX", tableName, ix.Properties);
-
-                    Console.WriteLine(ixName);
                     ix.SetDatabaseName(ixName);
                 }
             }
-
-            OnModelCreatingPartial(mb);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder mb);
@@ -187,15 +232,40 @@ namespace FIFA_API.Models.EntityFramework
         private void ManyToMany<T,U>(EntityTypeBuilder<T> entity, string propT, string propU, string fkNameT, string fkNameU, string? joinTableName = null)
             where T : class where U : class
         {
-            string typeT = typeof(T).Name.ToLower();
-            string typeU = typeof(U).Name.ToLower();
-
-            entity.HasMany<U>(propT)
-                .WithMany(propU)
-                .UsingEntity(joinTableName ?? $"t_j_{typeU}{typeT}_{typeU[..2]}{typeT[0]}", j =>
+            ManyToMany(entity,
+                new ManyToManyProperty<T>
                 {
-                    j.Property($"{propT}Id").HasColumnName(fkNameT);
-                    j.Property($"{propU}Id").HasColumnName(fkNameU);
+                    PropertyName = propT,
+                    ColumnName = fkNameT
+                },
+                new ManyToManyProperty<U>
+                {
+                    PropertyName = propU,
+                    ColumnName = fkNameU
+                },
+                joinTableName);
+        }
+
+        private void ManyToMany<T,U>(EntityTypeBuilder<T> entity, ManyToManyProperty<T> objT, ManyToManyProperty<U> objU, string? joinTableName = null)
+            where T : class where U : class
+        {
+            entity.HasMany<U>(objT.PropertyName)
+                .WithMany(objU.PropertyName)
+                .UsingEntity(joinTableName ?? $"t_j_{objU.TypeName}{objT.TypeName}_{objU.TypeName[..2]}{objT.TypeName[0]}", j =>
+                {
+                    string tId = $"{objT.PropertyName}Id";
+                    string uId = $"{objU.PropertyName}Id";
+
+                    (objT.KeyType == null ? j.Property(tId) : j.Property(objT.KeyType, tId)).HasColumnName(objT.ColumnName);
+                    (objU.KeyType == null ? j.Property(uId) : j.Property(objU.KeyType, uId)).HasColumnName(objU.ColumnName);
+
+                    j.HasKey(tId, uId);
+
+                    foreach (var fk in j.Metadata.GetDeclaredForeignKeys())
+                    {
+                        if (fk.Properties[0].GetColumnBaseName() == objT.ColumnName) fk.DeleteBehavior = objT.DeleteBehavior ?? DEFAULT_DELETE_MANY_TO_MANY;
+                        else if (fk.Properties[0].GetColumnBaseName() == objU.ColumnName) fk.DeleteBehavior = objU.DeleteBehavior ?? DEFAULT_DELETE_MANY_TO_MANY;
+                    }
                 });
         }
 

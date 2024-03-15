@@ -1,3 +1,4 @@
+using FIFA_API.Models.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -5,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_adresse_adr")]
+    [Table("t_e_adresse_adr")]
     public class Adresse
     {
         public const int MAX_VILLE_LENGTH = 100;

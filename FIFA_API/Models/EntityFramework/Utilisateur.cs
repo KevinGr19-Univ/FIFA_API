@@ -1,3 +1,6 @@
+using FIFA_API.Models.Annotations;
+using FIFA_API.Models.Utils;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,6 +37,7 @@ namespace FIFA_API.Models.EntityFramework
         public int? IdPaysFavori { get; set; }
 
         [ForeignKey(nameof(IdPaysFavori))]
+        [OnDelete(DeleteBehavior.SetNull)]
         public Pays? PaysFavori { get; set; }
 
         [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dépasser les 100 caractères")]

@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FIFA_API.Models.Utils;
 
-﻿namespace FIFA_API.Models.EntityFramework
+namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_couleur_col")]
+    [Table("t_e_couleur_col")]
     public partial class Couleur
     {
         public const int MAX_NOM_LENGTH = 50;
