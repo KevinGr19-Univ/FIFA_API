@@ -6,14 +6,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
-    //Ajouter les roles
-    public enum RoleUtilisateur
-    {
-        Utilisateur = 0,
-        DirecteurDuServiceVentes = 1,
-        MembreDuServiceExpedition = 2,
-        MembreDuServiceCommande = 3
-    }
+    ////Ajouter les roles
+    //public enum RoleUtilisateur
+    //{
+    //    Utilisateur = 0,
+    //    DirecteurDuServiceVentes = 1,
+    //    MembreDuServiceExpedition = 2,
+    //    MembreDuServiceCommande = 3
+    //}
 
 	[Table("t_e_utilisateur_utl")]
     public partial class Utilisateur
@@ -67,8 +67,11 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(60, MinimumLength = 60)]
         public string MotDePasse { get; set; }
 
-        [Column("utl_role")]
-        public RoleUtilisateur Role { get; set; }
+        [Column("rut_id")]
+        public int? IdRole { get; set; }
+
+        [ForeignKey(nameof(IdRole))]
+        public RoleUtilisateur? Role { get; set; }
 
 		[Column("utl_derniereconnexion")]
         public DateTime DerniereConnexion { get; set; }

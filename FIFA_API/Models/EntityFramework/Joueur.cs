@@ -4,6 +4,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
+    public enum PiedJoueur
+    {
+        Gaucher = 0,
+        Droitier = 1,
+        Ambidextre = 2
+    }
+
+    public enum PosteJoueur
+    {
+        // TODO: A remplir
+        Attaquant = 0,
+        Defenseur = 1,
+        Gardien = 2
+    }
+
     [Table("t_e_joueur_jou")]
     public partial class Joueur
     {
@@ -74,17 +89,10 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdPays))]
         public Pays Pays { get; set; }
 
-        // Enums
-        [Column("pjo_id")]
-        public int IdPied { get; set; }
-
-        [ForeignKey(nameof(IdPied))]
+        [Column("jou_pied")]
         public PiedJoueur Pied { get; set; }
 
-        [Column("poj_id")]
-        public int IdPoste { get; set; }
-
-        [ForeignKey(nameof(IdPoste))]
+        [Column("jou_poste")]
         public PosteJoueur Poste { get; set; }
 
 

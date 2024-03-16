@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FIFA_API.Models.EntityFramework;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -61,7 +62,7 @@ namespace FIFA_API.Models.Repository
         private readonly Func<DbSet<T>> _getDbSet;
         protected readonly DbContext dbContext;
 
-        public BaseRepository(DbContext dbContext)
+        public BaseRepository(FifaDbContext dbContext)
         {
             CacheDbSetProperties(dbContext);
             _getDbSet = GetDbSetProperty<T>(dbContext);

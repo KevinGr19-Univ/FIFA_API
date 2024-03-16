@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
-    [Table("t_j_produitassocies_pas")]
+    //[Table("t_j_produitassocies_pra")]
     [ComposedKey(nameof(Id1), nameof(Id2))]
     public partial class ProduitProduit
     {

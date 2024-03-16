@@ -16,12 +16,20 @@ namespace FIFA_API.Models.EntityFramework
     {
         static FifaDbContext()
         {
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<RoleUtilisateur>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<CodeStatusCommande>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<PiedJoueur>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<PosteJoueur>();
         }
 
-        public FifaDbContext() { }
-        public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options) { }
+        public FifaDbContext()
+        {
+            
+        }
+
+        public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options)
+        {
+
+        }
 
         public virtual DbSet<Adresse> Adresses { get; set; }
         public virtual DbSet<Album> Albums { get; set; }
@@ -40,11 +48,8 @@ namespace FIFA_API.Models.EntityFramework
         public virtual DbSet<LigneCommande> LigneCommandes { get; set; }
         public virtual DbSet<Nation> Nations { get; set; }
         public virtual DbSet<Pays> Pays { get; set; }
-        public virtual DbSet<PiedJoueur> PiedsJoueur { get; set; }
-        public virtual DbSet<PosteJoueur> PostesJoueur { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<Produit> Produits { get; set; }
-        public virtual DbSet<ProduitProduit> ProduitAssocies { get; set; }
         public virtual DbSet<Publication> Publications { get; set; }
         public virtual DbSet<Statistiques> Statistiques { get; set; }
         public virtual DbSet<StatusCommande> StatusCommandes { get; set; }
@@ -67,26 +72,18 @@ namespace FIFA_API.Models.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.HasPostgresEnum<RoleUtilisateur>();
             mb.HasPostgresEnum<CodeStatusCommande>();
+            mb.HasPostgresEnum<PiedJoueur>();
+            mb.HasPostgresEnum<PosteJoueur>();
 
-            AddComposedPrimaryKeys(mb);
+            DbContextUtils.AddComposedPrimaryKeys(mb);
             DbContextUtils.AddManyToManyRelations(mb);
-            AddDatabaseCheckConstraints(mb);
-            AddDeleteBehaviors(mb);
+            DbContextUtils.AddDeleteBehaviors(mb);
             DbContextUtils.RenameConstraintsAuto(mb);
 
+            AddDatabaseCheckConstraints(mb);
+             
             OnModelCreatingPartial(mb);
-        }
-
-        private void AddComposedPrimaryKeys(ModelBuilder mb)
-        {
-            foreach(var entity in mb.Model.GetEntityTypes())
-            {
-                if (entity.IsPropertyBag) continue;
-                ComposedKeyAttribute? cKey = entity.ClrType.GetCustomAttribute<ComposedKeyAttribute>();
-                if (cKey != null) mb.Entity(entity.ClrType).HasKey(cKey.keys);
-            }
         }
 
         private void AddDatabaseCheckConstraints(ModelBuilder mb)
@@ -146,30 +143,13 @@ namespace FIFA_API.Models.EntityFramework
             });
         }
 
-        public const DeleteBehavior DEFAULT_DELETE = DeleteBehavior.Restrict;
-        public const DeleteBehavior DEFAULT_DELETE_MANY_TO_MANY = DeleteBehavior.Cascade;
-
-        private void AddDeleteBehaviors(ModelBuilder mb)
-        {
-            foreach(var fk in mb.Model.GetEntityTypes().SelectMany(e => e.GetDeclaredForeignKeys()))
-            {
-                DeleteBehavior? deleteBehavior = fk.GetNavigations()
-                    .Select(n => n.PropertyInfo)
-                    .Select(p => p.GetCustomAttribute<OnDeleteAttribute>())
-                    .Where(a => a != null)
-                    .FirstOrDefault()?.deleteBehavior;
-
-                fk.DeleteBehavior = deleteBehavior ?? DEFAULT_DELETE;
-            }
-        }
-
         partial void OnModelCreatingPartial(ModelBuilder mb);
 
         #region Utils
-        private void GreaterThanZero(EntityTypeBuilder entity, params string[] columnNames) => GTZRequest(entity, ">", columnNames);
-        private void GreaterOrEqualThanZero(EntityTypeBuilder entity, params string[] columnNames) => GTZRequest(entity, ">=", columnNames);
+        private void GreaterThanZero(EntityTypeBuilder entity, params string[] columnNames) => GreaterThanZeroCheck(entity, ">", columnNames);
+        private void GreaterOrEqualThanZero(EntityTypeBuilder entity, params string[] columnNames) => GreaterThanZeroCheck(entity, ">=", columnNames);
 
-        private void GTZRequest(EntityTypeBuilder entity, string symbol, params string[] columnNames)
+        private void GreaterThanZeroCheck(EntityTypeBuilder entity, string symbol, params string[] columnNames)
         {
             foreach (string columnName in columnNames)
                 entity.HasCheckConstraint($"ck_{entity.Metadata.GetTableName()}_{columnName}", $"{columnName} {symbol} 0");
