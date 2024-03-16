@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FIFA_API.Models.Annotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
@@ -90,8 +91,10 @@ namespace FIFA_API.Models.EntityFramework
         [InverseProperty(nameof(FaqJoueur.Joueur))]
         public virtual ICollection<FaqJoueur> FaqJoueurs { get; set; }
 
+        [ManyToMany(nameof(Trophee.Joueurs))]
         public virtual ICollection<Trophee> Trophees { get; set; }
 
+        [ManyToMany("_joueurs")]
         public virtual ICollection<Photo> Photos { get; set; }
     }
 }

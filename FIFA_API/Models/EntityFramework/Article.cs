@@ -1,3 +1,4 @@
+using FIFA_API.Models.Annotations;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,7 +16,10 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("art_texte", TypeName = "text")]
         public string Texte { get; set; }
 
+        [ManyToMany("_articles")]
         public virtual ICollection<Photo> Photos { get; set; }
+
+        [ManyToMany("_articles")]
         public virtual ICollection<Video> Videos { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using FIFA_API.Models.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,6 +27,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         private ICollection<Article> _articles { get; set; }
         private ICollection<Blog> _blogs { get; set; }
         private ICollection<Joueur> _joueurs { get; set; }
+        private ICollection<StockProduit> _stocks { get; set; }
         #endregion
     }
 }

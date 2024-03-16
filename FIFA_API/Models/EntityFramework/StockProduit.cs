@@ -23,5 +23,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 		[Column("spr_stocks")]
         public int Stocks { get; set; }
 
+        [ManyToMany("_stocks", "t_j_photosdestocks_pds")]
+        public virtual ICollection<Photo> Photos { get; set; }
+
     }
 }

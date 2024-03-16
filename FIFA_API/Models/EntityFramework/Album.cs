@@ -1,3 +1,4 @@
+using FIFA_API.Models.Annotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.EntityFramework
@@ -10,6 +11,7 @@ using System.ComponentModel.DataAnnotations.Schema;
             Photos = new HashSet<Photo>();
         }
 
+        [ManyToMany("_albums")]
         public virtual ICollection<Photo> Photos { get; set; }
     }
 }

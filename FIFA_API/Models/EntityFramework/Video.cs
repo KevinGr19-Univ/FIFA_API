@@ -19,7 +19,7 @@ namespace FIFA_API.Models.EntityFramework
         public string Url { get; set; }
 
         #region Many-to-many
-        private ICollection<Article> _articles;
+        private ICollection<Article> _articles { get; set; }
         #endregion
     }
 }

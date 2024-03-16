@@ -1,3 +1,4 @@
+using FIFA_API.Models.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -57,7 +58,10 @@ namespace FIFA_API.Models.EntityFramework
         [InverseProperty(nameof(ProduitProduit.Produit2))]
         public virtual ICollection<ProduitProduit> AssociesTo { get; set; }
 
+        [ManyToMany(nameof(Couleur.Produits))]
         public virtual ICollection<Couleur> Couleurs { get; set; }
+
+        [ManyToMany(nameof(TailleProduit.Produits))]
         public virtual ICollection<TailleProduit> Tailles { get; set; }
     }
 }
