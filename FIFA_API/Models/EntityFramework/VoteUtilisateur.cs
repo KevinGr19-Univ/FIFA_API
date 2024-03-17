@@ -10,13 +10,13 @@ namespace FIFA_API.Models.EntityFramework
     [ComposedKey(nameof(IdUtilisateur), nameof(IdCouleur), nameof(IdTaille))]
     public partial class VoteUtilisateur
     {
-        [Column("utl_id", Order = 0)]
+        [Column("utl_id", Order = 0), Required]
         public int IdUtilisateur { get; set; }
 
-        [Column("col_id", Order = 1)]
+        [Column("col_id", Order = 1), Required]
         public int IdCouleur { get; set; }
 
-        [Column("tpr_id", Order = 2)]
+        [Column("tpr_id", Order = 2), Required]
         public int IdTaille { get; set; }
 
         [ForeignKey(nameof(IdUtilisateur))]
@@ -28,7 +28,7 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdTaille))]
         public TailleProduit Taille { get; set; }
 
-        [Column("vtl_rankvote")]
+        [Column("vtl_rankvote"), Required]
         [Range(0, 5, ErrorMessage = "Le rank de vote doit être entre 0 et 5.")]
         public int RankVote { get; set; }
     }

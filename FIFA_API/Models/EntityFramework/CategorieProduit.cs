@@ -18,12 +18,12 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("cpr_id")]
         public int Id { get; set; }
 
-        [Column("cpr_nom")]
+        [Column("cpr_nom"), Required]
         [StringLength(100, ErrorMessage = "Le nom de la catégorie ne doit pas dépasser les 100 caractères")]
         public string Nom { get; set; }
 
         [Column("cpr_idparent")]
-        public int IdCategorieProduitParent { get; set; }
+        public int? IdCategorieProduitParent { get; set; }
 
         [ForeignKey(nameof(IdCategorieProduitParent))]
         public CategorieProduit? Parent { get; set; }

@@ -18,35 +18,35 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("cmd_id")]
         public int Id { get; set; }
 
-        [Column("tli_id")]
+        [Column("tli_id"), Required]
         public int IdTypeLivraison { get; set; }
 
         [ForeignKey(nameof(IdTypeLivraison))]
         public TypeLivraison TypeLivraison { get; set; }
 
-        [Column("utl_id")]
+        [Column("utl_id"), Required]
         public int IdUtilisateur { get; set; }
 
         [ForeignKey(nameof(IdUtilisateur))]
         public Utilisateur Utilisateur { get; set; }
 
-        [Column("adr_livraison_id")]
+        [Column("adr_livraison_id"), Required]
         public int IdAdresseLivraison { get; set; }
 
         [ForeignKey(nameof(IdAdresseLivraison))]
         public Adresse AdresseLivraison { get; set; }
         
-        [Column("adr_facuration_id")]
+        [Column("adr_facuration_id"), Required]
         public int IdAdresseFacturation { get; set; }
 
         [ForeignKey(nameof(IdAdresseFacturation))]
         public Adresse AdresseFacturation { get; set; }
 
-		[Column("cmd_prixlivraison")]
+		[Column("cmd_prixlivraison"), Required]
         [Precision(7,2)]
         public decimal PrixLivraison { get; set; }
 
-		[Column("cmd_datecommande")]
+		[Column("cmd_datecommande"), Required]
         public DateTime DateCommande { get; set; }
 
 		[Column("cmd_dateexpedition")]
@@ -55,7 +55,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 		[Column("cmd_datelivraison")]
         public DateTime? DateLivraison { get; set; }
 
-		[Column("cmd_urlfacture", TypeName ="text")]
+		[Column("cmd_urlfacture", TypeName ="text"), Required]
         public string UrlFacture { get; set; }
 
         [InverseProperty(nameof(LigneCommande.Commande))]

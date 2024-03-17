@@ -1,5 +1,6 @@
 using FIFA_API.Models.Annotations;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.EntityFramework
@@ -13,7 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
             Videos = new HashSet<Video>();
         }
 
-        [Column("art_texte", TypeName = "text")]
+        [Column("art_texte", TypeName = "text"), Required]
         public string Texte { get; set; }
 
         [ManyToMany("_articles")]

@@ -13,11 +13,11 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("pub_id")]
         public int Id { get; set; }
 
-        [Column("pub_titre")]
+        [Column("pub_titre"), Required]
         [StringLength(MAX_TITRE_LENGTH, ErrorMessage = "Le titre ne doit pas dépasser 200 caractères.")]
         public string Titre { get; set; }
 
-		[Column("pub_resume")]
+		[Column("pub_resume"), Required]
         [StringLength(MAX_RESUME_LENGTH, ErrorMessage = "Le résumé ne doit pas dépasser 600 caractères.")]
         public string Resume { get; set; }
 

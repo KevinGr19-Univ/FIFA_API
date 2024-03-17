@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
     {
         public const int MAX_URLPDF_LENGTH = 500;
 
-		[Column("doc_urlpdf")]
+		[Column("doc_urlpdf"), Required]
         [StringLength(MAX_URLPDF_LENGTH, ErrorMessage = "L'URL du PDF ne doit pas dépasser 500 caractères.")]
         public string UrlPdf { get; set; }
 

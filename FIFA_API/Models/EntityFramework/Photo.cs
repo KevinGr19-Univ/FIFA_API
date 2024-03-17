@@ -14,11 +14,11 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("pht_id")]
         public int Id { get; set; }
 
-        [Column("pht_nom")]
+        [Column("pht_nom"), Required]
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères")]
         public string Nom { get; set; }
 
-		[Column("pht_url")]
+		[Column("pht_url"), Required]
         [StringLength(MAX_URL_LENGTH, ErrorMessage = "L'url ne doit pas dépasser 500 caractères")]
         public string Url { get; set; }
 

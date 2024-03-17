@@ -16,15 +16,15 @@ namespace FIFA_API.Models.EntityFramework
         [Column("adr_id")]
         public int Id { get; set; }
 
-		[Column("adr_ville")]
+		[Column("adr_ville"), Required]
         [StringLength(MAX_VILLE_LENGTH, ErrorMessage = "Le nom de la ville ne doit pas dépasser les 100 caractères")]
         public string Ville { get; set; }
 
-		[Column("adr_rue")]
+		[Column("adr_rue"), Required]
         [StringLength(MAX_RUE_LENGTH, ErrorMessage = "Le nom de la rue ne doit pas dépasser les 100 caractères")]
         public string Rue { get; set; }
 
-		[Column("adr_codepostal")]
+		[Column("adr_codepostal"), Required]
         [StringLength(5, MinimumLength = 5)]
         [RegularExpression(ModelUtils.REGEX_CODEPOSTAL, ErrorMessage ="Votre code postal ne respecte pas les normes françaises")]
         public string CodePostal { get; set; }

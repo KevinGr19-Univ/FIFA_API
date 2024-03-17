@@ -35,11 +35,11 @@ namespace FIFA_API.Models.EntityFramework
         [Column("jou_id")]
         public int Id { get; set; }
 
-        [Column("jou_nom")]
+        [Column("jou_nom"), Required]
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 100 caractères.")]
         public string Nom { get; set; } = null!;
 
-        [Column("jou_prenom")]
+        [Column("jou_prenom"), Required]
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le prénom ne doit pas dépasser 100 caractères.")]
         public string Prenom { get; set; } = null!;
 
@@ -47,20 +47,20 @@ namespace FIFA_API.Models.EntityFramework
         public DateTime? DateNaissance { get; set; }
 
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le lieu de naissance ne doit pas dépasser 100 caractères.")]
-        [Column("jou_lieunaissance")]
+        [Column("jou_lieunaissance"), Required]
         public string LieuNaissance { get; set; } = null!;
 
 
-        [Column("jou_poids")]
+        [Column("jou_poids"), Required]
         [Range(0, int.MaxValue, ErrorMessage = "Le poids du joueur doit être positif.")]
         public int Poids { get; set; }
 
-        [Column("jou_taille")]
+        [Column("jou_taille"), Required]
         [Range(0, int.MaxValue, ErrorMessage = "La taille du joueur doit être positive.")]
         public int Taille { get; set; }
 
 
-        [Column("jou_biographie")]
+        [Column("jou_biographie"), Required]
         [StringLength(MAX_BIO_LENGTH, ErrorMessage = "La biographie ne doit pas dépasser 500 caractères.")]
         public string Biographie { get; set; } = null!;
 
@@ -76,23 +76,23 @@ namespace FIFA_API.Models.EntityFramework
         public Statistiques? Stats { get; set; }
 
         //Club
-        [Column("clb_id")]
+        [Column("clb_id"), Required]
         public int IdClub {  get; set; }
 
         [ForeignKey(nameof(IdClub))]
         public Club Club { get; set; }
 
         //Pays
-        [Column("pys_id")]
+        [Column("pys_id"), Required]
         public int IdPays { get; set; }
 
         [ForeignKey(nameof(IdPays))]
         public Pays Pays { get; set; }
 
-        [Column("jou_pied")]
+        [Column("jou_pied"), Required]
         public PiedJoueur Pied { get; set; }
 
-        [Column("jou_poste")]
+        [Column("jou_poste"), Required]
         public PosteJoueur Poste { get; set; }
 
 

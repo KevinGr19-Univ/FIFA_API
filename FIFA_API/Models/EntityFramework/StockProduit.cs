@@ -8,10 +8,10 @@ using System.ComponentModel.DataAnnotations.Schema;
     [ComposedKey(nameof(IdVCProduit), nameof(IdTaille))]
     public partial class StockProduit
     {
-        [Column("vcp_id", Order = 0)]
+        [Column("vcp_id", Order = 0), Required]
         public int IdVCProduit { get; set; }
 
-        [Column("tpr_id", Order = 1)]
+        [Column("tpr_id", Order = 1), Required]
         public int IdTaille { get; set; }
 
         [ForeignKey(nameof(IdVCProduit))]

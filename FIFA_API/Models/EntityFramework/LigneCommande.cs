@@ -11,29 +11,29 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("lco_id")]
         public int Id { get; set; }
 
-        [Column("lco_quantite")]
+        [Column("lco_quantite"), Required]
         public int Quantite { get; set; }
 
-		[Column("lco_prixunitaire")]
+		[Column("lco_prixunitaire"), Required]
         [Precision(7,2)]
         public decimal PrixUnitaire { get; set; }
 
         //VarianteCouleurProduit
-        [Column("prd_id")]
+        [Column("prd_id"), Required]
         public int IdVCProduit { get; set; }
 
         [ForeignKey(nameof(IdVCProduit))]
         public VarianteCouleurProduit VCProduit { get; set; }
 
         //Taille
-        [Column("tpr_id")]
+        [Column("tpr_id"), Required]
         public int IdTaille { get; set; }
 
         [ForeignKey(nameof(IdTaille))]
         public TailleProduit Taille { get; set; }
 
         //Commande
-        [Column("cmd_id")]
+        [Column("cmd_id"), Required]
         public int IdCommande { get; set; }
 
         [ForeignKey(nameof(IdCommande))]

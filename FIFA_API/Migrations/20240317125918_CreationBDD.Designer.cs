@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    [Migration("20240317113031_UtilisateurMigration")]
-    partial class UtilisateurMigration
+    [Migration("20240317125918_CreationBDD")]
+    partial class CreationBDD
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -72,7 +72,7 @@ namespace FIFA_API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("IdCategorieProduitParent")
+                    b.Property<int?>("IdCategorieProduitParent")
                         .HasColumnType("integer")
                         .HasColumnName("cpr_idparent");
 
@@ -128,8 +128,10 @@ namespace FIFA_API.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DateCommande")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("cmd_datecommande");
+                        .HasColumnName("cmd_datecommande")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime?>("DateExpedition")
                         .HasColumnType("timestamp without time zone")
@@ -571,8 +573,10 @@ namespace FIFA_API.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DatePublication")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("pub_datepublication");
+                        .HasColumnName("pub_datepublication")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int?>("IdPhoto")
                         .HasColumnType("integer")
@@ -644,16 +648,17 @@ namespace FIFA_API.Migrations
                         .HasColumnName("sco_code");
 
                     b.Property<string>("Commentaire")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("sco_commentaire");
 
                     b.Property<DateTime>("Date")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("sco_date");
+                        .HasColumnName("sco_date")
+                        .HasDefaultValueSql("now()");
 
-                    b.HasKey("IdCommande");
+                    b.HasKey("IdCommande", "Code");
 
                     b.ToTable("t_j_statuscommande_sco");
                 });
@@ -671,7 +676,9 @@ namespace FIFA_API.Migrations
                         .HasColumnOrder(1);
 
                     b.Property<int>("Stocks")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("spr_stocks");
 
                     b.HasKey("IdVCProduit", "IdTaille");
@@ -780,12 +787,14 @@ namespace FIFA_API.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("utl_dateverificationemail");
 
-                    b.Property<DateTime>("DerniereConnexion")
+                    b.Property<DateTime?>("DerniereConnexion")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("utl_derniereconnexion");
 
                     b.Property<bool>("DoubleAuthentification")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("utl_doubleauthentification");
 
                     b.Property<int>("IdLangue")
@@ -1156,7 +1165,6 @@ namespace FIFA_API.Migrations
                         .WithMany("SousCategories")
                         .HasForeignKey("IdCategorieProduitParent")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
                         .HasConstraintName("FK_categorieproduit_cpr_idparent");
 
                     b.Navigation("Parent");
@@ -1289,7 +1297,7 @@ namespace FIFA_API.Migrations
                         .HasConstraintName("FK_produit_cmp_id");
 
                     b.HasOne("FIFA_API.Models.EntityFramework.Genre", "Genre")
-                        .WithMany()
+                        .WithMany("Produits")
                         .HasForeignKey("IdGenre")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
@@ -1634,6 +1642,11 @@ namespace FIFA_API.Migrations
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Competition", b =>
+                {
+                    b.Navigation("Produits");
+                });
+
+            modelBuilder.Entity("FIFA_API.Models.EntityFramework.Genre", b =>
                 {
                     b.Navigation("Produits");
                 });

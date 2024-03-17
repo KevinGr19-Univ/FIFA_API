@@ -17,24 +17,24 @@ namespace FIFA_API.Models.EntityFramework
         [Column("prd_id")]
         public int Id { get; set; }
 
-		[Column("prd_titre")]
+		[Column("prd_titre"), Required]
         [StringLength(100, ErrorMessage = "Le titre ne doit pas dépasser 100 caractères")]
         public string Titre { get; set; }
 
-		[Column("prd_description")]
+		[Column("prd_description"), Required]
         [StringLength(200, ErrorMessage = "La description ne doit pas dépasser 200 caractères")]
         public string Description { get; set; }
 
-        [Column("cmp_id")]
+        [Column("cmp_id"), Required]
         public int IdCompetition { get; set; }
 
-        [Column("nat_id")]
+        [Column("nat_id"), Required]
         public int IdNation { get; set; }
 
-        [Column("gen_id")]
+        [Column("gen_id"), Required]
         public int IdGenre { get; set; }
 
-        [Column("cpr_id")]
+        [Column("cpr_id"), Required]
         public int IdCategorieProduit { get; set; }
 
         [ForeignKey(nameof(IdCompetition))]

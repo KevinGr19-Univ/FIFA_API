@@ -40,7 +40,7 @@ namespace FIFA_API.Migrations
                     cpr_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     cpr_nom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    cpr_idparent = table.Column<int>(type: "integer", nullable: false)
+                    cpr_idparent = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -271,9 +271,9 @@ namespace FIFA_API.Migrations
                     utl_stripeid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     utl_datenaissance = table.Column<DateTime>(type: "date", nullable: false),
                     utl_motdepasse = table.Column<string>(type: "character(60)", fixedLength: true, maxLength: 60, nullable: false),
-                    utl_derniereconnexion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    utl_derniereconnexion = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     utl_dateverificationemail = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    utl_doubleauthentification = table.Column<bool>(type: "boolean", nullable: false),
+                    utl_doubleauthentification = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     utl_role = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     lan_id = table.Column<int>(type: "integer", nullable: false),
                     pys_idpays = table.Column<int>(type: "integer", nullable: false),
@@ -355,7 +355,7 @@ namespace FIFA_API.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     pub_titre = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     pub_resume = table.Column<string>(type: "character varying(600)", maxLength: 600, nullable: false),
-                    pub_datepublication = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    pub_datepublication = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     pht_id = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -457,7 +457,7 @@ namespace FIFA_API.Migrations
                     adr_livraison_id = table.Column<int>(type: "integer", nullable: false),
                     adr_facuration_id = table.Column<int>(type: "integer", nullable: false),
                     cmd_prixlivraison = table.Column<decimal>(type: "numeric(7,2)", precision: 7, scale: 2, nullable: false),
-                    cmd_datecommande = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    cmd_datecommande = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     cmd_dateexpedition = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     cmd_datelivraison = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     cmd_urlfacture = table.Column<string>(type: "text", nullable: false)
@@ -695,7 +695,7 @@ namespace FIFA_API.Migrations
                 {
                     vcp_id = table.Column<int>(type: "integer", nullable: false),
                     tpr_id = table.Column<int>(type: "integer", nullable: false),
-                    spr_stocks = table.Column<int>(type: "integer", nullable: false)
+                    spr_stocks = table.Column<int>(type: "integer", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -757,13 +757,13 @@ namespace FIFA_API.Migrations
                 columns: table => new
                 {
                     cmd_id = table.Column<int>(type: "integer", nullable: false),
-                    sco_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    sco_commentaire = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    sco_code = table.Column<CodeStatusCommande>(type: "code_status_commande", nullable: false)
+                    sco_code = table.Column<CodeStatusCommande>(type: "code_status_commande", nullable: false),
+                    sco_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    sco_commentaire = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_t_j_statuscommande_sco", x => x.cmd_id);
+                    table.PrimaryKey("PK_t_j_statuscommande_sco", x => new { x.cmd_id, x.sco_code });
                     table.ForeignKey(
                         name: "FK_statuscommande_cmd_id",
                         column: x => x.cmd_id,

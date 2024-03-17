@@ -17,13 +17,13 @@ namespace FIFA_API.Models.EntityFramework
         [Column("vcp_id")]
         public int Id { get; set; }
 
-        [Column("prd_id", Order = 0)]
+        [Column("prd_id", Order = 0), Required]
         public int IdProduit { get; set; }
 
-        [Column("col_id", Order = 1)]
+        [Column("col_id", Order = 1), Required]
         public int IdCouleur { get; set; }
 
-		[Column("vcp_prix")]
+		[Column("vcp_prix"), Required]
         [Precision(7,2)]
         public decimal Prix { get; set; }
 

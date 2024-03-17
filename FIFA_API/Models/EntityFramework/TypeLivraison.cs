@@ -16,14 +16,14 @@ namespace FIFA_API.Models.EntityFramework
         public int Id { get; set; }
 
         [StringLength(50,ErrorMessage = "Le nom ne doit pas dépasser les 50 caractères")]
-        [Column("tli_nom")]
+        [Column("tli_nom"), Required]
         public string Nom { get; set; }
 
-		[Column("tli_maxbusinessdays")]
+		[Column("tli_maxbusinessdays"), Required]
         public int MaxBusinessDays { get; set; }
 
 		[Column("tli_prix")]
-        [Precision(7,2)]
+        [Precision(7,2), Required]
         public decimal Prix { get; set; }
 
         [InverseProperty(nameof(Commande.TypeLivraison))]

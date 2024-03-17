@@ -17,7 +17,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("nat_id")]
         public int Id { get; set; }
 
-        [Column("nat_nom")]
+        [Column("nat_nom"), Required]
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères")]
         public string Nom { get; set; }
 

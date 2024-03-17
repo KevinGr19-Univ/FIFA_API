@@ -68,12 +68,12 @@ namespace FIFA_API.Models.EntityFramework
             DbContextUtils.AddManyToManyRelations(mb);
             DbContextUtils.AddDeleteBehaviors(mb);
             DbContextUtils.RenameConstraintsAuto(mb);
-            AddDatabaseCheckConstraints(mb);
+            AddDatabaseConstraints(mb);
              
             OnModelCreatingPartial(mb);
         }
 
-        private void AddDatabaseCheckConstraints(ModelBuilder mb)
+        private void AddDatabaseConstraints(ModelBuilder mb)
         {
             mb.Entity<Adresse>(entity =>
             {
@@ -85,6 +85,8 @@ namespace FIFA_API.Models.EntityFramework
             {
                 entity.Property(utl => utl.MotDePasse).IsFixedLength();
                 entity.HasCheckConstraint("ck_utl_telephone", $"utl_telephone ~ '{ModelUtils.REGEX_TELEPHONE}'");
+
+                entity.Property(utl => utl.DoubleAuthentification).HasDefaultValue(false);
             });
 
             mb.Entity<Couleur>(entity =>
@@ -96,6 +98,12 @@ namespace FIFA_API.Models.EntityFramework
             mb.Entity<Commande>(entity =>
             {
                 GreaterThanZero(entity, "cmd_prixlivraison");
+                entity.Property(c => c.DateCommande).HasDefaultValueSql("now()");
+            });
+
+            mb.Entity<Joueur>(entity =>
+            {
+                GreaterThanZero(entity, "jou_poids", "jou_taille");
             });
 
             mb.Entity<LigneCommande>(entity =>
@@ -104,9 +112,9 @@ namespace FIFA_API.Models.EntityFramework
                 GreaterOrEqualThanZero(entity, "lco_prixunitaire");
             });
 
-            mb.Entity<Joueur>(entity =>
+            mb.Entity<Publication>(entity =>
             {
-                GreaterThanZero(entity, "jou_poids", "jou_taille");
+                entity.Property(p => p.DatePublication).HasDefaultValueSql("now()");
             });
 
             mb.Entity<Statistiques>(entity =>
@@ -114,9 +122,15 @@ namespace FIFA_API.Models.EntityFramework
                 GreaterThanZero(entity, "stt_matchsjoues", "stt_titularisations", "stt_minutesjouees", "stt_buts");
             });
 
+            mb.Entity<StatusCommande>(entity =>
+            {
+                entity.Property(s => s.Date).HasDefaultValueSql("now()");
+            });
+
             mb.Entity<StockProduit>(entity =>
             {
                 GreaterThanZero(entity, "spr_stocks");
+                entity.Property(s => s.Stocks).HasDefaultValue(0);
             });
 
             mb.Entity<TypeLivraison>(entity =>

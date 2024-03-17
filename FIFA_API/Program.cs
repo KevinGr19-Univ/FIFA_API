@@ -1,7 +1,5 @@
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models.Repository;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);

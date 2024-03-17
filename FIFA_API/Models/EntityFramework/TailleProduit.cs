@@ -19,7 +19,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("tpr_id")]
         public int Id { get; set; }
 
-        [Column("tpr_nom")]
+        [Column("tpr_nom"), Required]
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères.")]
         public string Nom { get; set; }
 

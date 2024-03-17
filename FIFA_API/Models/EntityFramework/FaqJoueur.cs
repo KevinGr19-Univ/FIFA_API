@@ -10,7 +10,7 @@ namespace FIFA_API.Models.EntityFramework
         public const int MAX_REPONSE_LENGTH = 500;
 
         //Joueur
-        [Column("jou_id")]
+        [Column("jou_id"), Required]
         public int IdJoueur { get; set; }
 
         [ForeignKey(nameof(IdJoueur))]
@@ -20,11 +20,11 @@ namespace FIFA_API.Models.EntityFramework
         [Column("faq_id")]
         public int Id { get; set; }
 
-        [Column("faq_question")]
+        [Column("faq_question"), Required]
         [StringLength(MAX_QUESTION_LENGTH, MinimumLength = 1, ErrorMessage = "La question doit avoir entre 1 et 500 caractères.")]
         public string Question { get; set; } 
 
-		[Column("faq_reponse")]
+		[Column("faq_reponse"), Required]
         [StringLength(MAX_REPONSE_LENGTH, MinimumLength = 1, ErrorMessage = "La réponse doit avoir entre 1 et 500 caractères.")]
         public string Reponse { get; set; } 
 
