@@ -1,9 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FIFA_API.Models.Annotations;
+using FIFA_API.Models.Utils;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Npgsql;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace FIFA_API.Models.EntityFramework
 {
     public partial class FifaDbContext : DbContext
     {
+        static FifaDbContext()
+        {
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<CodeStatusCommande>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<PiedJoueur>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<PosteJoueur>();
+
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+
         public FifaDbContext() { }
         public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options) { }
 
@@ -42,25 +61,93 @@ namespace FIFA_API.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Server:localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
+                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder mb)
         {
-            modelBuilder.Entity<StockProduit>(entity =>
-            {
-                entity.HasKey(spr => new { spr.IdVCProduit, spr.IdTaille });
-            });
+            mb.HasPostgresEnum<CodeStatusCommande>();
+            mb.HasPostgresEnum<PiedJoueur>();
+            mb.HasPostgresEnum<PosteJoueur>();
 
-            modelBuilder.Entity<VoteUtilisateur>(entity =>
-            {
-                entity.HasKey(vtl => new { vtl.IdUtilisateur, vtl.IdCouleur, vtl.IdTaille });
-            });
-
-            OnModelCreatingPartial(modelBuilder);
+            DbContextUtils.AddComposedPrimaryKeys(mb);
+            DbContextUtils.AddManyToManyRelations(mb);
+            DbContextUtils.AddDeleteBehaviors(mb);
+            DbContextUtils.RenameConstraintsAuto(mb);
+            AddDatabaseCheckConstraints(mb);
+             
+            OnModelCreatingPartial(mb);
         }
 
-        partial void OnModelCreatingPartial(ModelBuilder builder);
+        private void AddDatabaseCheckConstraints(ModelBuilder mb)
+        {
+            mb.Entity<Adresse>(entity =>
+            {
+                entity.Property(adr => adr.CodePostal).IsFixedLength();
+                entity.HasCheckConstraint("ck_adr_codepostal", $"adr_codepostal ~ '{ModelUtils.REGEX_CODEPOSTAL}'");
+            });
+
+            mb.Entity<Utilisateur>(entity =>
+            {
+                entity.Property(utl => utl.MotDePasse).IsFixedLength();
+                entity.HasCheckConstraint("ck_utl_telephone", $"utl_telephone ~ '{ModelUtils.REGEX_TELEPHONE}'");
+            });
+
+            mb.Entity<Couleur>(entity =>
+            {
+                entity.Property(col => col.CodeHexa).IsFixedLength();
+                entity.HasCheckConstraint("ck_col_codehexa", $"col_codehexa ~ '{ModelUtils.REGEX_HEXACOLOR}'");
+            });
+
+            mb.Entity<Commande>(entity =>
+            {
+                GreaterThanZero(entity, "cmd_prixlivraison");
+            });
+
+            mb.Entity<LigneCommande>(entity =>
+            {
+                GreaterThanZero(entity, "lco_quantite");
+                GreaterOrEqualThanZero(entity, "lco_prixunitaire");
+            });
+
+            mb.Entity<Joueur>(entity =>
+            {
+                GreaterThanZero(entity, "jou_poids", "jou_taille");
+            });
+
+            mb.Entity<Statistiques>(entity =>
+            {
+                GreaterThanZero(entity, "stt_matchsjoues", "stt_titularisations", "stt_minutesjouees", "stt_buts");
+            });
+
+            mb.Entity<StockProduit>(entity =>
+            {
+                GreaterThanZero(entity, "spr_stocks");
+            });
+
+            mb.Entity<TypeLivraison>(entity =>
+            {
+                GreaterThanZero(entity, "tli_prix");
+            });
+
+            mb.Entity<VarianteCouleurProduit>(entity =>
+            {
+                GreaterThanZero(entity, "vcp_prix");
+            });
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder mb);
+
+        #region Utils
+        private void GreaterThanZero(EntityTypeBuilder entity, params string[] columnNames) => GreaterThanZeroCheck(entity, ">", columnNames);
+        private void GreaterOrEqualThanZero(EntityTypeBuilder entity, params string[] columnNames) => GreaterThanZeroCheck(entity, ">=", columnNames);
+
+        private void GreaterThanZeroCheck(EntityTypeBuilder entity, string symbol, params string[] columnNames)
+        {
+            foreach (string columnName in columnNames)
+                entity.HasCheckConstraint($"ck_{columnName}", $"{columnName} {symbol} 0");
+        }
+        #endregion
     }
 }

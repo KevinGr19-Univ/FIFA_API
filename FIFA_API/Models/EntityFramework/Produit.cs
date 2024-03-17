@@ -1,3 +1,4 @@
+using FIFA_API.Models.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,7 +9,6 @@ namespace FIFA_API.Models.EntityFramework
     {
         public Produit()
         {
-            Associes = new HashSet<Produit>();
             Couleurs = new HashSet<Couleur>();
             Tailles = new HashSet<TailleProduit>();
         }
@@ -49,8 +49,10 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdCategorieProduit))]
         public CategorieProduit Categorie { get; set; }
 
-        public virtual ICollection<Produit> Associes { get; set; }
+        [ManyToMany(nameof(Couleur.Produits))]
         public virtual ICollection<Couleur> Couleurs { get; set; }
+
+        [ManyToMany(nameof(TailleProduit.Produits))]
         public virtual ICollection<TailleProduit> Tailles { get; set; }
     }
 }

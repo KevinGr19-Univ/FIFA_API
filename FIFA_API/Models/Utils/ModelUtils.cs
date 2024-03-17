@@ -1,4 +1,4 @@
-﻿namespace FIFA_API.Models
+﻿namespace FIFA_API.Models.Utils
 {
     public static class ModelUtils
     {

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 {
 	[Table("t_e_commande_cmd")]
     [Index(nameof(UrlFacture),IsUnique =true)]
-    public class Commande
+    public partial class Commande
     {
         public Commande()
         {
@@ -43,13 +43,14 @@ using System.ComponentModel.DataAnnotations.Schema;
         public Adresse AdresseFacturation { get; set; }
 
 		[Column("cmd_prixlivraison")]
+        [Precision(7,2)]
         public decimal PrixLivraison { get; set; }
 
-		[Column("cmd_dateexpedition")]
-        public DateTime DateExpedition { get; set; }
-
 		[Column("cmd_datecommande")]
-        public DateTime? DateCommande { get; set; }
+        public DateTime DateCommande { get; set; }
+
+		[Column("cmd_dateexpedition")]
+        public DateTime? DateExpedition { get; set; }
 
 		[Column("cmd_datelivraison")]
         public DateTime? DateLivraison { get; set; }
@@ -58,9 +59,9 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string UrlFacture { get; set; }
 
         [InverseProperty(nameof(LigneCommande.Commande))]
-        public ICollection<LigneCommande> Lignes { get; set; }
+        public virtual ICollection<LigneCommande> Lignes { get; set; }
 
         [InverseProperty(nameof(StatusCommande.Commande))]
-        public ICollection<StatusCommande> Status { get; set; }
+        public virtual ICollection<StatusCommande> Status { get; set; }
     }
 }

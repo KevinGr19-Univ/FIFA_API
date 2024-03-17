@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 {
 	[Table("t_e_categorieproduit_cpr")]
     [Index(nameof(Nom), IsUnique = true)]
-    public class CategorieProduit
+    public partial class CategorieProduit
     {
         public CategorieProduit()
         {
@@ -29,9 +29,9 @@ using System.ComponentModel.DataAnnotations.Schema;
         public CategorieProduit? Parent { get; set; }
 
         [InverseProperty(nameof(Parent))]
-        public ICollection<CategorieProduit> SousCategories { get; set; }
+        public virtual ICollection<CategorieProduit> SousCategories { get; set; }
 
         [InverseProperty(nameof(Produit.Categorie))]
-        public ICollection<Produit> Produits { get; set; }
+        public virtual ICollection<Produit> Produits { get; set; }
     }
 }

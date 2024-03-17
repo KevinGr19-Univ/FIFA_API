@@ -6,7 +6,7 @@ namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_j_variantecouleurproduit_vcp")]
     [Index(nameof(IdProduit), nameof(IdCouleur), IsUnique = true)]
-    public class VarianteCouleurProduit
+    public partial class VarianteCouleurProduit
     {
         public VarianteCouleurProduit()
         {
@@ -24,6 +24,7 @@ namespace FIFA_API.Models.EntityFramework
         public int IdCouleur { get; set; }
 
 		[Column("vcp_prix")]
+        [Precision(7,2)]
         public decimal Prix { get; set; }
 
         [Column("vcp_images", TypeName = "varchar[]")]

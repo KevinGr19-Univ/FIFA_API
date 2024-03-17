@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_lignecommande_lco")]
-    public class LigneCommande
+    public partial class LigneCommande
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("lco_id")]
@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int Quantite { get; set; }
 
 		[Column("lco_prixunitaire")]
-        [Precision(2)]
+        [Precision(7,2)]
         public decimal PrixUnitaire { get; set; }
 
         //VarianteCouleurProduit

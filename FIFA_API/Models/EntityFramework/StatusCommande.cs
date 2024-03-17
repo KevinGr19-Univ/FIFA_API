@@ -33,6 +33,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [ForeignKey(nameof(IdCommande))]
         public Commande Commande { get; set; }
 
+        [Column("sco_code")]
         public CodeStatusCommande Code { get; set; }
     }
 }

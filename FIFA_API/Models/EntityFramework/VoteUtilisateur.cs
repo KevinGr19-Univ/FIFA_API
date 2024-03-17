@@ -1,4 +1,5 @@
 
+using FIFA_API.Models.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,7 +7,8 @@ namespace FIFA_API.Models.EntityFramework
 {
 
 	[Table("t_e_voteutilisateur_vtl")]
-    public class VoteUtilisateur
+    [ComposedKey(nameof(IdUtilisateur), nameof(IdCouleur), nameof(IdTaille))]
+    public partial class VoteUtilisateur
     {
         [Column("utl_id", Order = 0)]
         public int IdUtilisateur { get; set; }
@@ -27,6 +29,7 @@ namespace FIFA_API.Models.EntityFramework
         public TailleProduit Taille { get; set; }
 
         [Column("vtl_rankvote")]
+        [Range(0, 5, ErrorMessage = "Le rank de vote doit être entre 0 et 5.")]
         public int RankVote { get; set; }
     }
 }

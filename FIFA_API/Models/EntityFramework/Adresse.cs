@@ -1,3 +1,4 @@
+using FIFA_API.Models.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -5,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_adresse_adr")]
+    [Table("t_e_adresse_adr")]
     public class Adresse
     {
         public const int MAX_VILLE_LENGTH = 100;
@@ -23,7 +24,7 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(MAX_RUE_LENGTH, ErrorMessage = "Le nom de la rue ne doit pas dépasser les 100 caractères")]
         public string Rue { get; set; }
 
-		[Column("adr_codepostal", TypeName = "char")]
+		[Column("adr_codepostal")]
         [StringLength(5, MinimumLength = 5)]
         [RegularExpression(ModelUtils.REGEX_CODEPOSTAL, ErrorMessage ="Votre code postal ne respecte pas les normes françaises")]
         public string CodePostal { get; set; }

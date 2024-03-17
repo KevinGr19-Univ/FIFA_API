@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace FIFA_API.Models.EntityFramework
@@ -22,8 +23,10 @@ namespace FIFA_API.Models.EntityFramework
         public int MaxBusinessDays { get; set; }
 
 		[Column("tli_prix")]
+        [Precision(7,2)]
         public decimal Prix { get; set; }
 
+        [InverseProperty(nameof(Commande.TypeLivraison))]
         public virtual ICollection<Commande> Commandes { get; set; }
     }
 }
