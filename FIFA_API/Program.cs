@@ -1,3 +1,4 @@
+using FIFA_API;
 using FIFA_API.Models;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models.Repository;
@@ -8,12 +9,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddDbContext<FifaDbContext>();
-new FifaDbContext();
-
-// Repository
-builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 
 builder.Services.AddControllers(
     options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
@@ -57,7 +53,11 @@ builder.Services.AddAuthorization(config =>
     config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
 });
 
+// Repository
+builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
+
 var app = builder.Build();
+API.App = app;
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

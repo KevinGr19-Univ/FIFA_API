@@ -10,6 +10,7 @@ using FIFA_API.Models.Repository;
 using MessagePack.Formatters;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Models;
+using FIFA_API.Utils;
 
 namespace FIFA_API.Controllers
 {
@@ -67,7 +68,6 @@ namespace FIFA_API.Controllers
         [ActionName("GetUtilisateurByEmail")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Policy = Policies.Admin)]
         public async Task<ActionResult<Utilisateur>> GetByEmailAsync(string email)
         {
             var user = (await dataRepository.GetByEmailAsync(email)).Value;
@@ -77,6 +77,15 @@ namespace FIFA_API.Controllers
             }
 
             return user;
+        }
+
+        [HttpGet("Test")]
+        public async Task<IActionResult> Test()
+        {
+            var user = await this.UtilisateurAsync();
+            if (user is null) return Unauthorized();
+
+            return Ok(new { user.IdLangue, user.IdPays });
         }
 
         // PUT: api/Utilisateurs/5

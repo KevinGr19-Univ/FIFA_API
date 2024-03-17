@@ -51,9 +51,7 @@ namespace FIFA_API.Models.Repository
             Type entityType = typeof(U);
             if (!force && ENTITY_PROPERTIES_CACHE.ContainsKey(entityType)) return;
 
-            ENTITY_PROPERTIES_CACHE.Add(entityType, entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty)
-                //.Where(p => p.GetCustomAttribute<Column>() != null)
-            );
+            ENTITY_PROPERTIES_CACHE.Add(entityType, entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty));
         }
         #endregion
 

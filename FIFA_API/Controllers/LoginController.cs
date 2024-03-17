@@ -1,6 +1,7 @@
 ﻿using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models.Repository;
+using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,7 @@ namespace FIFA_API.Controllers
 
             var claims = new List<Claim>
             {
+                new (JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
