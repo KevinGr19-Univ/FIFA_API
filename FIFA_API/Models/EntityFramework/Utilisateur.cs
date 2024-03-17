@@ -23,23 +23,27 @@ namespace FIFA_API.Models.EntityFramework
         [Column("utl_id")]
         public int Id { get; set; }
 
-        [StringLength(100, ErrorMessage = "Le prénom ne doit pas dépasser les 100 caractères")]
+        [StringLength(100, ErrorMessage = "Le prÃ©nom ne doit pas dÃ©passer les 100 caractÃ¨res")]
         [Column("utl_prenom")]
         public string Prenom { get; set; }
 
-        [StringLength(100, ErrorMessage = "Le surnom ne doit pas dépasser les 100 caractères")]
+        [StringLength(100, ErrorMessage = "Le surnom ne doit pas dÃ©passer les 100 caractÃ¨res")]
         [Column("utl_surnom")]
         public string Surnom { get; set; }
 
-        [RegularExpression(ModelUtils.REGEX_TELEPHONE, ErrorMessage = "Le numéro de téléphone doit contenir 10 chiffres, dont le 1er doit être un 0")]
+        [RegularExpression(ModelUtils.REGEX_TELEPHONE, ErrorMessage = "Le numÃ©ro de tÃ©lÃ©phone doit contenir 10 chiffres, dont le 1er doit Ãªtre un 0")]
         [Column("utl_telephone")]
         public string Telephone { get; set; }
+      
+        [StringLength(100, ErrorMessage = "Le prÃ©nom ne doit pas dÃ©passer les 100 caractÃ¨res")]
+        [Column("utl_prenom")]
+        public string Prenom { get; set; }
 
-        [EmailAddress(ErrorMessage = "L'addresse Email doit convenir aux normes des adresses email")]
+        [EmailAddress(ErrorMessage = "L'addresse email doit convenir aux normes des adresses email")]
         [Column("utl_mail")]
         public string Mail { get; set; }
 
-        [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dépasser les 100 caractères")]
+        [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dÃ©passer les 100 caractÃ¨res")]
         [Column("utl_stripeid")]
         public string StripeId { get; set; }
 

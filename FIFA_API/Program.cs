@@ -12,7 +12,13 @@ builder.Services.AddDbContext<FifaDbContext>();
 // Repository
 builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(
+    doc =>
+    {
+        var xmlFile = Path.ChangeExtension(typeof(Program).Assembly.Location, ".xml");
+        doc.IncludeXmlComments(xmlFile);
+    }
+    );
 
 var app = builder.Build();
 
