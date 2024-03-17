@@ -16,6 +16,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom de la compétition ne doit pas dépasser 100 caractères.")]
         public string Nom { get; set; }
 
+        [InverseProperty(nameof(Produit.Competition))]
         public virtual ICollection<Produit> Produits { get; set; }
     }
 }

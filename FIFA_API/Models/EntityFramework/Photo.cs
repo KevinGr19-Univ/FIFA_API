@@ -27,7 +27,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         private ICollection<Article> _articles { get; set; }
         private ICollection<Blog> _blogs { get; set; }
         private ICollection<Joueur> _joueurs { get; set; }
-        private ICollection<StockProduit> _stocks { get; set; }
         #endregion
     }
 }

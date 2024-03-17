@@ -1,4 +1,5 @@
 ﻿using FIFA_API.Models.Annotations;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -125,7 +126,7 @@ namespace FIFA_API.Models.Utils
                         j.HasKey(finalKey.ToArray());
                     });
 
-                foreach(var fk in entity.Metadata.GetDeclaredForeignKeys())
+                foreach (var fk in entity.Metadata.GetDeclaredForeignKeys())
                 {
                     if (fk.PrincipalKey.Properties.SequenceEqual(keysT)) fk.DeleteBehavior = (DeleteBehavior)deleteT;
                     else if (fk.PrincipalKey.Properties.SequenceEqual(keysU)) fk.DeleteBehavior = (DeleteBehavior)deleteU;

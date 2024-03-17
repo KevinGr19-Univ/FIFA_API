@@ -19,17 +19,12 @@ namespace FIFA_API.Models.EntityFramework
             NpgsqlConnection.GlobalTypeMapper.MapEnum<CodeStatusCommande>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<PiedJoueur>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<PosteJoueur>();
+
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
-        public FifaDbContext()
-        {
-            
-        }
-
-        public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options)
-        {
-
-        }
+        public FifaDbContext() { }
+        public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options) { }
 
         public virtual DbSet<Adresse> Adresses { get; set; }
         public virtual DbSet<Album> Albums { get; set; }
@@ -80,7 +75,6 @@ namespace FIFA_API.Models.EntityFramework
             DbContextUtils.AddManyToManyRelations(mb);
             DbContextUtils.AddDeleteBehaviors(mb);
             DbContextUtils.RenameConstraintsAuto(mb);
-
             AddDatabaseCheckConstraints(mb);
              
             OnModelCreatingPartial(mb);
@@ -152,7 +146,7 @@ namespace FIFA_API.Models.EntityFramework
         private void GreaterThanZeroCheck(EntityTypeBuilder entity, string symbol, params string[] columnNames)
         {
             foreach (string columnName in columnNames)
-                entity.HasCheckConstraint($"ck_{entity.Metadata.GetTableName()}_{columnName}", $"{columnName} {symbol} 0");
+                entity.HasCheckConstraint($"ck_{columnName}", $"{columnName} {symbol} 0");
         }
         #endregion
     }
