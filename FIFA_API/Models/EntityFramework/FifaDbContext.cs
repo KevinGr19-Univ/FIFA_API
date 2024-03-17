@@ -1,14 +1,7 @@
-﻿using FIFA_API.Models.Annotations;
-using FIFA_API.Models.Utils;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Razor.Language.Intermediate;
+﻿using FIFA_API.Models.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Npgsql;
-using System.Reflection;
-using System.Xml.Linq;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -61,7 +54,7 @@ namespace FIFA_API.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Uid=postgres;Password=postgres;Database=SAE401");
+                optionsBuilder.UseNpgsql("Name=ConnectionStrings:FifaDBContext");
             }
         }
 

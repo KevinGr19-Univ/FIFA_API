@@ -37,19 +37,19 @@ namespace FIFA_API.Controllers
         /// <returns>L'utilisateur correspondant à l'ID.</returns>
         /// <response code="404">Quand l'on ne trouve pas l'utilisateur.</response>
         /// <response code="200">Retourne l'utilisateur.</response>
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         [ActionName("GetUtilisateurById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateurById(int id)
         {
-            var result = await dataRepository.GetByIdAsync(id);
-            if (result == null)
+            var user = (await dataRepository.GetByIdAsync(id)).Value;
+            if (user is null)
             {
                 return NotFound();
             }
 
-            return result;
+            return user;
         }
         // GET: api/Utilisateurs/GetUtilisateurByEmail
         /// <summary>
@@ -59,19 +59,19 @@ namespace FIFA_API.Controllers
         /// <returns>L'utilisateur correspondant à l'email.</returns>
         /// <response code="404">Quand l'on ne trouve pas l'utilisateur.</response>
         /// <response code="200">Retourne l'utilisateur.</response>
-        [HttpGet("{email}")]
+        [HttpGet("GetByEmail/{email}")]
         [ActionName("GetUtilisateurByEmail")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetByEmailAsync(string email)
         {
-            var result = await dataRepository.GetByEmailAsync(email);
-            if (result == null)
+            var user = (await dataRepository.GetByEmailAsync(email)).Value;
+            if (user is null)
             {
                 return NotFound();
             }
 
-            return result;
+            return user;
         }
 
         // PUT: api/Utilisateurs/5
@@ -90,21 +90,24 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> PutUtilisateur(int id, Utilisateur utilisateur)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (id != utilisateur.Id)
             {
                 return BadRequest();
             }
 
-            var userToUpdate = await dataRepository.GetByIdAsync(id);
-            if (userToUpdate == null)
+            var userToUpdate = (await dataRepository.GetByIdAsync(id)).Value;
+            if (userToUpdate is null)
             {
                 return NotFound();
             }
-            else
-            {
-                await dataRepository.UpdateAsync(userToUpdate.Value, utilisateur);
-                return NoContent();
-            }
+
+            await dataRepository.UpdateAsync(userToUpdate, utilisateur);
+            return NoContent();
         }
 
         // POST: api/Utilisateurs
@@ -141,18 +144,13 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {
-            var result = await dataRepository.GetByIdAsync(id);
-            if (result == null)
+            var userToDelete = (await dataRepository.GetByIdAsync(id)).Value;
+            if (userToDelete is null)
             {
                 return NotFound();
             }
-            await dataRepository.DeleteAsync(result.Value);
+            await dataRepository.DeleteAsync(userToDelete);
             return NoContent();
         }
-
-        //private bool UtilisateurExists(int id)
-        //{
-        //    return (_context.Utilisateurs?.Any(e => e.Id == id)).GetValueOrDefault();
-        //}
     }
 }

@@ -8,9 +8,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<FifaDbContext>();
+new FifaDbContext();
 
 // Repository
-builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
+
+builder.Services.AddControllers(
+    options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
+    .AddJsonOptions(x => {
+        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    }
+);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     doc =>

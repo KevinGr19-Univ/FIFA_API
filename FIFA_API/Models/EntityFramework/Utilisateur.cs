@@ -1,8 +1,10 @@
 using FIFA_API.Models.Annotations;
 using FIFA_API.Models.Utils;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -19,43 +21,45 @@ namespace FIFA_API.Models.EntityFramework
     [Index(nameof(Mail), IsUnique = true)]
     public partial class Utilisateur
     {
+        public Utilisateur()
+        {
+            Commandes = new HashSet<Commande>();
+            Votes = new HashSet<VoteUtilisateur>();
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("utl_id")]
         public int Id { get; set; }
 
+        [Column("utl_prenom"), Required]
         [StringLength(100, ErrorMessage = "Le prénom ne doit pas dépasser les 100 caractères")]
-        [Column("utl_prenom")]
         public string Prenom { get; set; }
 
+        [Column("utl_surnom"), Required]
         [StringLength(100, ErrorMessage = "Le surnom ne doit pas dépasser les 100 caractères")]
-        [Column("utl_surnom")]
         public string Surnom { get; set; }
 
-        [RegularExpression(ModelUtils.REGEX_TELEPHONE, ErrorMessage = "Le numéro de téléphone doit contenir 10 chiffres, dont le 1er doit être un 0")]
         [Column("utl_telephone")]
+        [RegularExpression(ModelUtils.REGEX_TELEPHONE, ErrorMessage = "Le numéro de téléphone doit contenir 10 chiffres, dont le 1er doit être un 0")]
         public string Telephone { get; set; }
-      
-        [StringLength(100, ErrorMessage = "Le prénom ne doit pas dépasser les 100 caractères")]
-        [Column("utl_prenom")]
-        public string Prenom { get; set; }
 
+        [Column("utl_mail"), Required]
         [EmailAddress(ErrorMessage = "L'addresse email doit convenir aux normes des adresses email")]
-        [Column("utl_mail")]
         public string Mail { get; set; }
 
-        [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dépasser les 100 caractères")]
         [Column("utl_stripeid")]
+        [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dépasser les 100 caractères")]
         public string StripeId { get; set; }
 
 		[Column("utl_datenaissance", TypeName = "date")]
         public DateTime DateNaissance { get; set; }
 
-        [Column("utl_motdepasse")]
+        [Column("utl_motdepasse"), Required]
         [StringLength(60, MinimumLength = 60)]
         public string MotDePasse { get; set; }
 
 		[Column("utl_derniereconnexion")]
-        public DateTime DerniereConnexion { get; set; }
+        public DateTime? DerniereConnexion { get; set; }
 
 		[Column("utl_dateverificationemail")]
         public DateTime? DateVerificationEmail { get; set; }
@@ -64,21 +68,19 @@ namespace FIFA_API.Models.EntityFramework
         public bool DoubleAuthentification { get; set; }
 
         // Role
-        [Column("rut_id")]
-        public int? IdRole { get; set; }
-
-        [ForeignKey(nameof(IdRole))]
-        public RoleUtilisateur? Role { get; set; }
+        [Column("utl_role")]
+        [StringLength(200)]
+        public string Role { get; set; }
 
         // Langue
-        [Column("lan_id")]
+        [Column("lan_id"), Required]
         public int IdLangue { get; set; }
 
         [ForeignKey(nameof(IdLangue))]
         public Langue Langue { get; set; }
 
         // Pays
-        [Column("pys_idpays")]
+        [Column("pys_idpays"), Required]
         public int IdPays { get; set; }
 
         [ForeignKey(nameof(IdPays))]
@@ -91,5 +93,11 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdPaysFavori))]
         [OnDelete(DeleteBehavior.SetNull)]
         public Pays? PaysFavori { get; set; }
+
+        [InverseProperty(nameof(Commande.Utilisateur))]
+        public virtual ICollection<Commande> Commandes { get; set; }
+
+        [InverseProperty(nameof(VoteUtilisateur.Utilisateur))]
+        public virtual ICollection<VoteUtilisateur> Votes { get; set; }
     }
 }

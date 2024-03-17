@@ -8,9 +8,21 @@ namespace FIFA_API.Models.Repository
     {
         public UtilisateurRepository(FifaDbContext dbContext) : base(dbContext) { }
 
+        public override async Task<ActionResult<IEnumerable<Utilisateur>>> GetAllAsync()
+        {
+            return await IncludeAll(DbSet).ToListAsync();
+        }
+
         public async Task<ActionResult<Utilisateur?>> GetByEmailAsync(string email)
         {
-            return await DbSet.FirstOrDefaultAsync(u => u.Mail == email);
+            return await IncludeAll(DbSet).FirstOrDefaultAsync(u => u.Mail == email);
+        }
+
+        private IQueryable<Utilisateur> IncludeAll(IQueryable<Utilisateur> query)
+        {
+            return query.Include(u => u.Pays)
+                .Include(u => u.PaysFavori)
+                .Include(u => u.Langue);
         }
     }
 }
