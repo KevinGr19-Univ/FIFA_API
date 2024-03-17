@@ -57,7 +57,6 @@ builder.Services.AddAuthorization(config =>
 builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 
 var app = builder.Build();
-API.App = app;
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
