@@ -264,17 +264,17 @@ namespace FIFA_API.Migrations
                 {
                     utl_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    utl_prenom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    utl_surnom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    utl_telephone = table.Column<string>(type: "text", nullable: false),
+                    utl_prenom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    utl_surnom = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    utl_telephone = table.Column<string>(type: "text", nullable: true),
                     utl_mail = table.Column<string>(type: "text", nullable: false),
-                    utl_stripeid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    utl_datenaissance = table.Column<DateTime>(type: "date", nullable: false),
+                    utl_stripeid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    utl_datenaissance = table.Column<DateTime>(type: "date", nullable: true),
                     utl_motdepasse = table.Column<string>(type: "character(60)", fixedLength: true, maxLength: 60, nullable: false),
                     utl_derniereconnexion = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     utl_dateverificationemail = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     utl_doubleauthentification = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    utl_role = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    utl_role = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     lan_id = table.Column<int>(type: "integer", nullable: false),
                     pys_idpays = table.Column<int>(type: "integer", nullable: false),
                     utl_idpaysfavori = table.Column<int>(type: "integer", nullable: true)

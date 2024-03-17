@@ -1,5 +1,9 @@
+using FIFA_API.Models;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +29,33 @@ builder.Services.AddSwaggerGen(
         var xmlFile = Path.ChangeExtension(typeof(Program).Assembly.Location, ".xml");
         doc.IncludeXmlComments(xmlFile);
     }
-    );
+);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddAuthorization(config =>
+{
+    config.AddPolicy(Policies.User, Policies.UserPolicy());
+    config.AddPolicy(Policies.DirecteurVente, Policies.DirecteurVentePolicy());
+    config.AddPolicy(Policies.ServiceCommande, Policies.ServiceCommandePolicy());
+    config.AddPolicy(Policies.ServiceExpedition, Policies.ServiceExpeditionPolicy());
+    config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
+});
 
 var app = builder.Build();
 
@@ -38,6 +68,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -31,17 +31,17 @@ namespace FIFA_API.Models.EntityFramework
         [Column("utl_id")]
         public int Id { get; set; }
 
-        [Column("utl_prenom"), Required]
+        [Column("utl_prenom")]
         [StringLength(100, ErrorMessage = "Le prénom ne doit pas dépasser les 100 caractères")]
-        public string Prenom { get; set; }
+        public string? Prenom { get; set; }
 
-        [Column("utl_surnom"), Required]
+        [Column("utl_surnom")]
         [StringLength(100, ErrorMessage = "Le surnom ne doit pas dépasser les 100 caractères")]
-        public string Surnom { get; set; }
+        public string? Surnom { get; set; }
 
         [Column("utl_telephone")]
         [RegularExpression(ModelUtils.REGEX_TELEPHONE, ErrorMessage = "Le numéro de téléphone doit contenir 10 chiffres, dont le 1er doit être un 0")]
-        public string Telephone { get; set; }
+        public string? Telephone { get; set; }
 
         [Column("utl_mail"), Required]
         [EmailAddress(ErrorMessage = "L'addresse email doit convenir aux normes des adresses email")]
@@ -49,10 +49,10 @@ namespace FIFA_API.Models.EntityFramework
 
         [Column("utl_stripeid")]
         [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dépasser les 100 caractères")]
-        public string StripeId { get; set; }
+        public string? StripeId { get; set; }
 
 		[Column("utl_datenaissance", TypeName = "date")]
-        public DateTime DateNaissance { get; set; }
+        public DateTime? DateNaissance { get; set; }
 
         [Column("utl_motdepasse"), Required]
         [StringLength(60, MinimumLength = 60)]
@@ -70,7 +70,7 @@ namespace FIFA_API.Models.EntityFramework
         // Role
         [Column("utl_role")]
         [StringLength(200)]
-        public string Role { get; set; }
+        public string? Role { get; set; }
 
         // Langue
         [Column("lan_id"), Required]

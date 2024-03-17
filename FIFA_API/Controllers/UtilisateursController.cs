@@ -7,11 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models.Repository;
+using MessagePack.Formatters;
+using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Models;
 
 namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.User)]
     public class UtilisateursController : ControllerBase
     {
         private readonly IUtilisateurRepository dataRepository;
@@ -63,6 +67,7 @@ namespace FIFA_API.Controllers
         [ActionName("GetUtilisateurByEmail")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = Policies.Admin)]
         public async Task<ActionResult<Utilisateur>> GetByEmailAsync(string email)
         {
             var user = (await dataRepository.GetByEmailAsync(email)).Value;
@@ -106,6 +111,11 @@ namespace FIFA_API.Controllers
                 return NotFound();
             }
 
+            if(userToUpdate.Mail != utilisateur.Mail && await IsEmailTaken(utilisateur.Mail))
+            {
+                return Forbid();
+            }
+
             await dataRepository.UpdateAsync(userToUpdate, utilisateur);
             return NoContent();
         }
@@ -127,6 +137,12 @@ namespace FIFA_API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            if(await IsEmailTaken(utilisateur.Mail))
+            {
+                return Forbid();
+            }
+
             await dataRepository.AddAsync(utilisateur);
             return CreatedAtAction(nameof(GetUtilisateurById), new { id = utilisateur.Id }, utilisateur);
         }
@@ -151,6 +167,11 @@ namespace FIFA_API.Controllers
             }
             await dataRepository.DeleteAsync(userToDelete);
             return NoContent();
+        }
+
+        private async Task<bool> IsEmailTaken(string email)
+        {
+            return (await dataRepository.GetByEmailAsync(email)).Value is not null;
         }
     }
 }

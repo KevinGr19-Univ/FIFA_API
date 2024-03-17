@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    [Migration("20240317125918_CreationBDD")]
+    [Migration("20240317130532_CreationBDD")]
     partial class CreationBDD
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -779,7 +779,7 @@ namespace FIFA_API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateNaissance")
+                    b.Property<DateTime?>("DateNaissance")
                         .HasColumnType("date")
                         .HasColumnName("utl_datenaissance");
 
@@ -822,31 +822,26 @@ namespace FIFA_API.Migrations
                         .IsFixedLength();
 
                     b.Property<string>("Prenom")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("utl_prenom");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("utl_role");
 
                     b.Property<string>("StripeId")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("utl_stripeid");
 
                     b.Property<string>("Surnom")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("utl_surnom");
 
                     b.Property<string>("Telephone")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("utl_telephone");
 
