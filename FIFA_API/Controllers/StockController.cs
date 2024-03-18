@@ -34,7 +34,8 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StockProduit>>> GetStockList()
         {
-            return await _repository.GetAllAsync();
+            var stocks = await _repository.GetAllAsync();
+            return Ok(stocks);
         }
 
         // GET: api/Stocks/1/1
@@ -57,7 +58,7 @@ namespace FIFA_API.Controllers
                 return NotFound();
             }
 
-            return stock.Value;
+            return stock;
         }
 
         // PUT: api/Stocks/1/1
@@ -82,7 +83,7 @@ namespace FIFA_API.Controllers
             try
             {
                 var oldStock = await _repository.GetByIdAsync(idvariante, idtaille);
-                await _repository.UpdateAsync(oldStock.Value, stock);
+                await _repository.UpdateAsync(oldStock, stock);
             }
             catch (Exception)
             {
@@ -122,14 +123,14 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteJoueur(int idvariante, int idtaille)
         {
-            var result = await _repository.GetByIdAsync(idvariante, idtaille);
+            var stock = await _repository.GetByIdAsync(idvariante, idtaille);
 
-            if (result == null)
+            if (stock == null)
             {
                 return NotFound();
             }
 
-            await _repository.DeleteAsync(result.Value);
+            await _repository.DeleteAsync(stock);
 
             return NoContent();
         }

@@ -1,5 +1,6 @@
 using FIFA_API.Models.Annotations;
 using FIFA_API.Models.Utils;
+using FIFA_API.Utils;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,7 @@ namespace FIFA_API.Models.EntityFramework
     //    MembreDuServiceCommande = 3
     //}
 
-	[Table("t_e_utilisateur_utl")]
+    [Table("t_e_utilisateur_utl")]
     [Index(nameof(Mail), IsUnique = true)]
     public partial class Utilisateur
     {
@@ -54,9 +55,8 @@ namespace FIFA_API.Models.EntityFramework
 		[Column("utl_datenaissance", TypeName = "date")]
         public DateTime? DateNaissance { get; set; }
 
-        [Column("utl_motdepasse"), Required]
-        [StringLength(60, MinimumLength = 60)]
-        public string MotDePasse { get; set; }
+        [Column("utl_hashpwd"), Required]
+        public string HashMotDePasse { get; set; }
 
 		[Column("utl_derniereconnexion")]
         public DateTime? DerniereConnexion { get; set; }

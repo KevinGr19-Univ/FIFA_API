@@ -31,7 +31,8 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Commande>>> GetCommandes()
         {
-            return await _dataRepository.GetAllAsync();
+            var commandes = await _dataRepository.GetAllAsync();
+            return Ok(commandes);
         }
 
         // GET: api/Commandes/5
@@ -48,13 +49,13 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Commande>> GetCommandeById(int id)
         {
-            var result = await _dataRepository.GetByIdAsync(id);
-            if (result == null)
+            var commande = await _dataRepository.GetByIdAsync(id);
+            if (commande == null)
             {
                 return NotFound();
             }
 
-            return result;
+            return commande;
         }
 
         // PUT: api/Commandes/5
@@ -85,7 +86,7 @@ namespace FIFA_API.Controllers
             }
             else
             {
-                await _dataRepository.UpdateAsync(commandeToUpdate.Value, commande);
+                await _dataRepository.UpdateAsync(commandeToUpdate, commande);
                 return NoContent();
             }
         }
@@ -124,12 +125,12 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteCommande(int id)
         {
-            var result = await _dataRepository.GetByIdAsync(id);
-            if (result == null)
+            var commande = await _dataRepository.GetByIdAsync(id);
+            if (commande == null)
             {
                 return NotFound();
             }
-            await _dataRepository.DeleteAsync(result.Value);
+            await _dataRepository.DeleteAsync(commande);
             return NoContent();
         }
 

@@ -1,7 +1,8 @@
-using FIFA_API;
+using FIFA_API.Contracts;
 using FIFA_API.Models;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models.Repository;
+using FIFA_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FifaDbContext>();
+builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>();
 
 builder.Services.AddControllers(
     options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)

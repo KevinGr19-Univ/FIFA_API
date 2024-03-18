@@ -8,7 +8,7 @@ namespace FIFA_API.Models.Repository
     {
         public UtilisateurRepository(FifaDbContext dbContext) : base(dbContext) { }
 
-        public override async Task<ActionResult<IEnumerable<Utilisateur>>> GetAllAsync()
+        public override async Task<IEnumerable<Utilisateur>> GetAllAsync()
         {
             return await IncludeAll(DbSet).ToListAsync();
         }
@@ -20,9 +20,7 @@ namespace FIFA_API.Models.Repository
 
         private IQueryable<Utilisateur> IncludeAll(IQueryable<Utilisateur> query)
         {
-            return query.Include(u => u.Pays)
-                .Include(u => u.PaysFavori)
-                .Include(u => u.Langue);
+            return query;
         }
     }
 }

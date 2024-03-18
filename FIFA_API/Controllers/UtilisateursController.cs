@@ -16,7 +16,7 @@ namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = Policies.User)]
+    //[Authorize(Policy = Policies.User)]
     public class UtilisateursController : ControllerBase
     {
         private readonly IUtilisateurRepository dataRepository;
@@ -31,7 +31,8 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
         {
-            return await dataRepository.GetAllAsync();
+            var users = await dataRepository.GetAllAsync();
+            return Ok(users);
         }
 
         // GET: api/Utilisateurs/GetUtilisateurById
@@ -48,7 +49,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateurById(int id)
         {
-            var user = (await dataRepository.GetByIdAsync(id)).Value;
+            var user = await dataRepository.GetByIdAsync(id);
             if (user is null)
             {
                 return NotFound();
@@ -70,7 +71,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetByEmailAsync(string email)
         {
-            var user = (await dataRepository.GetByEmailAsync(email)).Value;
+            var user = await dataRepository.GetByEmailAsync(email);
             if (user is null)
             {
                 return NotFound();
@@ -114,7 +115,7 @@ namespace FIFA_API.Controllers
                 return BadRequest();
             }
 
-            var userToUpdate = (await dataRepository.GetByIdAsync(id)).Value;
+            var userToUpdate = await dataRepository.GetByIdAsync(id);
             if (userToUpdate is null)
             {
                 return NotFound();
@@ -169,7 +170,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {
-            var userToDelete = (await dataRepository.GetByIdAsync(id)).Value;
+            var userToDelete = await dataRepository.GetByIdAsync(id);
             if (userToDelete is null)
             {
                 return NotFound();

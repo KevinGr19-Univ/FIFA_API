@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using FIFA_API.Models.Utils;
+using FIFA_API.Utils;
 
 namespace FIFA_API.Models.EntityFramework
 {

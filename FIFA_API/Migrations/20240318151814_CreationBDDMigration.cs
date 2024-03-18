@@ -8,14 +8,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FIFA_API.Migrations
 {
-    public partial class CreationBDD : Migration
+    public partial class CreationBDDMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:code_status_commande", "preparation,validation,expedition,livre,annule,refuse,refus_accepte")
-                .Annotation("Npgsql:Enum:pied_joueur", "gaucher,droitier,ambidextre")
-                .Annotation("Npgsql:Enum:poste_joueur", "attaquant,defenseur,gardien");
+                .Annotation("Npgsql:Enum:sa15_fifa.code_status_commande", "preparation,validation,expedition,livre,annule,refuse,refus_accepte")
+                .Annotation("Npgsql:Enum:sa15_fifa.pied_joueur", "gaucher,droitier,ambidextre")
+                .Annotation("Npgsql:Enum:sa15_fifa.poste_joueur", "attaquant,defenseur,gardien");
 
             migrationBuilder.CreateTable(
                 name: "t_e_adresse_adr",
@@ -270,7 +270,7 @@ namespace FIFA_API.Migrations
                     utl_mail = table.Column<string>(type: "text", nullable: false),
                     utl_stripeid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     utl_datenaissance = table.Column<DateTime>(type: "date", nullable: true),
-                    utl_motdepasse = table.Column<string>(type: "character(60)", fixedLength: true, maxLength: 60, nullable: false),
+                    utl_hashpwd = table.Column<string>(type: "text", fixedLength: true, nullable: false),
                     utl_derniereconnexion = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     utl_dateverificationemail = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     utl_doubleauthentification = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),

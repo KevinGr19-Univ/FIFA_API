@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    [Migration("20240317130532_CreationBDD")]
-    partial class CreationBDD
+    [Migration("20240318151814_CreationBDDMigration")]
+    partial class CreationBDDMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,9 +23,9 @@ namespace FIFA_API.Migrations
                 .HasAnnotation("ProductVersion", "6.0.28")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "code_status_commande", new[] { "preparation", "validation", "expedition", "livre", "annule", "refuse", "refus_accepte" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "pied_joueur", new[] { "gaucher", "droitier", "ambidextre" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "poste_joueur", new[] { "attaquant", "defenseur", "gardien" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "sa15_fifa", "code_status_commande", new[] { "preparation", "validation", "expedition", "livre", "annule", "refuse", "refus_accepte" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "sa15_fifa", "pied_joueur", new[] { "gaucher", "droitier", "ambidextre" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "sa15_fifa", "poste_joueur", new[] { "attaquant", "defenseur", "gardien" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Adresse", b =>
@@ -797,6 +797,12 @@ namespace FIFA_API.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("utl_doubleauthentification");
 
+                    b.Property<string>("HashMotDePasse")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("utl_hashpwd")
+                        .IsFixedLength();
+
                     b.Property<int>("IdLangue")
                         .HasColumnType("integer")
                         .HasColumnName("lan_id");
@@ -813,13 +819,6 @@ namespace FIFA_API.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("utl_mail");
-
-                    b.Property<string>("MotDePasse")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character(60)")
-                        .HasColumnName("utl_motdepasse")
-                        .IsFixedLength();
 
                     b.Property<string>("Prenom")
                         .HasMaxLength(100)

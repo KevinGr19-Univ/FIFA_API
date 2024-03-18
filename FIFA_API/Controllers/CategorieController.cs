@@ -33,9 +33,9 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategorieProduit>>> GetCategories()
         {
-            return await _repository.GetAllAsync();
+            var categories = await _repository.GetAllAsync();
+            return Ok(categories);
         }
-
 
         // GET: api/Categories/5
         /// <summary>
@@ -69,7 +69,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> PutJoueur(int id, CategorieProduit categorie)
+        public async Task<IActionResult> PutCategorie(int id, CategorieProduit categorie)
         {
 
             if (id != categorie.Id)
@@ -80,7 +80,7 @@ namespace FIFA_API.Controllers
             try
             {
                 var oldCategorie  = await _repository.GetByIdAsync(id);
-                await _repository.UpdateAsync(oldCategorie.Value, categorie);
+                await _repository.UpdateAsync(oldCategorie, categorie);
             }
             catch (Exception)
             {
@@ -98,7 +98,7 @@ namespace FIFA_API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Joueur>> PostJoueur(CategorieProduit categorie)
+        public async Task<ActionResult<Joueur>> PostCategorie(CategorieProduit categorie)
         {
             if (!ModelState.IsValid)
             {
@@ -107,7 +107,7 @@ namespace FIFA_API.Controllers
 
             await _repository.AddAsync(categorie);
 
-            return CreatedAtAction("GetJoueurById", new { id = categorie.Id }, categorie);
+            return CreatedAtAction("GetCategorieById", new { id = categorie.Id }, categorie);
         }
 
         // DELETE: api/Categories/5
@@ -118,7 +118,7 @@ namespace FIFA_API.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteJoueur(int id)
+        public async Task<IActionResult> DeleteCategorie(int id)
         {
             var result = await _repository.GetByIdAsync(id);
 
@@ -127,7 +127,7 @@ namespace FIFA_API.Controllers
                 return NotFound();
             }
 
-            await _repository.DeleteAsync(result.Value);
+            await _repository.DeleteAsync(result);
 
             return NoContent();
         }

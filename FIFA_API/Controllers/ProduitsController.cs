@@ -30,7 +30,8 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produit>>> GetProduits()
         {
-            return await _dataRepository.GetAllAsync();
+            var produits = await _dataRepository.GetAllAsync();
+            return Ok(produits);
         }
 
         // GET: api/Produits/5
@@ -84,7 +85,7 @@ namespace FIFA_API.Controllers
             }
             else
             {
-                await _dataRepository.UpdateAsync(produitToUpdate.Value, produit);
+                await _dataRepository.UpdateAsync(produitToUpdate, produit);
                 return NoContent();
             }
         }
@@ -123,12 +124,12 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteProduit(int id)
         {
-            var result = await _dataRepository.GetByIdAsync(id);
-            if (result == null)
+            var produit = await _dataRepository.GetByIdAsync(id);
+            if (produit == null)
             {
                 return NotFound();
             }
-            await _dataRepository.DeleteAsync(result.Value);
+            await _dataRepository.DeleteAsync(produit);
             return NoContent();
         }
 

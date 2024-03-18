@@ -1,4 +1,5 @@
 ﻿using FIFA_API.Models.Utils;
+using FIFA_API.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Npgsql;
@@ -7,6 +8,8 @@ namespace FIFA_API.Models.EntityFramework
 {
     public partial class FifaDbContext : DbContext
     {
+        public const string SCHEMA_NAME = "sa15_fifa";
+
         static FifaDbContext()
         {
             NpgsqlConnection.GlobalTypeMapper.MapEnum<CodeStatusCommande>();
@@ -54,15 +57,16 @@ namespace FIFA_API.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Name=ConnectionStrings:FifaDBContext");
+                optionsBuilder.UseNpgsql("Name=ConnectionStrings:FifaDBContext",
+                    x => x.MigrationsHistoryTable("_EFMigrationsHistory", SCHEMA_NAME));
             }
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.HasPostgresEnum<CodeStatusCommande>();
-            mb.HasPostgresEnum<PiedJoueur>();
-            mb.HasPostgresEnum<PosteJoueur>();
+            mb.HasPostgresEnum<CodeStatusCommande>(schema: SCHEMA_NAME);
+            mb.HasPostgresEnum<PiedJoueur>(schema: SCHEMA_NAME);
+            mb.HasPostgresEnum<PosteJoueur>(schema: SCHEMA_NAME);
 
             DbContextUtils.AddComposedPrimaryKeys(mb);
             DbContextUtils.AddManyToManyRelations(mb);
@@ -83,7 +87,7 @@ namespace FIFA_API.Models.EntityFramework
 
             mb.Entity<Utilisateur>(entity =>
             {
-                entity.Property(utl => utl.MotDePasse).IsFixedLength();
+                entity.Property(utl => utl.HashMotDePasse).IsFixedLength();
                 entity.HasCheckConstraint("ck_utl_telephone", $"utl_telephone ~ '{ModelUtils.REGEX_TELEPHONE}'");
 
                 entity.Property(utl => utl.DoubleAuthentification).HasDefaultValue(false);

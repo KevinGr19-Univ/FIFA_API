@@ -1,4 +1,5 @@
-﻿using FIFA_API.Models.Controllers;
+﻿using FIFA_API.Contracts;
+using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models.Repository;
 using FIFA_API.Utils;
@@ -18,11 +19,13 @@ namespace FIFA_API.Controllers
     {
         private readonly IConfiguration _config;
         private readonly IUtilisateurRepository _repository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public LoginController(IConfiguration config, IUtilisateurRepository repository)
+        public LoginController(IConfiguration config, IUtilisateurRepository repository, IPasswordHasher passwordHasher)
         {
             _config = config;
             _repository = repository;
+            _passwordHasher = passwordHasher;
         }
 
         [HttpPost]
@@ -36,8 +39,7 @@ namespace FIFA_API.Controllers
             {
                 var tokenString = GenerateJwtString(user);
                 response = Ok(new{
-                    token = tokenString,
-                    userDetails = loginInfo
+                    token = tokenString
                 });
 
                 user.DerniereConnexion = DateTime.Now;
@@ -51,7 +53,7 @@ namespace FIFA_API.Controllers
             Utilisateur? user = (await _repository.GetByEmailAsync(email)).Value;
             if (user is null) return null;
 
-            bool passwordMatch = user.MotDePasse == password;
+            bool passwordMatch = _passwordHasher.Verify(user.HashMotDePasse, password);
             return passwordMatch ? user : null;
         }
 

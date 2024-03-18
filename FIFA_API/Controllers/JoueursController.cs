@@ -33,7 +33,8 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetJoueurs()
         {
-            return await _repository.GetAllAsync();
+            var joueurs = await _repository.GetAllAsync();
+            return Ok(joueurs);
         }
 
 
@@ -82,7 +83,7 @@ namespace FIFA_API.Controllers
             try
             {
                 var oldJoueur  = await _repository.GetByIdAsync(id);
-                await _repository.UpdateAsync(oldJoueur.Value, joueur);
+                await _repository.UpdateAsync(oldJoueur, joueur);
             }
             catch (Exception)
             {
@@ -122,14 +123,14 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteJoueur(int id)
         {
-            var result = await _repository.GetByIdAsync(id);
+            var joueur = await _repository.GetByIdAsync(id);
 
-            if (result == null)
+            if (joueur == null)
             {
                 return NotFound();
             }
 
-            await _repository.DeleteAsync(result.Value);
+            await _repository.DeleteAsync(joueur);
 
             return NoContent();
         }
