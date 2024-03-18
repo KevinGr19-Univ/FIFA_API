@@ -19,11 +19,11 @@ namespace FIFA_API.Controllers
     //[Authorize(Policy = Policies.User)]
     public class UtilisateursController : ControllerBase
     {
-        private readonly IUtilisateurRepository dataRepository;
+        private readonly IUtilisateurRepository _repository;
 
         public UtilisateursController(IUtilisateurRepository dataRepo)
         {
-            dataRepository = dataRepo;
+            _repository = dataRepo;
         }
 
 
@@ -31,7 +31,7 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
         {
-            var users = await dataRepository.GetAllAsync();
+            var users = await _repository.GetAllAsync();
             return Ok(users);
         }
 
@@ -49,7 +49,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateurById(int id)
         {
-            var user = await dataRepository.GetByIdAsync(id);
+            var user = await _repository.GetByIdAsync(id);
             if (user is null)
             {
                 return NotFound();
@@ -71,7 +71,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetByEmailAsync(string email)
         {
-            var user = await dataRepository.GetByEmailAsync(email);
+            var user = await _repository.GetByEmailAsync(email);
             if (user is null)
             {
                 return NotFound();
@@ -115,18 +115,18 @@ namespace FIFA_API.Controllers
                 return BadRequest();
             }
 
-            var userToUpdate = await dataRepository.GetByIdAsync(id);
+            var userToUpdate = await _repository.GetByIdAsync(id);
             if (userToUpdate is null)
             {
                 return NotFound();
             }
 
-            if(userToUpdate.Mail != utilisateur.Mail && await IsEmailTaken(utilisateur.Mail))
+            if(userToUpdate.Mail != utilisateur.Mail && await _repository.IsEmailTaken(utilisateur.Mail))
             {
                 return Forbid();
             }
 
-            await dataRepository.UpdateAsync(userToUpdate, utilisateur);
+            await _repository.UpdateAsync(userToUpdate, utilisateur);
             return NoContent();
         }
 
@@ -148,12 +148,12 @@ namespace FIFA_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if(await IsEmailTaken(utilisateur.Mail))
+            if(await _repository.IsEmailTaken(utilisateur.Mail))
             {
                 return Forbid();
             }
 
-            await dataRepository.AddAsync(utilisateur);
+            await _repository.AddAsync(utilisateur);
             return CreatedAtAction(nameof(GetUtilisateurById), new { id = utilisateur.Id }, utilisateur);
         }
 
@@ -170,18 +170,13 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {
-            var userToDelete = await dataRepository.GetByIdAsync(id);
+            var userToDelete = await _repository.GetByIdAsync(id);
             if (userToDelete is null)
             {
                 return NotFound();
             }
-            await dataRepository.DeleteAsync(userToDelete);
+            await _repository.DeleteAsync(userToDelete);
             return NoContent();
-        }
-
-        private async Task<bool> IsEmailTaken(string email)
-        {
-            return (await dataRepository.GetByEmailAsync(email)).Value is not null;
         }
     }
 }

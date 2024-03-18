@@ -6,5 +6,6 @@ namespace FIFA_API.Models.Repository
     public interface IUtilisateurRepository : IRepository<Utilisateur>
     {
         Task<ActionResult<Utilisateur?>> GetByEmailAsync(string email);
+        Task<bool> IsEmailTaken(string email);
     }
 }

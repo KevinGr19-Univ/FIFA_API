@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace FIFA_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -28,7 +29,7 @@ namespace FIFA_API.Controllers
             _passwordHasher = passwordHasher;
         }
 
-        [HttpPost]
+        [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginInfo loginInfo)
         {
@@ -48,9 +49,26 @@ namespace FIFA_API.Controllers
             return response;
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody])
+        public async Task<IActionResult> Register([FromBody] RegisterInfo registerInfo)
+        {
+            if(await _repository.IsEmailTaken(registerInfo.Mail))
+            {
+                return BadRequest("Email taken");
+            }
+
+            Utilisateur newUser = new Utilisateur()
+            {
+                Mail = registerInfo.Mail,
+                IdLangue = registerInfo.IdLangue,
+                IdPays = registerInfo.IdPays,
+                HashMotDePasse = _passwordHasher.Hash(registerInfo.MotDePasse)
+            };
+
+            await _repository.AddAsync(newUser);
+            return Ok();
+        }
 
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
