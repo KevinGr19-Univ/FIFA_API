@@ -8,8 +8,6 @@ namespace FIFA_API.Models.EntityFramework
 {
     public partial class FifaDbContext : DbContext
     {
-        public const string SCHEMA_NAME = "sa15_fifa";
-
         static FifaDbContext()
         {
             NpgsqlConnection.GlobalTypeMapper.MapEnum<CodeStatusCommande>();
@@ -19,8 +17,17 @@ namespace FIFA_API.Models.EntityFramework
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
-        public FifaDbContext() { }
-        public FifaDbContext(DbContextOptions<FifaDbContext> options) : base(options) { }
+        private readonly string? _schemaName;
+
+        public FifaDbContext(IConfiguration config)
+        {
+            _schemaName = config["Schema"];
+        }
+
+        public FifaDbContext(DbContextOptions<FifaDbContext> options, IConfiguration config) : base(options)
+        {
+            _schemaName = config["Schema"];
+        }
 
         public virtual DbSet<Adresse> Adresses { get; set; }
         public virtual DbSet<Album> Albums { get; set; }
@@ -58,15 +65,15 @@ namespace FIFA_API.Models.EntityFramework
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseNpgsql("Name=ConnectionStrings:FifaDBContext",
-                    x => x.MigrationsHistoryTable("_EFMigrationsHistory", SCHEMA_NAME));
+                    x => x.MigrationsHistoryTable("_EFMigrationsHistory", _schemaName));
             }
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.HasPostgresEnum<CodeStatusCommande>(schema: SCHEMA_NAME);
-            mb.HasPostgresEnum<PiedJoueur>(schema: SCHEMA_NAME);
-            mb.HasPostgresEnum<PosteJoueur>(schema: SCHEMA_NAME);
+            mb.HasPostgresEnum<CodeStatusCommande>(schema: _schemaName);
+            mb.HasPostgresEnum<PiedJoueur>(schema: _schemaName);
+            mb.HasPostgresEnum<PosteJoueur>(schema: _schemaName);
 
             DbContextUtils.AddComposedPrimaryKeys(mb);
             DbContextUtils.AddManyToManyRelations(mb);

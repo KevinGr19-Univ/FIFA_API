@@ -56,7 +56,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_adresse_adr");
+                    b.ToTable("t_e_adresse_adr", (string)null);
 
                     b.HasCheckConstraint("ck_adr_codepostal", "adr_codepostal ~ '^([0-9]{2}|2[AB])[0-9]{3}$'");
                 });
@@ -89,7 +89,7 @@ namespace FIFA_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_categorieproduit_cpr_nom");
 
-                    b.ToTable("t_e_categorieproduit_cpr");
+                    b.ToTable("t_e_categorieproduit_cpr", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Club", b =>
@@ -113,7 +113,7 @@ namespace FIFA_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_club_clb_nom");
 
-                    b.ToTable("t_e_club_clb");
+                    b.ToTable("t_e_club_clb", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Commande", b =>
@@ -183,7 +183,7 @@ namespace FIFA_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_commande_cmd_urlfacture");
 
-                    b.ToTable("t_e_commande_cmd");
+                    b.ToTable("t_e_commande_cmd", (string)null);
 
                     b.HasCheckConstraint("ck_cmd_prixlivraison", "cmd_prixlivraison > 0");
                 });
@@ -205,7 +205,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_competition_cmp");
+                    b.ToTable("t_e_competition_cmp", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Couleur", b =>
@@ -232,7 +232,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_couleur_col");
+                    b.ToTable("t_e_couleur_col", (string)null);
 
                     b.HasCheckConstraint("ck_col_codehexa", "col_codehexa ~ '^[0-9A-F]{6}$'");
                 });
@@ -267,7 +267,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("IdJoueur")
                         .HasDatabaseName("IX_faqjoueur_jou_id");
 
-                    b.ToTable("t_e_faqjoueur_faq");
+                    b.ToTable("t_e_faqjoueur_faq", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Genre", b =>
@@ -287,7 +287,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_genre_gen");
+                    b.ToTable("t_e_genre_gen", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Joueur", b =>
@@ -366,7 +366,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("IdPhoto")
                         .HasDatabaseName("IX_joueur_pht_id");
 
-                    b.ToTable("t_e_joueur_jou");
+                    b.ToTable("t_e_joueur_jou", (string)null);
 
                     b.HasCheckConstraint("ck_jou_poids", "jou_poids > 0");
 
@@ -390,7 +390,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_langue_lan");
+                    b.ToTable("t_e_langue_lan", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.LigneCommande", b =>
@@ -434,7 +434,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("IdVCProduit")
                         .HasDatabaseName("IX_lignecommande_prd_id");
 
-                    b.ToTable("t_e_lignecommande_lco");
+                    b.ToTable("t_e_lignecommande_lco", (string)null);
 
                     b.HasCheckConstraint("ck_lco_prixunitaire", "lco_prixunitaire >= 0");
 
@@ -458,7 +458,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_nation_nat");
+                    b.ToTable("t_e_nation_nat", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Pays", b =>
@@ -478,7 +478,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_pays_pys");
+                    b.ToTable("t_e_pays_pys", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Photo", b =>
@@ -504,7 +504,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_photo_pht");
+                    b.ToTable("t_e_photo_pht", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Produit", b =>
@@ -558,7 +558,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("IdNation")
                         .HasDatabaseName("IX_produit_nat_id");
 
-                    b.ToTable("t_e_produit_prd");
+                    b.ToTable("t_e_produit_prd", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Publication", b =>
@@ -597,7 +597,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("IdPhoto")
                         .HasDatabaseName("IX_publication_pht_id");
 
-                    b.ToTable("t_g_publication_pub");
+                    b.ToTable("t_g_publication_pub", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Statistiques", b =>
@@ -624,7 +624,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("IdJoueur");
 
-                    b.ToTable("t_e_statistiques_stt");
+                    b.ToTable("t_e_statistiques_stt", (string)null);
 
                     b.HasCheckConstraint("ck_stt_buts", "stt_buts > 0");
 
@@ -658,7 +658,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("IdCommande", "Code");
 
-                    b.ToTable("t_j_statuscommande_sco");
+                    b.ToTable("t_j_statuscommande_sco", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.StockProduit", b =>
@@ -684,7 +684,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("IdTaille")
                         .HasDatabaseName("IX_stockproduit_tpr_id");
 
-                    b.ToTable("t_j_stockproduit_spr");
+                    b.ToTable("t_j_stockproduit_spr", (string)null);
 
                     b.HasCheckConstraint("ck_spr_stocks", "spr_stocks > 0");
                 });
@@ -710,7 +710,7 @@ namespace FIFA_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_tailleproduit_tpr_nom");
 
-                    b.ToTable("t_e_tailleproduit_tpr");
+                    b.ToTable("t_e_tailleproduit_tpr", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Trophee", b =>
@@ -734,7 +734,7 @@ namespace FIFA_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_trophee_tph_nom");
 
-                    b.ToTable("t_e_trophee_tph");
+                    b.ToTable("t_e_trophee_tph", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.TypeLivraison", b =>
@@ -763,7 +763,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_typelivraison_tli");
+                    b.ToTable("t_e_typelivraison_tli", (string)null);
 
                     b.HasCheckConstraint("ck_tli_prix", "tli_prix > 0");
                 });
@@ -857,7 +857,7 @@ namespace FIFA_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_utilisateur_utl_mail");
 
-                    b.ToTable("t_e_utilisateur_utl");
+                    b.ToTable("t_e_utilisateur_utl", (string)null);
 
                     b.HasCheckConstraint("ck_utl_telephone", "utl_telephone ~ '^0[1-9][0-9]{8}$'");
                 });
@@ -900,7 +900,7 @@ namespace FIFA_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_variantecouleurproduit_prd_id_col_id");
 
-                    b.ToTable("t_j_variantecouleurproduit_vcp");
+                    b.ToTable("t_j_variantecouleurproduit_vcp", (string)null);
 
                     b.HasCheckConstraint("ck_vcp_prix", "vcp_prix > 0");
                 });
@@ -928,7 +928,7 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("t_e_video_vid");
+                    b.ToTable("t_e_video_vid", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.VoteUtilisateur", b =>
@@ -960,7 +960,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("IdTaille")
                         .HasDatabaseName("IX_voteutilisateur_tpr_id");
 
-                    b.ToTable("t_e_voteutilisateur_vtl");
+                    b.ToTable("t_e_voteutilisateur_vtl", (string)null);
                 });
 
             modelBuilder.Entity("t_j_albumphoto_alp", b =>
@@ -978,7 +978,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("PhotosId")
                         .HasDatabaseName("IX_albumphoto_pht_id");
 
-                    b.ToTable("t_j_albumphoto_alp");
+                    b.ToTable("t_j_albumphoto_alp", (string)null);
                 });
 
             modelBuilder.Entity("t_j_articlephoto_arp", b =>
@@ -996,7 +996,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("PhotosId")
                         .HasDatabaseName("IX_articlephoto_pht_id");
 
-                    b.ToTable("t_j_articlephoto_arp");
+                    b.ToTable("t_j_articlephoto_arp", (string)null);
                 });
 
             modelBuilder.Entity("t_j_articlevideo_arv", b =>
@@ -1014,7 +1014,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("VideosId")
                         .HasDatabaseName("IX_articlevideo_vid_id");
 
-                    b.ToTable("t_j_articlevideo_arv");
+                    b.ToTable("t_j_articlevideo_arv", (string)null);
                 });
 
             modelBuilder.Entity("t_j_blogphoto_blp", b =>
@@ -1032,7 +1032,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("PhotosId")
                         .HasDatabaseName("IX_blogphoto_pht_id");
 
-                    b.ToTable("t_j_blogphoto_blp");
+                    b.ToTable("t_j_blogphoto_blp", (string)null);
                 });
 
             modelBuilder.Entity("t_j_joueurphoto_jop", b =>
@@ -1050,7 +1050,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("PhotosId")
                         .HasDatabaseName("IX_joueurphoto_pht_id");
 
-                    b.ToTable("t_j_joueurphoto_jop");
+                    b.ToTable("t_j_joueurphoto_jop", (string)null);
                 });
 
             modelBuilder.Entity("t_j_joueurtrophee_jot", b =>
@@ -1068,7 +1068,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("TropheesId")
                         .HasDatabaseName("IX_joueurtrophee_tph_id");
 
-                    b.ToTable("t_j_joueurtrophee_jot");
+                    b.ToTable("t_j_joueurtrophee_jot", (string)null);
                 });
 
             modelBuilder.Entity("t_j_produitcouleur_prc", b =>
@@ -1086,7 +1086,7 @@ namespace FIFA_API.Migrations
                     b.HasIndex("CouleursId")
                         .HasDatabaseName("IX_produitcouleur_col_id");
 
-                    b.ToTable("t_j_produitcouleur_prc");
+                    b.ToTable("t_j_produitcouleur_prc", (string)null);
                 });
 
             modelBuilder.Entity("t_j_produittailleproduit_prt", b =>
@@ -1104,14 +1104,14 @@ namespace FIFA_API.Migrations
                     b.HasIndex("TaillesId")
                         .HasDatabaseName("IX_produittailleproduit_tpr_id");
 
-                    b.ToTable("t_j_produittailleproduit_prt");
+                    b.ToTable("t_j_produittailleproduit_prt", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Album", b =>
                 {
                     b.HasBaseType("FIFA_API.Models.EntityFramework.Publication");
 
-                    b.ToTable("t_h_album_alb");
+                    b.ToTable("t_h_album_alb", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Article", b =>
@@ -1123,7 +1123,7 @@ namespace FIFA_API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("art_texte");
 
-                    b.ToTable("t_h_article_art");
+                    b.ToTable("t_h_article_art", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Blog", b =>
@@ -1135,7 +1135,7 @@ namespace FIFA_API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("blg_texte");
 
-                    b.ToTable("t_h_blog_blg");
+                    b.ToTable("t_h_blog_blg", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Document", b =>
@@ -1148,7 +1148,7 @@ namespace FIFA_API.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("doc_urlpdf");
 
-                    b.ToTable("t_h_document_doc");
+                    b.ToTable("t_h_document_doc", (string)null);
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.CategorieProduit", b =>
