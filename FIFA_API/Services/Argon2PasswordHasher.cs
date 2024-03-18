@@ -6,21 +6,35 @@ namespace FIFA_API.Services
 {
     public class Argon2PasswordHasher : IPasswordHasher
     {
-        private const Argon2Type ARGON_TYPE = Argon2Type.DataIndependentAddressing;
+        private const Argon2Type ARGON2_TYPE = Argon2Type.HybridAddressing;
+
+        private readonly byte[]? _secret;
+
+        public Argon2PasswordHasher(byte[]? secret = null)
+        {
+            _secret = secret;
+        }
 
         public string Hash(string password)
         {
-            return Argon2.Hash(password, type: ARGON_TYPE);
+            return Argon2.Hash(
+                password: Encoding.UTF8.GetBytes(password),
+                type: ARGON2_TYPE,
+                secret: _secret
+            );
         }
 
         public bool Verify(string hash, string password)
         {
-            var config = new Argon2Config()
-            {
-                Password = Encoding.UTF8.GetBytes(password),
-                Type = ARGON_TYPE
-            };
-            return Argon2.Verify(hash, config);
+            return Argon2.Verify(
+                encoded: hash,
+                configToVerify: new Argon2Config()
+                {
+                    Password = Encoding.UTF8.GetBytes(password),
+                    Type = ARGON2_TYPE,
+                    Secret = _secret
+                }
+            );
         }
     }
 }
