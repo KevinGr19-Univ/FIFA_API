@@ -48,6 +48,10 @@ namespace FIFA_API.Controllers
             return response;
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody])
+
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
             Utilisateur? user = (await _repository.GetByEmailAsync(email)).Value;
