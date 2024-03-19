@@ -19,7 +19,6 @@ namespace FIFA_API.Models.Controllers
 
         public Utilisateur UpdateUser(Utilisateur user)
         {
-            user.Id = Id;
             user.Prenom = Prenom;
             user.Surnom = Surnom;
             user.Mail = Mail;

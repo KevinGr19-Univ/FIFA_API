@@ -40,6 +40,8 @@ namespace FIFA_API.Controllers
             }
 
             var newUser = userInfo.UpdateUser(user);
+
+            newUser.Id = user.Id;
             return await PutUtilisateur(user.Id, newUser);
         }
     }
