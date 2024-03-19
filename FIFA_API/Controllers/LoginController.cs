@@ -18,35 +18,29 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class LoginController : ControllerBase
     {
-        private readonly IConfiguration _config;
         private readonly IUtilisateurManager _manager;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly ITokenService _tokenService;
 
-        public LoginController(IConfiguration config, IUtilisateurManager repository, IPasswordHasher passwordHasher)
+        public LoginController(IUtilisateurManager repository, IPasswordHasher passwordHasher, ITokenService tokenService)
         {
-            _config = config;
             _manager = repository;
             _passwordHasher = passwordHasher;
+            _tokenService = tokenService;
         }
 
         [HttpPost("Login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginInfo loginInfo)
+        public async Task<ActionResult<APITokenInfo>> Login([FromBody] LoginInfo loginInfo)
         {
-            IActionResult response = Unauthorized();
             Utilisateur? user = await Authenticate(loginInfo.Mail, loginInfo.Password);
 
             if(user is not null)
             {
-                var tokenString = GenerateJwtString(user);
-                response = Ok(new{
-                    token = tokenString
-                });
-
-                user.DerniereConnexion = DateTime.Now;
+                return await LoginUser(user);
             }
 
-            return response;
+            return Unauthorized();
         }
 
         [HttpPost("Register")]
@@ -70,6 +64,24 @@ namespace FIFA_API.Controllers
             return Ok();
         }
 
+        [HttpPost("Login/Refresh")]
+        [AllowAnonymous]
+        public async Task<ActionResult<APITokenInfo>> Refresh([FromBody] APITokenInfo apiToken)
+        {
+            Utilisateur? user = await _tokenService.GetUserFromExpiredAsync(apiToken.AccessToken);
+            if(user is null)
+            {
+                return NotFound();
+            }
+
+            if(user.RefreshToken != apiToken.RefreshToken)
+            {
+                return Forbid();
+            }
+
+            return await LoginUser(user);
+        }
+
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
             Utilisateur? user = await _manager.GetByEmailAsync(email);
@@ -79,28 +91,19 @@ namespace FIFA_API.Controllers
             return passwordMatch ? user : null;
         }
 
-        private string GenerateJwtString(Utilisateur user)
+        private async Task<APITokenInfo> LoginUser(Utilisateur user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new List<Claim>
+            var apiToken = new APITokenInfo
             {
-                new (JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                AccessToken = _tokenService.GenerateAccessToken(user),
+                RefreshToken = _tokenService.GenerateRefreshToken()
             };
 
-            if (user.Role is not null) claims.Add(new("role", user.Role));
+            user.RefreshToken = apiToken.RefreshToken;
+            user.DerniereConnexion = DateTime.Now;
 
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            await _manager.SaveChangesAsync();
+            return apiToken;
         }
     }
 }

@@ -13,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FifaDbContext>();
 
+builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
+builder.Services.AddScoped<IProduitManager, ProduitManager>(); 
+
 builder.Services.AddControllers(
     options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
     .AddJsonOptions(x => {
@@ -29,6 +32,7 @@ builder.Services.AddSwaggerGen(
     }
 );
 
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.RequireHttpsMetadata = true;
@@ -59,8 +63,6 @@ builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
     _ => new Argon2PasswordHasher(secret: Convert.FromHexString(builder.Configuration["Argon2:Secret"]))
 );
 
-builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
-builder.Services.AddScoped<IProduitManager, ProduitManager>();
 
 var app = builder.Build();
 

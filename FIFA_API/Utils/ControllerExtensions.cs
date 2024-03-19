@@ -1,4 +1,5 @@
-﻿using FIFA_API.Contracts.Repository;
+﻿using FIFA_API.Contracts;
+using FIFA_API.Contracts.Repository;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -15,11 +16,8 @@ namespace FIFA_API.Utils
         /// <returns>The user of the request.</returns>
         public static async Task<Utilisateur?> UtilisateurAsync(this ControllerBase controller)
         {
-            var idClaim = controller.User.FindFirst(ClaimTypes.NameIdentifier);
-            if (idClaim is null || !int.TryParse(idClaim.Value, out int userId)) return null;
-
-            IUtilisateurManager repo = controller.HttpContext.RequestServices.GetService<IUtilisateurManager>()!;
-            return await repo.GetByIdAsync(userId);
+            ITokenService tokenService = controller.HttpContext.RequestServices.GetService<ITokenService>()!;
+            return await tokenService.GetUserFromPrincipalAsync(controller.User);
         }
     }
 }

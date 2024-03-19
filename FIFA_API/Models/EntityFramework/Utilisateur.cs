@@ -52,6 +52,9 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(100, ErrorMessage = "L'id de stripe ne doit pas dépasser les 100 caractères")]
         public string? StripeId { get; set; }
 
+        [Column("utl_refreshtoken")]
+        public string? RefreshToken { get; set; }
+
 		[Column("utl_datenaissance", TypeName = "date")]
         public DateTime? DateNaissance { get; set; }
 

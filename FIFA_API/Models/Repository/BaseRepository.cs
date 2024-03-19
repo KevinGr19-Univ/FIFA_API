@@ -66,7 +66,7 @@ namespace FIFA_API.Models.Repository
         public virtual async Task AddAsync(T elementToAdd)
         {
             await DbSet.AddAsync(elementToAdd);
-            await dbContext.SaveChangesAsync();
+            await SaveChangesAsync();
         }
 
         public virtual async Task UpdateAsync(T elementToUpdate, T sourceElement)
@@ -76,12 +76,17 @@ namespace FIFA_API.Models.Repository
             foreach(PropertyInfo propInfo in ENTITY_PROPERTIES_CACHE[typeof(T)])
                 propInfo.SetValue(elementToUpdate, propInfo.GetValue(sourceElement));
 
-            await dbContext.SaveChangesAsync();
+            await SaveChangesAsync();
         }
 
         public virtual async Task DeleteAsync(T elementToDelete)
         {
             DbSet.Remove(elementToDelete);
+            await SaveChangesAsync();
+        }
+
+        public virtual async Task SaveChangesAsync()
+        {
             await dbContext.SaveChangesAsync();
         }
         

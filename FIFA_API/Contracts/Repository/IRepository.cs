@@ -32,5 +32,10 @@ namespace FIFA_API.Contracts.Repository
         /// </summary>
         /// <param name="elementToDelete">The element to delete.</param>
         Task DeleteAsync(T elementToDelete);
+
+        /// <summary>
+        /// Saves all changes.
+        /// </summary>
+        Task SaveChangesAsync();
     }
 }
