@@ -16,14 +16,14 @@ namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = Policies.User)]
-    public class UtilisateursController : ControllerBase
+    [Authorize(Policy = Policies.Admin)]
+    public partial class UtilisateursController : ControllerBase
     {
-        private readonly IUtilisateurRepository _repository;
+        private readonly IUtilisateurManager _manager;
 
-        public UtilisateursController(IUtilisateurRepository dataRepo)
+        public UtilisateursController(IUtilisateurManager manager)
         {
-            _repository = dataRepo;
+            _manager = manager;
         }
 
 
@@ -31,7 +31,7 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
         {
-            var users = await _repository.GetAllAsync();
+            var users = await _manager.GetAllAsync();
             return Ok(users);
         }
 
@@ -49,7 +49,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateurById(int id)
         {
-            var user = await _repository.GetByIdAsync(id);
+            var user = await _manager.GetByIdAsync(id);
             if (user is null)
             {
                 return NotFound();
@@ -71,22 +71,13 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Utilisateur>> GetByEmailAsync(string email)
         {
-            var user = await _repository.GetByEmailAsync(email);
+            var user = await _manager.GetByEmailAsync(email);
             if (user is null)
             {
                 return NotFound();
             }
 
             return user;
-        }
-
-        [HttpGet("Test")]
-        public async Task<IActionResult> Test()
-        {
-            var user = await this.UtilisateurAsync();
-            if (user is null) return Unauthorized();
-
-            return Ok(new { user.IdLangue, user.IdPays });
         }
 
         // PUT: api/Utilisateurs/5
@@ -115,18 +106,18 @@ namespace FIFA_API.Controllers
                 return BadRequest();
             }
 
-            var userToUpdate = await _repository.GetByIdAsync(id);
+            var userToUpdate = await _manager.GetByIdAsync(id);
             if (userToUpdate is null)
             {
                 return NotFound();
             }
 
-            if(userToUpdate.Mail != utilisateur.Mail && await _repository.IsEmailTaken(utilisateur.Mail))
+            if (userToUpdate.Mail != utilisateur.Mail && await _manager.IsEmailTaken(utilisateur.Mail))
             {
                 return Forbid();
             }
 
-            await _repository.UpdateAsync(userToUpdate, utilisateur);
+            await _manager.UpdateAsync(userToUpdate, utilisateur);
             return NoContent();
         }
 
@@ -148,12 +139,12 @@ namespace FIFA_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if(await _repository.IsEmailTaken(utilisateur.Mail))
+            if (await _manager.IsEmailTaken(utilisateur.Mail))
             {
                 return Forbid();
             }
 
-            await _repository.AddAsync(utilisateur);
+            await _manager.AddAsync(utilisateur);
             return CreatedAtAction(nameof(GetUtilisateurById), new { id = utilisateur.Id }, utilisateur);
         }
 
@@ -170,12 +161,12 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {
-            var userToDelete = await _repository.GetByIdAsync(id);
+            var userToDelete = await _manager.GetByIdAsync(id);
             if (userToDelete is null)
             {
                 return NotFound();
             }
-            await _repository.DeleteAsync(userToDelete);
+            await _manager.DeleteAsync(userToDelete);
             return NoContent();
         }
     }

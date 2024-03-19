@@ -18,7 +18,7 @@ namespace FIFA_API.Utils
             var idClaim = controller.User.FindFirst(ClaimTypes.NameIdentifier);
             if (idClaim is null || !int.TryParse(idClaim.Value, out int userId)) return null;
 
-            IUtilisateurRepository repo = controller.HttpContext.RequestServices.GetService<IUtilisateurRepository>()!;
+            IUtilisateurManager repo = controller.HttpContext.RequestServices.GetService<IUtilisateurManager>()!;
             return await repo.GetByIdAsync(userId);
         }
     }

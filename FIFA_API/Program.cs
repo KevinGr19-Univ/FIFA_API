@@ -12,9 +12,6 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FifaDbContext>();
-builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
-    _ => new Argon2PasswordHasher(secret: Convert.FromHexString(builder.Configuration["Argon2:Secret"]))
-);
 
 builder.Services.AddControllers(
     options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
@@ -58,8 +55,12 @@ builder.Services.AddAuthorization(config =>
     config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
 });
 
-// Repository
-builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
+builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
+    _ => new Argon2PasswordHasher(secret: Convert.FromHexString(builder.Configuration["Argon2:Secret"]))
+);
+
+builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
+builder.Services.AddScoped<IProduitManager, ProduitManager>();
 
 var app = builder.Build();
 

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Models.Repository
 {
-    public class UtilisateurRepository : BaseRepository<Utilisateur>, IUtilisateurRepository
+    public class UtilisateurManager : BaseRepository<Utilisateur>, IUtilisateurManager
     {
-        public UtilisateurRepository(FifaDbContext dbContext) : base(dbContext) { }
+        public UtilisateurManager(FifaDbContext dbContext) : base(dbContext) { }
 
         public async Task<Utilisateur?> GetByIdAsync(int id)
         {

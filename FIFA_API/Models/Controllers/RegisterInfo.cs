@@ -11,7 +11,7 @@ namespace FIFA_API.Models.Controllers
 
         [Required]
         [RegularExpression(ModelUtils.REGEX_PASSWORD, ErrorMessage = "Le mot de passe doit suivre toutes les règles")]
-        public string MotDePasse { get; set; }
+        public string Password { get; set; }
 
         [Required]
         public int IdLangue { get; set; }

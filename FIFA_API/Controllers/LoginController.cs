@@ -16,16 +16,16 @@ namespace FIFA_API.Controllers
 {
     [Route("api")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public partial class LoginController : ControllerBase
     {
         private readonly IConfiguration _config;
-        private readonly IUtilisateurRepository _repository;
+        private readonly IUtilisateurManager _manager;
         private readonly IPasswordHasher _passwordHasher;
 
-        public LoginController(IConfiguration config, IUtilisateurRepository repository, IPasswordHasher passwordHasher)
+        public LoginController(IConfiguration config, IUtilisateurManager repository, IPasswordHasher passwordHasher)
         {
             _config = config;
-            _repository = repository;
+            _manager = repository;
             _passwordHasher = passwordHasher;
         }
 
@@ -53,7 +53,7 @@ namespace FIFA_API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterInfo registerInfo)
         {
-            if(await _repository.IsEmailTaken(registerInfo.Mail))
+            if(await _manager.IsEmailTaken(registerInfo.Mail))
             {
                 return BadRequest("Email taken");
             }
@@ -63,16 +63,16 @@ namespace FIFA_API.Controllers
                 Mail = registerInfo.Mail,
                 IdLangue = registerInfo.IdLangue,
                 IdPays = registerInfo.IdPays,
-                HashMotDePasse = _passwordHasher.Hash(registerInfo.MotDePasse)
+                HashMotDePasse = _passwordHasher.Hash(registerInfo.Password)
             };
 
-            await _repository.AddAsync(newUser);
+            await _manager.AddAsync(newUser);
             return Ok();
         }
 
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
-            Utilisateur? user = await _repository.GetByEmailAsync(email);
+            Utilisateur? user = await _manager.GetByEmailAsync(email);
             if (user is null) return null;
 
             bool passwordMatch = _passwordHasher.Verify(user.HashMotDePasse, password);
