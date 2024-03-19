@@ -1,7 +1,7 @@
 ﻿using FIFA_API.Contracts;
+using FIFA_API.Contracts.Repository;
 using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
-using FIFA_API.Models.Repository;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -72,7 +72,7 @@ namespace FIFA_API.Controllers
 
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
-            Utilisateur? user = (await _repository.GetByEmailAsync(email)).Value;
+            Utilisateur? user = await _repository.GetByEmailAsync(email);
             if (user is null) return null;
 
             bool passwordMatch = _passwordHasher.Verify(user.HashMotDePasse, password);

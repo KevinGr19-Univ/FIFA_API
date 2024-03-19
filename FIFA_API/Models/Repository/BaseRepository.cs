@@ -1,4 +1,5 @@
-﻿using FIFA_API.Models.EntityFramework;
+﻿using FIFA_API.Contracts.Repository;
+using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -46,7 +47,7 @@ namespace FIFA_API.Models.Repository
         public DbSet<T> DbSet => _getDbSet();
 
         private readonly Func<DbSet<T>> _getDbSet;
-        protected readonly DbContext dbContext;
+        protected readonly FifaDbContext dbContext;
 
         public BaseRepository(FifaDbContext dbContext)
         {
@@ -60,11 +61,6 @@ namespace FIFA_API.Models.Repository
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await DbSet.ToListAsync();
-        }
-
-        public virtual async Task<T?> GetByIdAsync(params object[] id)
-        {
-            return await DbSet.FindAsync(id);
         }
 
         public virtual async Task AddAsync(T elementToAdd)

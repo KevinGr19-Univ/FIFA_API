@@ -6,17 +6,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
-using FIFA_API.Models.Repository;
 using MessagePack.Formatters;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Models;
 using FIFA_API.Utils;
+using FIFA_API.Contracts.Repository;
 
 namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Policy = Policies.User)]
+    [Authorize(Policy = Policies.User)]
     public class UtilisateursController : ControllerBase
     {
         private readonly IUtilisateurRepository _repository;
