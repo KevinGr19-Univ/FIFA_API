@@ -7,14 +7,14 @@ namespace FIFA_API.Models.EntityFramework
 {
 
 	[Table("t_e_voteutilisateur_vtl")]
-    [ComposedKey(nameof(IdUtilisateur), nameof(NomTheme))]
+    [ComposedKey(nameof(IdUtilisateur), nameof(IdTheme))]
     public partial class VoteUtilisateur
     {
         [Column("utl_id", Order = 0), Required]
         public int IdUtilisateur { get; set; }
 
-        [Column("thv_nomtheme", Order = 1), Required]
-        public string NomTheme { get; set; }
+        [Column("thv_id", Order = 1), Required]
+        public int IdTheme { get; set; }
 
         [Column("jou_id1"), Required]
         public int IdJoueur1 { get; set; }
@@ -28,7 +28,7 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdUtilisateur))]
         public Utilisateur Utilisateur { get; set; }
 
-        [ForeignKey(nameof(NomTheme))]
+        [ForeignKey(nameof(IdTheme))]
         public ThemeVote ThemeVote { get; set; }
 
         [ForeignKey(nameof(IdJoueur1))]

@@ -24,6 +24,7 @@ namespace FIFA_API.Models.EntityFramework
         public int IdCouleur { get; set; }
 
 		[Column("vcp_prix"), Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Le prix doit être positif")]
         [Precision(7,2)]
         public decimal Prix { get; set; }
 

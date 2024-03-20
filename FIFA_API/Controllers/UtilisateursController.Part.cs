@@ -11,7 +11,7 @@ namespace FIFA_API.Controllers
     {
         [HttpGet("GetInfo")]
         [ActionName("GetInfo")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<UserInfo>> GetInfo()
@@ -19,7 +19,7 @@ namespace FIFA_API.Controllers
             var user = await this.UtilisateurAsync();
             if (user is null)
             {
-                return NotFound();
+                return Unauthorized();
             }
             return UserInfo.FromUser(user);
         }
@@ -27,7 +27,7 @@ namespace FIFA_API.Controllers
         [HttpPost("UpdateInfo")]
         [ActionName("UpdateInfo")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> UpdateInfo([FromBody] UserInfo userInfo)
@@ -36,7 +36,7 @@ namespace FIFA_API.Controllers
             var user = await this.UtilisateurAsync();
             if (user is null)
             {
-                return NotFound();
+                return Unauthorized();
             }
 
             var newUser = userInfo.UpdateUser(user);
