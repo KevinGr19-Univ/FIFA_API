@@ -66,8 +66,19 @@ builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
     _ => new Argon2PasswordHasher(secret: Convert.FromHexString(builder.Configuration["Argon2:Secret"]))
 );
 
+var policyName = "FIFA_CORS";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(policyName, policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader();
+    });
+});
+
 
 var app = builder.Build();
+app.UseCors(policyName);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
