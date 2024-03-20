@@ -2,7 +2,7 @@
 
 namespace FIFA_API.Contracts.Repository
 {
-    public interface ICouleurManager : IRepository<Couleur>, IGetByIdInt<Couleur>
+    public interface ICouleurManager : IRepository<Couleur>, IGetById<int, Couleur>
     {
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FIFA_API.Contracts.Repository
 {
-    public interface ILangueManager : IRepository<Langue>, IGetByIdInt<Langue>
+    public interface ILangueManager : IRepository<Langue>, IGetById<int, Langue>
     {
     }
 }

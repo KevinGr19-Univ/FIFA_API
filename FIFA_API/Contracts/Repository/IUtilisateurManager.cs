@@ -6,7 +6,7 @@ namespace FIFA_API.Contracts.Repository
     /// <summary>
     /// Contract used to manage instances of <see cref="Utilisateur"/>.
     /// </summary>
-    public interface IUtilisateurManager : IRepository<Utilisateur>, IGetByIdInt<Utilisateur>
+    public interface IUtilisateurManager : IRepository<Utilisateur>, IGetById<int, Utilisateur>
     {
         /// <summary>
         /// Gets a <see cref="Utilisateur"/> from its email.

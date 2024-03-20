@@ -2,7 +2,7 @@
 
 namespace FIFA_API.Contracts.Repository
 {
-    public interface IPaysManager : IRepository<Pays>, IGetByIdInt<Pays>
+    public interface IPaysManager : IRepository<Pays>, IGetById<int, Pays>
     {
     }
 }

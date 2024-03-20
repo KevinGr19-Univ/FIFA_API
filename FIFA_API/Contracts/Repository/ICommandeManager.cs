@@ -2,7 +2,7 @@
 
 namespace FIFA_API.Contracts.Repository
 {
-    public interface ICommandeManager : IRepository<Commande>, IGetByIdInt<Commande>
+    public interface ICommandeManager : IRepository<Commande>, IGetById<int, Commande>
     {
     }
 }

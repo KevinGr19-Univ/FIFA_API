@@ -5,7 +5,7 @@ namespace FIFA_API.Contracts.Repository
     /// <summary>
     /// Contract used to manage instances of <see cref="Produit"/>.
     /// </summary>
-    public interface IProduitManager : IRepository<Produit>, IGetByIdInt<Produit>
+    public interface IProduitManager : IRepository<Produit>, IGetById<int, Produit>
     {
         /// <summary>
         /// Gets all instances of <see cref="Produit"/> matching the given query and filters.

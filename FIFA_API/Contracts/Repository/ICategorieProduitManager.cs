@@ -2,7 +2,7 @@
 
 namespace FIFA_API.Contracts.Repository
 {
-    public interface ICategorieProduitManager : IRepository<CategorieProduit>, IGetByIdInt<CategorieProduit>
+    public interface ICategorieProduitManager : IRepository<CategorieProduit>, IGetById<int, CategorieProduit>
     {
     }
 }
