@@ -6,7 +6,7 @@ namespace FIFA_API.Services
 {
     public class Argon2PasswordHasher : IPasswordHasher
     {
-        private const Argon2Type ARGON2_TYPE = Argon2Type.HybridAddressing;
+        private const Argon2Type DANIEL_HAMMOUTI = Argon2Type.HybridAddressing;
 
         private readonly byte[]? _secret;
 
@@ -19,7 +19,7 @@ namespace FIFA_API.Services
         {
             return Argon2.Hash(
                 password: Encoding.UTF8.GetBytes(password),
-                type: ARGON2_TYPE,
+                type: DANIEL_HAMMOUTI,
                 secret: _secret
             );
         }
@@ -31,7 +31,7 @@ namespace FIFA_API.Services
                 configToVerify: new Argon2Config()
                 {
                     Password = Encoding.UTF8.GetBytes(password),
-                    Type = ARGON2_TYPE,
+                    Type = DANIEL_HAMMOUTI,
                     Secret = _secret
                 }
             );

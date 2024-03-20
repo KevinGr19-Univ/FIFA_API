@@ -14,13 +14,13 @@ namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NationsController : ControllerBase
+    public class CompetitionsController : ControllerBase
     {
         private const string MANAGER_POLICY = Policies.DirecteurVente;
 
-        private readonly INationManager _manager;
+        private readonly ICompetitionManager _manager;
 
-        public NationsController(INationManager manager)
+        public CompetitionsController(ICompetitionManager manager)
         {
             _manager = manager;
         }
@@ -28,7 +28,7 @@ namespace FIFA_API.Controllers
         // GET: api/TailleProduits
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Nation>>> GetNations()
+        public async Task<ActionResult<IEnumerable<Competition>>> GetCompetitions()
         {
             return Ok(await _manager.GetAllAsync());
         }
@@ -36,29 +36,29 @@ namespace FIFA_API.Controllers
         // GET: api/TailleProduits/5
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<Nation>> GetNationById(int id)
+        public async Task<ActionResult<Competition>> GetCompetitionById(int id)
         {
-            var nation = await _manager.GetByIdAsync(id);
-            if (nation is null) return NotFound();
+            var comp = await _manager.GetByIdAsync(id);
+            if (comp is null) return NotFound();
 
-            return nation;
+            return comp;
         }
 
         // PUT: api/TailleProduits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> PutNation(int id, Nation nation)
+        public async Task<IActionResult> PutCompetition(int id, Competition competition)
         {
-            if (id != nation.Id)
+            if (id != competition.Id)
             {
                 return BadRequest();
             }
 
-            var nationToUpdate = await _manager.GetByIdAsync(id);
-            if (nationToUpdate is null) return NotFound();
+            var compToUpdate = await _manager.GetByIdAsync(id);
+            if (compToUpdate is null) return NotFound();
 
-            await _manager.UpdateAsync(nationToUpdate, nation);
+            await _manager.UpdateAsync(compToUpdate, competition);
             return NoContent();
         }
 
@@ -66,21 +66,21 @@ namespace FIFA_API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<Nation>> PostNation(Nation nation)
+        public async Task<ActionResult<Competition>> PostCompetition(Competition competition)
         {
-            await _manager.AddAsync(nation);
-            return CreatedAtAction("GetNationById", new { nation.Id }, nation);
+            await _manager.AddAsync(competition);
+            return CreatedAtAction("GetCompetitionById", new { competition.Id }, competition);
         }
 
         // DELETE: api/TailleProduits/5
         [HttpDelete("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> DeleteNation(int id)
+        public async Task<IActionResult> DeleteCompetition(int id)
         {
-            var nationToDelete = await _manager.GetByIdAsync(id);
-            if (nationToDelete is null) return NotFound();
+            var compToDelete = await _manager.GetByIdAsync(id);
+            if (compToDelete is null) return NotFound();
 
-            await _manager.DeleteAsync(nationToDelete);
+            await _manager.DeleteAsync(compToDelete);
             return NoContent();
         }
     }

@@ -8,6 +8,11 @@ using System.ComponentModel.DataAnnotations.Schema;
     {
         public const int MAX_NOM_LENGTH = 100;
 
+        public Competition()
+        {
+            Produits = new HashSet<Produit>();
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("cmp_id")]
         public int Id { get; set; }

@@ -14,13 +14,13 @@ namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NationsController : ControllerBase
+    public class GenresController : ControllerBase
     {
         private const string MANAGER_POLICY = Policies.DirecteurVente;
 
-        private readonly INationManager _manager;
+        private readonly IGenreManager _manager;
 
-        public NationsController(INationManager manager)
+        public GenresController(IGenreManager manager)
         {
             _manager = manager;
         }
@@ -28,7 +28,7 @@ namespace FIFA_API.Controllers
         // GET: api/TailleProduits
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Nation>>> GetNations()
+        public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
         {
             return Ok(await _manager.GetAllAsync());
         }
@@ -36,29 +36,29 @@ namespace FIFA_API.Controllers
         // GET: api/TailleProduits/5
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<Nation>> GetNationById(int id)
+        public async Task<ActionResult<Genre>> GetGenreById(int id)
         {
-            var nation = await _manager.GetByIdAsync(id);
-            if (nation is null) return NotFound();
+            var genre = await _manager.GetByIdAsync(id);
+            if (genre is null) return NotFound();
 
-            return nation;
+            return genre;
         }
 
         // PUT: api/TailleProduits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> PutNation(int id, Nation nation)
+        public async Task<IActionResult> PutGenre(int id, Genre genre)
         {
-            if (id != nation.Id)
+            if (id != genre.Id)
             {
                 return BadRequest();
             }
 
-            var nationToUpdate = await _manager.GetByIdAsync(id);
-            if (nationToUpdate is null) return NotFound();
+            var genreToUpdate = await _manager.GetByIdAsync(id);
+            if (genreToUpdate is null) return NotFound();
 
-            await _manager.UpdateAsync(nationToUpdate, nation);
+            await _manager.UpdateAsync(genreToUpdate, genre);
             return NoContent();
         }
 
@@ -66,21 +66,21 @@ namespace FIFA_API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<Nation>> PostNation(Nation nation)
+        public async Task<ActionResult<Genre>> PostGenre(Genre genre)
         {
-            await _manager.AddAsync(nation);
-            return CreatedAtAction("GetNationById", new { nation.Id }, nation);
+            await _manager.AddAsync(genre);
+            return CreatedAtAction("GetGenreById", new { genre.Id }, genre);
         }
 
         // DELETE: api/TailleProduits/5
         [HttpDelete("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> DeleteNation(int id)
+        public async Task<IActionResult> DeleteGenre(int id)
         {
-            var nationToDelete = await _manager.GetByIdAsync(id);
-            if (nationToDelete is null) return NotFound();
+            var genreToDelete = await _manager.GetByIdAsync(id);
+            if (genreToDelete is null) return NotFound();
 
-            await _manager.DeleteAsync(nationToDelete);
+            await _manager.DeleteAsync(genreToDelete);
             return NoContent();
         }
     }
