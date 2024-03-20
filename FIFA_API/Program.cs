@@ -13,12 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FifaDbContext>();
 
-builder.Services.AddScoped<ILangueManager, LangueManager>(); 
-builder.Services.AddScoped<IPaysManager, PaysManager>();
-builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
-builder.Services.AddScoped<ICategorieProduitManager, CategorieProduitManager>(); 
-builder.Services.AddScoped<IProduitManager, ProduitManager>();
-
 builder.Services.AddControllers(
     options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
     .AddJsonOptions(x => {
@@ -35,6 +29,14 @@ builder.Services.AddSwaggerGen(
     }
 );
 
+// Managers
+builder.Services.AddScoped<ILangueManager, LangueManager>(); 
+builder.Services.AddScoped<IPaysManager, PaysManager>();
+builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
+builder.Services.AddScoped<ICategorieProduitManager, CategorieProduitManager>(); 
+builder.Services.AddScoped<IProduitManager, ProduitManager>();
+
+// Authentication
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -53,6 +55,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+// Authorization
 builder.Services.AddAuthorization(config =>
 {
     config.AddPolicy(Policies.User, Policies.UserPolicy());
@@ -62,10 +65,14 @@ builder.Services.AddAuthorization(config =>
     config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
 });
 
+// Services
 builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
     _ => new Argon2PasswordHasher(secret: Convert.FromHexString(builder.Configuration["Argon2:Secret"]))
 );
 
+// Filters
+
+// CORS
 var policyName = "FIFA_CORS";
 builder.Services.AddCors(options =>
 {

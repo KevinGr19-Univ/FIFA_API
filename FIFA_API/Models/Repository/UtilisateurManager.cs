@@ -31,8 +31,7 @@ namespace FIFA_API.Models.Repository
 
         private IQueryable<Utilisateur> Includes(IQueryable<Utilisateur> query)
         {
-            return query.Include(u => u.Pays)
-                .Include(u => u.Langue);
+            return query;
         }
     }
 }
