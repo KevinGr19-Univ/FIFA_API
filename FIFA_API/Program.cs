@@ -35,6 +35,7 @@ builder.Services.AddScoped<IPaysManager, PaysManager>();
 builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
 builder.Services.AddScoped<ICategorieProduitManager, CategorieProduitManager>(); 
 builder.Services.AddScoped<ICouleurManager, CouleurManager>();
+builder.Services.AddScoped<ITailleProduitManager, TailleProduitManager>();
 builder.Services.AddScoped<IProduitManager, ProduitManager>();
 
 // Authentication
