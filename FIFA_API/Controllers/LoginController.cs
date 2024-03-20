@@ -1,5 +1,6 @@
 ﻿using FIFA_API.Contracts;
 using FIFA_API.Contracts.Repository;
+using FIFA_API.Models;
 using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
@@ -74,6 +75,13 @@ namespace FIFA_API.Controllers
             }
 
             return await LoginUser(user);
+        }
+
+        [HttpGet("CheckLogin")]
+        [Authorize(Policy = Policies.User)]
+        public async Task<IActionResult> CheckLogin()
+        {
+            return Ok();
         }
 
         private async Task<Utilisateur?> Authenticate(string email, string password)
