@@ -13,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FifaDbContext>();
 
+builder.Services.AddScoped<ILangueManager, LangueManager>(); 
+builder.Services.AddScoped<IPaysManager, PaysManager>();
 builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
 builder.Services.AddScoped<IProduitManager, ProduitManager>(); 
 

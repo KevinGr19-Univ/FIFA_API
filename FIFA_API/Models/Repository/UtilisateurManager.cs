@@ -9,14 +9,19 @@ namespace FIFA_API.Models.Repository
     {
         public UtilisateurManager(FifaDbContext dbContext) : base(dbContext) { }
 
+        public override async Task<IEnumerable<Utilisateur>> GetAllAsync()
+        {
+            return await Includes(DbSet).ToListAsync();
+        }
+
         public async Task<Utilisateur?> GetByIdAsync(int id)
         {
-            return await DbSet.FirstOrDefaultAsync(u => u.Id == id);
+            return await Includes(DbSet).FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<Utilisateur?> GetByEmailAsync(string email)
         {
-            return await DbSet.FirstOrDefaultAsync(u => u.Mail == email);
+            return await Includes(DbSet).FirstOrDefaultAsync(u => u.Mail == email);
         }
 
         public async Task<bool> IsEmailTaken(string email)
@@ -24,5 +29,10 @@ namespace FIFA_API.Models.Repository
             return await DbSet.AnyAsync(u => u.Mail == email);
         }
 
+        private IQueryable<Utilisateur> Includes(IQueryable<Utilisateur> query)
+        {
+            return query.Include(u => u.Pays)
+                .Include(u => u.Langue);
+        }
     }
 }

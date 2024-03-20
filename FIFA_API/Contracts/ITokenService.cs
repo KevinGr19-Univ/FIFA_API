@@ -21,6 +21,11 @@ namespace FIFA_API.Contracts
         /// <returns>A string refresh token.</returns>
         string GenerateRefreshToken();
 
+        /// <summary>
+        /// Gets the user <see cref="Utilisateur"/> from a <see cref="ClaimsPrincipal"/>.
+        /// </summary>
+        /// <param name="principal">The principal of the request.</param>
+        /// <returns>The principal's user if found, <see langword="null"/> otherwise.</returns>
         Task<Utilisateur?> GetUserFromPrincipalAsync(ClaimsPrincipal principal);
 
         /// <summary>
