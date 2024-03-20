@@ -7,29 +7,37 @@ namespace FIFA_API.Models.EntityFramework
 {
 
 	[Table("t_e_voteutilisateur_vtl")]
-    [ComposedKey(nameof(IdUtilisateur), nameof(IdCouleur), nameof(IdTaille))]
+    [ComposedKey(nameof(IdUtilisateur), nameof(NomTheme))]
     public partial class VoteUtilisateur
     {
         [Column("utl_id", Order = 0), Required]
         public int IdUtilisateur { get; set; }
 
-        [Column("col_id", Order = 1), Required]
-        public int IdCouleur { get; set; }
+        [Column("thv_nomtheme", Order = 1), Required]
+        public string NomTheme { get; set; }
 
-        [Column("tpr_id", Order = 2), Required]
-        public int IdTaille { get; set; }
+        [Column("jou_id1"), Required]
+        public int IdJoueur1 { get; set; }
+
+        [Column("jou_id2"), Required]
+        public int IdJoueur2 { get; set; }
+
+        [Column("jou_id3"), Required]
+        public int IdJoueur3 { get; set; }
 
         [ForeignKey(nameof(IdUtilisateur))]
         public Utilisateur Utilisateur { get; set; }
 
-        [ForeignKey(nameof(IdCouleur))]
-        public Couleur Couleur { get; set; }
+        [ForeignKey(nameof(NomTheme))]
+        public ThemeVote ThemeVote { get; set; }
 
-        [ForeignKey(nameof(IdTaille))]
-        public TailleProduit Taille { get; set; }
+        [ForeignKey(nameof(IdJoueur1))]
+        public Joueur Joueur1 { get; set; }
 
-        [Column("vtl_rankvote"), Required]
-        [Range(0, 5, ErrorMessage = "Le rank de vote doit être entre 0 et 5.")]
-        public int RankVote { get; set; }
+        [ForeignKey(nameof(IdJoueur2))]
+        public Joueur Joueur2 { get; set; }
+
+        [ForeignKey(nameof(IdJoueur3))]
+        public Joueur Joueur3 { get; set; }
     }
 }

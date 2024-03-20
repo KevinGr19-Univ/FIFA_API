@@ -28,7 +28,7 @@ namespace FIFA_API.Controllers
         // GET: api/langue
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Langue>>> GetLangue()
+        public async Task<ActionResult<IEnumerable<Langue>>> GetLangues()
         {
             return Ok(await _manager.GetAllAsync());
         }
@@ -36,7 +36,7 @@ namespace FIFA_API.Controllers
         // GET: api/langue/5
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<Langue>> GetLangue(int id)
+        public async Task<ActionResult<Langue>> GetLangueById(int id)
         {
             var langue = await _manager.GetByIdAsync(id);
             if (langue is null) return NotFound();
@@ -66,7 +66,7 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<Langue>> PostLangue(Langue langue)
         {
             await _manager.AddAsync(langue);
-            return CreatedAtAction("GetLangue", new { id = langue.Id }, langue);
+            return CreatedAtAction("GetLangueById", new { id = langue.Id }, langue);
         }
 
         // DELETE: api/langue/5

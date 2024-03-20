@@ -17,7 +17,7 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class ProduitsController : ControllerBase
     {
-        private const string MANAGER_POLICY = Policies.Admin;
+        private const string MANAGER_POLICY = Policies.DirecteurVente;
 
         private readonly IProduitManager _manager;
 

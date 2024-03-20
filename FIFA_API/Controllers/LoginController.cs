@@ -52,13 +52,7 @@ namespace FIFA_API.Controllers
                 return BadRequest("Email taken");
             }
 
-            Utilisateur newUser = new Utilisateur()
-            {
-                Mail = registerInfo.Mail,
-                IdLangue = registerInfo.IdLangue,
-                IdPays = registerInfo.IdPays,
-                HashMotDePasse = _passwordHasher.Hash(registerInfo.Password)
-            };
+            Utilisateur newUser = registerInfo.BuildUser(_passwordHasher);
 
             await _manager.AddAsync(newUser);
             return Ok();

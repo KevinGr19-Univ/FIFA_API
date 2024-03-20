@@ -1,4 +1,6 @@
-﻿using FIFA_API.Models.Utils;
+﻿using FIFA_API.Contracts;
+using FIFA_API.Models.EntityFramework;
+using FIFA_API.Models.Utils;
 using System.ComponentModel.DataAnnotations;
 
 namespace FIFA_API.Models.Controllers
@@ -18,6 +20,28 @@ namespace FIFA_API.Models.Controllers
 
         [Required]
         public int IdPays { get; set; }
+
+        [RegularExpression(ModelUtils.REGEX_TELEPHONE, ErrorMessage = "Le numéro de téléphone n'est pas valide")]
+        public string? Telephone { get; set; }
+
+        public string? Prenom { get; set; }
+        public string? Surnom { get; set; }
+        public DateTime? DateNaissance { get; set; }
+
+        public Utilisateur BuildUser(IPasswordHasher passwordHasher)
+        {
+            return new Utilisateur()
+            {
+                Mail = Mail,
+                IdLangue = IdLangue,
+                IdPays = IdPays,
+                HashMotDePasse = passwordHasher.Hash(Password),
+                DateNaissance = DateNaissance,
+                Prenom = Prenom,
+                Surnom = Surnom,
+                Telephone = Telephone
+            };
+        }
 
         // TODO: Champs facultatifs
     }
