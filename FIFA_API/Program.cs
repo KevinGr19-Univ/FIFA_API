@@ -16,7 +16,8 @@ builder.Services.AddDbContext<FifaDbContext>();
 builder.Services.AddScoped<ILangueManager, LangueManager>(); 
 builder.Services.AddScoped<IPaysManager, PaysManager>();
 builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
-builder.Services.AddScoped<IProduitManager, ProduitManager>(); 
+builder.Services.AddScoped<ICategorieProduitManager, CategorieProduitManager>(); 
+builder.Services.AddScoped<IProduitManager, ProduitManager>();
 
 builder.Services.AddControllers(
     options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
