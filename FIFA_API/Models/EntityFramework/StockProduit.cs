@@ -15,10 +15,10 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int IdTaille { get; set; }
 
         [ForeignKey(nameof(IdVCProduit))]
-        public virtual VarianteCouleurProduit VCProduit { get; set; }
+        public VarianteCouleurProduit VCProduit { get; set; }
 
         [ForeignKey(nameof(IdTaille))]
-        public virtual TailleProduit Taille { get; set; }
+        public TailleProduit Taille { get; set; }
 
 		[Column("spr_stocks")]
         public int Stocks { get; set; }

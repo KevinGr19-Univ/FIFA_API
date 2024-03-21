@@ -22,6 +22,6 @@ namespace FIFA_API.Models.EntityFramework
         public int Buts { get; set; }
 
         [ForeignKey(nameof(IdJoueur))]
-        public virtual Joueur Joueur { get; set; }
+        public Joueur Joueur { get; set; }
     }
 }

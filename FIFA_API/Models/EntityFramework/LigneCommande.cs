@@ -23,20 +23,20 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int IdVCProduit { get; set; }
 
         [ForeignKey(nameof(IdVCProduit))]
-        public virtual VarianteCouleurProduit VCProduit { get; set; }
+        public VarianteCouleurProduit VCProduit { get; set; }
 
         //Taille
         [Column("tpr_id"), Required]
         public int IdTaille { get; set; }
 
         [ForeignKey(nameof(IdTaille))]
-        public virtual TailleProduit Taille { get; set; }
+        public TailleProduit Taille { get; set; }
 
         //Commande
         [Column("cmd_id"), Required]
         public int IdCommande { get; set; }
 
         [ForeignKey(nameof(IdCommande))]
-        public virtual Commande Commande { get; set; }
+        public Commande Commande { get; set; }
     }
 }

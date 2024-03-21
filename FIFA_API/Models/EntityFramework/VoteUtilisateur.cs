@@ -29,7 +29,7 @@ namespace FIFA_API.Models.EntityFramework
         public virtual Utilisateur Utilisateur { get; set; }
 
         [ForeignKey(nameof(IdTheme))]
-        public virtual ThemeVote ThemeVote { get; set; }
+        public ThemeVote ThemeVote { get; set; }
 
         [ForeignKey(nameof(IdJoueur1))]
         public virtual Joueur Joueur1 { get; set; }

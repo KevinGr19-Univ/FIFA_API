@@ -22,6 +22,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Nom { get; set; }
 
         [InverseProperty(nameof(Produit.Nation))]
-        public virtual ICollection<Produit> Produits { get; set; }
+        public ICollection<Produit> Produits { get; set; }
     }
 }

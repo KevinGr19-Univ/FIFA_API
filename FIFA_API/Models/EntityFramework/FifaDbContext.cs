@@ -65,7 +65,7 @@ namespace FIFA_API.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseLazyLoadingProxies()
+                optionsBuilder
                     .UseNpgsql("Name=ConnectionStrings:FifaDBContext", x => x.MigrationsHistoryTable("_EFMigrationsHistory", _schemaName));
             }
         }

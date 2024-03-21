@@ -22,6 +22,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Nom { get; set; }
 
         [InverseProperty(nameof(Utilisateur.Langue))]
-        public virtual ICollection<Utilisateur> Utilisateurs { get; set; }
+        public ICollection<Utilisateur> Utilisateurs { get; set; }
     }
 }

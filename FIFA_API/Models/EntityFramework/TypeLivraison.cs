@@ -27,6 +27,6 @@ namespace FIFA_API.Models.EntityFramework
         public decimal Prix { get; set; }
 
         [InverseProperty(nameof(Commande.TypeLivraison))]
-        public virtual ICollection<Commande> Commandes { get; set; }
+        public ICollection<Commande> Commandes { get; set; }
     }
 }

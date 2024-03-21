@@ -23,6 +23,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 60 caractères.")]
         public string Nom { get; set; }
 
-        public virtual ICollection<Joueur> Joueurs { get; set; }
+        public ICollection<Joueur> Joueurs { get; set; }
     }
 }

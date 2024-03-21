@@ -26,12 +26,12 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int? IdCategorieProduitParent { get; set; }
 
         [ForeignKey(nameof(IdCategorieProduitParent))]
-        public virtual CategorieProduit? Parent { get; set; }
+        public CategorieProduit? Parent { get; set; }
 
         [InverseProperty(nameof(Parent))]
-        public virtual ICollection<CategorieProduit> SousCategories { get; set; }
+        public ICollection<CategorieProduit> SousCategories { get; set; }
 
         [InverseProperty(nameof(Produit.Categorie))]
-        public virtual ICollection<Produit> Produits { get; set; }
+        public ICollection<Produit> Produits { get; set; }
     }
 }

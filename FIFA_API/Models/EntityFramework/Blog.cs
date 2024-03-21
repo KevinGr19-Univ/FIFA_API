@@ -16,6 +16,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Texte { get; set; }
 
         [ManyToMany("_blogs")]
-        public virtual ICollection<Photo> Photos { get; set; }
+        public ICollection<Photo> Photos { get; set; }
     }
 }

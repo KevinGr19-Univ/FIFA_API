@@ -12,6 +12,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         }
 
         [ManyToMany("_albums")]
-        public virtual ICollection<Photo> Photos { get; set; }
+        public ICollection<Photo> Photos { get; set; }
     }
 }

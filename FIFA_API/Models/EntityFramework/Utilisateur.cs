@@ -80,14 +80,14 @@ namespace FIFA_API.Models.EntityFramework
         public int IdLangue { get; set; }
 
         [ForeignKey(nameof(IdLangue))]
-        public virtual Langue Langue { get; set; }
+        public Langue Langue { get; set; }
 
         // Pays
         [Column("pys_idpays"), Required]
         public int IdPays { get; set; }
 
         [ForeignKey(nameof(IdPays))]
-        public virtual Pays Pays { get; set; }
+        public Pays Pays { get; set; }
 
         // Pays favori
         [Column("utl_idpaysfavori")]

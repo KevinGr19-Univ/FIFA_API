@@ -22,7 +22,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int IdTypeLivraison { get; set; }
 
         [ForeignKey(nameof(IdTypeLivraison))]
-        public virtual TypeLivraison TypeLivraison { get; set; }
+        public TypeLivraison TypeLivraison { get; set; }
 
         [Column("utl_id"), Required]
         public int IdUtilisateur { get; set; }
@@ -34,13 +34,13 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int IdAdresseLivraison { get; set; }
 
         [ForeignKey(nameof(IdAdresseLivraison))]
-        public virtual Adresse AdresseLivraison { get; set; }
+        public Adresse AdresseLivraison { get; set; }
         
         [Column("adr_facuration_id"), Required]
         public int IdAdresseFacturation { get; set; }
 
         [ForeignKey(nameof(IdAdresseFacturation))]
-        public virtual Adresse AdresseFacturation { get; set; }
+        public Adresse AdresseFacturation { get; set; }
 
 		[Column("cmd_prixlivraison"), Required]
         [Precision(7,2)]
@@ -59,9 +59,9 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string UrlFacture { get; set; }
 
         [InverseProperty(nameof(LigneCommande.Commande))]
-        public virtual ICollection<LigneCommande> Lignes { get; set; }
+        public ICollection<LigneCommande> Lignes { get; set; }
 
         [InverseProperty(nameof(StatusCommande.Commande))]
-        public virtual ICollection<StatusCommande> Status { get; set; }
+        public ICollection<StatusCommande> Status { get; set; }
     }
 }

@@ -69,25 +69,25 @@ namespace FIFA_API.Models.EntityFramework
         public int? IdPhoto { get; set; }
 
         [ForeignKey(nameof(IdPhoto))]
-        public virtual Photo? Photo { get; set; } = null!;
+        public Photo? Photo { get; set; } = null!;
 
         //Statistiques
         [InverseProperty(nameof(Statistiques.Joueur))]
-        public virtual Statistiques? Stats { get; set; }
+        public Statistiques? Stats { get; set; }
 
         //Club
         [Column("clb_id"), Required]
         public int IdClub {  get; set; }
 
         [ForeignKey(nameof(IdClub))]
-        public virtual Club Club { get; set; }
+        public Club Club { get; set; }
 
         //Pays
         [Column("pys_id"), Required]
         public int IdPays { get; set; }
 
         [ForeignKey(nameof(IdPays))]
-        public virtual Pays Pays { get; set; }
+        public Pays Pays { get; set; }
 
         [Column("jou_pied"), Required]
         public PiedJoueur Pied { get; set; }
@@ -95,14 +95,13 @@ namespace FIFA_API.Models.EntityFramework
         [Column("jou_poste"), Required]
         public PosteJoueur Poste { get; set; }
 
-
         [InverseProperty(nameof(FaqJoueur.Joueur))]
-        public virtual ICollection<FaqJoueur> FaqJoueurs { get; set; }
+        public ICollection<FaqJoueur> FaqJoueurs { get; set; }
 
         [ManyToMany(nameof(Trophee.Joueurs))]
-        public virtual ICollection<Trophee> Trophees { get; set; }
+        public ICollection<Trophee> Trophees { get; set; }
 
         [ManyToMany("_joueurs")]
-        public virtual ICollection<Photo> Photos { get; set; }
+        public ICollection<Photo> Photos { get; set; }
     }
 }
