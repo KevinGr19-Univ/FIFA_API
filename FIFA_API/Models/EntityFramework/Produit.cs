@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_produit_prd")]
+    [Table("t_e_produit_prd")]
     public partial class Produit
     {
         public Produit()
         {
-            Couleurs = new HashSet<Couleur>();
+            Variantes = new HashSet<VarianteCouleurProduit>();
             Tailles = new HashSet<TailleProduit>();
         }
 
@@ -17,11 +17,11 @@ namespace FIFA_API.Models.EntityFramework
         [Column("prd_id")]
         public int Id { get; set; }
 
-		[Column("prd_titre"), Required]
+        [Column("prd_titre"), Required]
         [StringLength(100, ErrorMessage = "Le titre ne doit pas dépasser 100 caractères")]
         public string Titre { get; set; }
 
-		[Column("prd_description"), Required]
+        [Column("prd_description"), Required]
         [StringLength(200, ErrorMessage = "La description ne doit pas dépasser 200 caractères")]
         public string Description { get; set; }
 
@@ -49,8 +49,8 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdCategorieProduit))]
         public CategorieProduit Categorie { get; set; }
 
-        [ManyToMany(nameof(Couleur.Produits))]
-        public virtual ICollection<Couleur> Couleurs { get; set; }
+        [InverseProperty(nameof(VarianteCouleurProduit.Produit))]
+        public virtual ICollection<VarianteCouleurProduit> Variantes { get; set; }
 
         [ManyToMany(nameof(TailleProduit.Produits))]
         public virtual ICollection<TailleProduit> Tailles { get; set; }

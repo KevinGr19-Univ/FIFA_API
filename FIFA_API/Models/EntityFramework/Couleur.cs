@@ -12,7 +12,7 @@ namespace FIFA_API.Models.EntityFramework
 
         public Couleur()
         {
-            Produits = new HashSet<Produit>();
+            VariantesProduits = new HashSet<VarianteCouleurProduit>();
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -28,6 +28,7 @@ namespace FIFA_API.Models.EntityFramework
         [RegularExpression(ModelUtils.REGEX_HEXACOLOR, ErrorMessage = "Le code hexadécimal de couleur doit être au format hexadécimal.")]
         public string CodeHexa { get; set; }
 
-        public virtual ICollection<Produit> Produits { get; set; }
+        [InverseProperty(nameof(VarianteCouleurProduit.Couleur))]
+        public virtual ICollection<VarianteCouleurProduit> VariantesProduits { get; set; }
     }
 }
