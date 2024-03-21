@@ -28,6 +28,6 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int? IdPhoto { get; set; }
 
         [ForeignKey(nameof(IdPhoto))]
-        public Photo? Photo { get; set; }
+        public virtual Photo? Photo { get; set; }
     }
 }

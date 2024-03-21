@@ -22,25 +22,25 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int IdTypeLivraison { get; set; }
 
         [ForeignKey(nameof(IdTypeLivraison))]
-        public TypeLivraison TypeLivraison { get; set; }
+        public virtual TypeLivraison TypeLivraison { get; set; }
 
         [Column("utl_id"), Required]
         public int IdUtilisateur { get; set; }
 
         [ForeignKey(nameof(IdUtilisateur))]
-        public Utilisateur Utilisateur { get; set; }
+        public virtual Utilisateur Utilisateur { get; set; }
 
         [Column("adr_livraison_id"), Required]
         public int IdAdresseLivraison { get; set; }
 
         [ForeignKey(nameof(IdAdresseLivraison))]
-        public Adresse AdresseLivraison { get; set; }
+        public virtual Adresse AdresseLivraison { get; set; }
         
         [Column("adr_facuration_id"), Required]
         public int IdAdresseFacturation { get; set; }
 
         [ForeignKey(nameof(IdAdresseFacturation))]
-        public Adresse AdresseFacturation { get; set; }
+        public virtual Adresse AdresseFacturation { get; set; }
 
 		[Column("cmd_prixlivraison"), Required]
         [Precision(7,2)]

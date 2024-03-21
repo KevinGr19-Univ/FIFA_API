@@ -33,7 +33,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string? Commentaire { get; set; }
 
         [ForeignKey(nameof(IdCommande))]
-        public Commande Commande { get; set; }
+        public virtual Commande Commande { get; set; }
 
         [Column("sco_code"), Required]
         public CodeStatusCommande Code { get; set; }

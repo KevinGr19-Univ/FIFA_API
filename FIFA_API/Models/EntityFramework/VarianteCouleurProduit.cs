@@ -32,9 +32,9 @@ namespace FIFA_API.Models.EntityFramework
         public List<string> ImageUrls { get; set; }
 
         [ForeignKey(nameof(IdProduit))]
-        public Produit Produit { get; set; }
+        public virtual Produit Produit { get; set; }
 
         [ForeignKey(nameof(IdCouleur))]
-        public Couleur Couleur { get; set; }
+        public virtual Couleur Couleur { get; set; }
     }
 }

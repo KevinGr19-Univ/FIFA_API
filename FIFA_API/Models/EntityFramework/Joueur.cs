@@ -69,25 +69,25 @@ namespace FIFA_API.Models.EntityFramework
         public int? IdPhoto { get; set; }
 
         [ForeignKey(nameof(IdPhoto))]
-        public Photo? Photo { get; set; } = null!;
+        public virtual Photo? Photo { get; set; } = null!;
 
         //Statistiques
         [InverseProperty(nameof(Statistiques.Joueur))]
-        public Statistiques? Stats { get; set; }
+        public virtual Statistiques? Stats { get; set; }
 
         //Club
         [Column("clb_id"), Required]
         public int IdClub {  get; set; }
 
         [ForeignKey(nameof(IdClub))]
-        public Club Club { get; set; }
+        public virtual Club Club { get; set; }
 
         //Pays
         [Column("pys_id"), Required]
         public int IdPays { get; set; }
 
         [ForeignKey(nameof(IdPays))]
-        public Pays Pays { get; set; }
+        public virtual Pays Pays { get; set; }
 
         [Column("jou_pied"), Required]
         public PiedJoueur Pied { get; set; }

@@ -38,16 +38,16 @@ namespace FIFA_API.Models.EntityFramework
         public int IdCategorieProduit { get; set; }
 
         [ForeignKey(nameof(IdCompetition))]
-        public Competition Competition { get; set; }
+        public virtual Competition Competition { get; set; }
 
         [ForeignKey(nameof(IdNation))]
-        public Nation Nation { get; set; }
+        public virtual Nation Nation { get; set; }
 
         [ForeignKey(nameof(IdGenre))]
-        public Genre Genre { get; set; }
+        public virtual Genre Genre { get; set; }
 
         [ForeignKey(nameof(IdCategorieProduit))]
-        public CategorieProduit Categorie { get; set; }
+        public virtual CategorieProduit Categorie { get; set; }
 
         [InverseProperty(nameof(VarianteCouleurProduit.Produit))]
         public virtual ICollection<VarianteCouleurProduit> Variantes { get; set; }

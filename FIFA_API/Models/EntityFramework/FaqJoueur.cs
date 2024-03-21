@@ -14,7 +14,7 @@ namespace FIFA_API.Models.EntityFramework
         public int IdJoueur { get; set; }
 
         [ForeignKey(nameof(IdJoueur))]
-        public Joueur Joueur { get; set; }
+        public virtual Joueur Joueur { get; set; }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("faq_id")]

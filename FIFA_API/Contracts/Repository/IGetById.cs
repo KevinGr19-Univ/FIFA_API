@@ -8,7 +8,7 @@
     public interface IGetById<TKey,TEntity> where TEntity : class
     {
         /// <summary>
-        /// Gets an entity from its <see cref="TKey"/> identifier.
+        /// Gets an entity from its <see href="TKey"/> identifier.
         /// </summary>
         /// <param name="id">The identifier of the entity.</param>
         /// <returns>The matching entity if found, <see langword="null"/> otherwise.</returns>

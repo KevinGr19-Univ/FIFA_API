@@ -80,14 +80,14 @@ namespace FIFA_API.Models.EntityFramework
         public int IdLangue { get; set; }
 
         [ForeignKey(nameof(IdLangue))]
-        public Langue Langue { get; set; }
+        public virtual Langue Langue { get; set; }
 
         // Pays
         [Column("pys_idpays"), Required]
         public int IdPays { get; set; }
 
         [ForeignKey(nameof(IdPays))]
-        public Pays Pays { get; set; }
+        public virtual Pays Pays { get; set; }
 
         // Pays favori
         [Column("utl_idpaysfavori")]
@@ -95,7 +95,7 @@ namespace FIFA_API.Models.EntityFramework
 
         [ForeignKey(nameof(IdPaysFavori))]
         [OnDelete(DeleteBehavior.SetNull)]
-        public Pays? PaysFavori { get; set; }
+        public virtual Pays? PaysFavori { get; set; }
 
         [InverseProperty(nameof(Commande.Utilisateur))]
         public virtual ICollection<Commande> Commandes { get; set; }
