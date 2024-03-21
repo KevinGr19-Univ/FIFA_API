@@ -11,7 +11,7 @@ namespace FIFA_API.Models.Repository
 
         public override async Task<IEnumerable<Utilisateur>> GetAllAsync()
         {
-            return await Includes(DbSet).ToListAsync();
+            return await DbSet.ToListAsync();
         }
 
         public async Task<Utilisateur?> GetByIdAsync(int id)
@@ -31,7 +31,7 @@ namespace FIFA_API.Models.Repository
 
         private IQueryable<Utilisateur> Includes(IQueryable<Utilisateur> query)
         {
-            return query;
+            return query.Include(u => u.Commandes);
         }
     }
 }
