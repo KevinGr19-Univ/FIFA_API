@@ -58,7 +58,7 @@ namespace FIFA_API.Controllers
             var themeVoteToUpdate = await _manager.GetByIdAsync(id);
             if (themeVoteToUpdate is null) return NotFound();
 
-            await _manager.UpdateAsync(themeVoteToUpdate, themeVote);
+            await _manager.UpdateAsync(themeVote);
             return NoContent();
         }
 

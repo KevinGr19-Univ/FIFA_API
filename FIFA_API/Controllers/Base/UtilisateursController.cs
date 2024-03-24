@@ -123,7 +123,7 @@ namespace FIFA_API.Controllers
                 return Forbid();
             }
 
-            await _manager.UpdateAsync(userToUpdate, utilisateur);
+            await _manager.UpdateAsync(utilisateur);
             return NoContent();
         }
 

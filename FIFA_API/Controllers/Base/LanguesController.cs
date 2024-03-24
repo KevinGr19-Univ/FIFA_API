@@ -55,7 +55,7 @@ namespace FIFA_API.Controllers
             var langueToUpdate = await _manager.GetByIdAsync(id);
             if (langueToUpdate is null) return NotFound();
 
-            await _manager.UpdateAsync(langueToUpdate, langue);
+            await _manager.UpdateAsync(langue);
             return NoContent();
         }
 

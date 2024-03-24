@@ -93,7 +93,7 @@ namespace FIFA_API.Controllers
             }
             else
             {
-                await _commandeManager.UpdateAsync(commandeToUpdate, commande);
+                await _commandeManager.UpdateAsync(commande);
                 return NoContent();
             }
         }

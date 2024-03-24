@@ -92,7 +92,7 @@ namespace FIFA_API.Controllers
             }
             else
             {
-                await _manager.UpdateAsync(produitToUpdate, produit);
+                await _manager.UpdateAsync(produit);
                 return NoContent();
             }
         }

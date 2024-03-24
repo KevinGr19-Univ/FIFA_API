@@ -55,7 +55,7 @@ namespace FIFA_API.Controllers
             var paysToUpdate = await _manager.GetByIdAsync(id);
             if (paysToUpdate is null) return NotFound();
 
-            await _manager.UpdateAsync(paysToUpdate, pays);
+            await _manager.UpdateAsync(pays);
             return NoContent();
         }
 

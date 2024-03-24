@@ -24,8 +24,7 @@ namespace FIFA_API.Contracts.Repository
         /// Updates an entity from another's properties and saves the changes.
         /// </summary>
         /// <param name="elementToUpdate">The element to update.</param>
-        /// <param name="sourceElement">The element to get the new data from.</param>
-        Task UpdateAsync(T elementToUpdate, T sourceElement);
+        Task UpdateAsync(T elementToUpdate);
 
         /// <summary>
         /// Deletes an entity from the set.
