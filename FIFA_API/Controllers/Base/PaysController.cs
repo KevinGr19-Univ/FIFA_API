@@ -6,40 +6,42 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
-using FIFA_API.Contracts.Repository;
-using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Models;
+using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Utils;
 
 namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public partial class PaysController : ControllerBase
+    public class PaysController : ControllerBase
     {
         private const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly IPaysManager _manager;
+        private readonly FifaDbContext _context;
 
-        public PaysController(IPaysManager manager)
+        public PaysController(FifaDbContext context)
         {
-            _manager = manager;
+            _context = context;
         }
 
         // GET: api/Pays
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Pays>>> GetPays()
         {
-            return Ok(await _manager.GetAllAsync());
+            return await _context.Pays.ToListAsync();
         }
 
         // GET: api/Pays/5
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<ActionResult<Pays>> GetPays(int id)
         {
-            var pays = await _manager.GetByIdAsync(id);
-            if (pays is null) return NotFound();
+            var pays = await _context.Pays.FindAsync(id);
+
+            if (pays is null)
+            {
+                return NotFound();
+            }
 
             return pays;
         }
@@ -50,12 +52,27 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutPays(int id, Pays pays)
         {
-            if (id != pays.Id) return BadRequest();
+            if (id != pays.Id)
+            {
+                return BadRequest();
+            }
 
-            var paysToUpdate = await _manager.GetByIdAsync(id);
-            if (paysToUpdate is null) return NotFound();
+            try
+            {
+                await _context.UpdateEntity(pays);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PaysExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            await _manager.UpdateAsync(pays);
             return NoContent();
         }
 
@@ -65,7 +82,9 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Pays>> PostPays(Pays pays)
         {
-            await _manager.AddAsync(pays);
+            await _context.Pays.AddAsync(pays);
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction("GetPays", new { id = pays.Id }, pays);
         }
 
@@ -74,11 +93,21 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeletePays(int id)
         {
-            var pays = await _manager.GetByIdAsync(id);
-            if (pays is null) return NotFound();
+            var pays = await _context.Pays.FindAsync(id);
+            if (pays is null)
+            {
+                return NotFound();
+            }
 
-            await _manager.DeleteAsync(pays);
+            _context.Pays.Remove(pays);
+            await _context.SaveChangesAsync();
+
             return NoContent();
+        }
+
+        private bool PaysExists(int id)
+        {
+            return (_context.Pays?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

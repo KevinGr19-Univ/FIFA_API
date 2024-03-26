@@ -1,18 +1,10 @@
 ﻿using FIFA_API.Contracts;
-using FIFA_API.Contracts.Repository;
 using FIFA_API.Models;
 using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Npgsql;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace FIFA_API.Controllers
 {
@@ -49,9 +41,12 @@ namespace FIFA_API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterInfo registerInfo)
         {
-            if(await _dbContext.Utilisateurs.AnyAsync(u => u.Mail == registerInfo.Mail))
+            if(await _dbContext.Utilisateurs.IsEmailTaken(registerInfo.Mail))
             {
-                return BadRequest("Email taken");
+                return BadRequest(new
+                {
+                    Message = "Email taken"
+                });
             }
 
             Utilisateur newUser = registerInfo.BuildUser(_passwordHasher);
@@ -87,7 +82,7 @@ namespace FIFA_API.Controllers
 
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
-            Utilisateur? user = await _dbContext.Utilisateurs.FirstOrDefaultAsync(u => u.Mail == email);
+            Utilisateur? user = await _dbContext.Utilisateurs.GetByEmailAsync(email);
             if (user is null) return null;
 
             bool passwordMatch = _passwordHasher.Verify(user.HashMotDePasse, password);

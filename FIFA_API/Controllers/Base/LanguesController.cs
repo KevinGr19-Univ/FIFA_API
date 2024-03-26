@@ -6,79 +6,101 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
-using FIFA_API.Contracts.Repository;
-using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Models;
+using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Utils;
 
 namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public partial class LanguesController : ControllerBase
+    public class LanguesController : ControllerBase
     {
         private const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly ILangueManager _manager;
+        private readonly FifaDbContext _context;
 
-        public LanguesController(ILangueManager manager)
+        public LanguesController(FifaDbContext context)
         {
-            _manager = manager;
+            _context = context;
         }
 
-        // GET: api/langue
+        // GET: api/Langues
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Langue>>> GetLangues()
         {
-            return Ok(await _manager.GetAllAsync());
+            return await _context.Langues.ToListAsync();
         }
 
-        // GET: api/langue/5
+        // GET: api/Langues/5
         [HttpGet("{id}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<Langue>> GetLangueById(int id)
+        public async Task<ActionResult<Langue>> GetLangue(int id)
         {
-            var langue = await _manager.GetByIdAsync(id);
-            if (langue is null) return NotFound();
-
-            return langue;
+            var langue = await _context.Langues.FindAsync(id);
+            return langue is null ? NotFound() : langue;
         }
 
-        // PUT: api/langue/5
+        // PUT: api/Langues/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutLangue(int id, Langue langue)
         {
-            if (id != langue.Id) return BadRequest();
+            if (id != langue.Id)
+            {
+                return BadRequest();
+            }
 
-            var langueToUpdate = await _manager.GetByIdAsync(id);
-            if (langueToUpdate is null) return NotFound();
+            try
+            {
+                await _context.UpdateEntity(langue);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LangueExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            await _manager.UpdateAsync(langue);
             return NoContent();
         }
 
-        // POST: api/langue
+        // POST: api/Langues
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Langue>> PostLangue(Langue langue)
         {
-            await _manager.AddAsync(langue);
-            return CreatedAtAction("GetLangueById", new { id = langue.Id }, langue);
+            await _context.Langues.AddAsync(langue);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetLangue", new { id = langue.Id }, langue);
         }
 
-        // DELETE: api/langue/5
+        // DELETE: api/Langues/5
         [HttpDelete("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteLangue(int id)
         {
-            var langue = await _manager.GetByIdAsync(id);
-            if (langue is null) return NotFound();
+            var langue = await _context.Langues.FindAsync(id);
+            if (langue is null)
+            {
+                return NotFound();
+            }
 
-            await _manager.DeleteAsync(langue);
+            _context.Langues.Remove(langue);
+            await _context.SaveChangesAsync();
+
             return NoContent();
+        }
+
+        private bool LangueExists(int id)
+        {
+            return (_context.Langues?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
