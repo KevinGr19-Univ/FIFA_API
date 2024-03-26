@@ -1,5 +1,4 @@
 ﻿using FIFA_API.Contracts;
-using FIFA_API.Contracts.Repository;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;

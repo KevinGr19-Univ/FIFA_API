@@ -1,6 +1,6 @@
 ﻿using FIFA_API.Contracts;
-using FIFA_API.Contracts.Repository;
 using FIFA_API.Models.EntityFramework;
+using FIFA_API.Utils;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -14,12 +14,12 @@ namespace FIFA_API.Services
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
-        private readonly IUtilisateurManager _manager;
+        private readonly FifaDbContext _dbContext;
 
-        public TokenService(IConfiguration config, IUtilisateurManager manager)
+        public TokenService(IConfiguration config, FifaDbContext dbContext)
         {
             _config = config;
-            _manager = manager;
+            _dbContext = dbContext;
         }
 
         public string GenerateAccessToken(Utilisateur user)
@@ -61,7 +61,7 @@ namespace FIFA_API.Services
             var idClaim = principal.FindFirst(ClaimTypes.NameIdentifier);
             if (idClaim is null || !int.TryParse(idClaim.Value, out int userId)) return null;
 
-            return await _manager.GetByIdAsync(userId);
+            return await _dbContext.Utilisateurs.GetByIdAsync(userId);
         }
 
         public async Task<Utilisateur?> GetUserFromExpiredAsync(string token)
