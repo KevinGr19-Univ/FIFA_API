@@ -30,10 +30,6 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
         {
-          if (_context.Utilisateurs == null)
-          {
-              return NotFound();
-          }
             return await _context.Utilisateurs.ToListAsync();
         }
 
@@ -42,13 +38,9 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateur(int id)
         {
-          if (_context.Utilisateurs == null)
-          {
-              return NotFound();
-          }
             var utilisateur = await _context.Utilisateurs.GetByIdAsync(id);
 
-            if (utilisateur == null)
+            if (utilisateur is null)
             {
                 return NotFound();
             }
@@ -67,11 +59,9 @@ namespace FIFA_API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(utilisateur).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.UpdateEntity(utilisateur);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -94,11 +84,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Utilisateur>> PostUtilisateur(Utilisateur utilisateur)
         {
-          if (_context.Utilisateurs == null)
-          {
-              return Problem("Entity set 'FifaDbContext.Utilisateurs'  is null.");
-          }
-            _context.Utilisateurs.Add(utilisateur);
+            await _context.Utilisateurs.AddAsync(utilisateur);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUtilisateur", new { id = utilisateur.Id }, utilisateur);
@@ -109,12 +95,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {
-            if (_context.Utilisateurs == null)
-            {
-                return NotFound();
-            }
             var utilisateur = await _context.Utilisateurs.FindAsync(id);
-            if (utilisateur == null)
+            if (utilisateur is null)
             {
                 return NotFound();
             }

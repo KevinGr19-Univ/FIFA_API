@@ -6,64 +6,66 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
+using FIFA_API.Utils;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
-using FIFA_API.Utils;
 
 namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaysController : ControllerBase
+    public partial class CommandesController : ControllerBase
     {
         private const string MANAGER_POLICY = Policies.Admin;
 
         private readonly FifaDbContext _context;
 
-        public PaysController(FifaDbContext context)
+        public CommandesController(FifaDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Pays
+        // GET: api/Commandes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pays>>> GetPays()
+        [Authorize(Policy = MANAGER_POLICY)]
+        public async Task<ActionResult<IEnumerable<Commande>>> GetCommandes()
         {
-            return await _context.Pays.ToListAsync();
+            return await _context.Commandes.ToListAsync();
         }
 
-        // GET: api/Pays/5
+        // GET: api/Commandes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pays>> GetPays(int id)
+        [Authorize(Policy = MANAGER_POLICY)]
+        public async Task<ActionResult<Commande>> GetCommande(int id)
         {
-            var pays = await _context.Pays.FindAsync(id);
+            var commande = await _context.Commandes.Include(c => c.Utilisateur).GetByIdAsync(id);
 
-            if (pays is null)
+            if (commande is null)
             {
                 return NotFound();
             }
 
-            return pays;
+            return commande;
         }
 
-        // PUT: api/Pays/5
+        // PUT: api/Commandes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> PutPays(int id, Pays pays)
+        public async Task<IActionResult> PutCommande(int id, Commande commande)
         {
-            if (id != pays.Id)
+            if (id != commande.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _context.UpdateEntity(pays);
+                await _context.UpdateEntity(commande);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PaysExists(id))
+                if (!CommandeExists(id))
                 {
                     return NotFound();
                 }
@@ -76,38 +78,38 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
-        // POST: api/Pays
+        // POST: api/Commandes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<Pays>> PostPays(Pays pays)
+        public async Task<ActionResult<Commande>> PostCommande(Commande commande)
         {
-            await _context.Pays.AddAsync(pays);
+            await _context.Commandes.AddAsync(commande);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPays", new { id = pays.Id }, pays);
+            return CreatedAtAction("GetCommande", new { id = commande.Id }, commande);
         }
 
-        // DELETE: api/Pays/5
+        // DELETE: api/Commandes/5
         [HttpDelete("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> DeletePays(int id)
+        public async Task<IActionResult> DeleteCommande(int id)
         {
-            var pays = await _context.Pays.FindAsync(id);
-            if (pays is null)
+            var commande = await _context.Commandes.FindAsync(id);
+            if (commande == null)
             {
                 return NotFound();
             }
 
-            _context.Pays.Remove(pays);
+            _context.Commandes.Remove(commande);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool PaysExists(int id)
+        private bool CommandeExists(int id)
         {
-            return (_context.Pays?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Commandes?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
