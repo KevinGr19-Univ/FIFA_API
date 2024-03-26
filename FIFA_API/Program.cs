@@ -30,9 +30,10 @@ builder.Services.AddSwaggerGen(
 );
 
 #region Managers
-builder.Services.AddScoped<ILangueManager, LangueManager>(); 
+builder.Services.AddScoped<ILangueManager, LangueManager>();
 builder.Services.AddScoped<IPaysManager, PaysManager>();
 builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
+
 builder.Services.AddScoped<ICategorieProduitManager, CategorieProduitManager>();
 builder.Services.AddScoped<ICouleurManager, CouleurManager>();
 builder.Services.AddScoped<ITailleProduitManager, TailleProduitManager>();
@@ -40,8 +41,13 @@ builder.Services.AddScoped<ICompetitionManager, CompetitionManager>();
 builder.Services.AddScoped<IGenreManager, GenreManager>();
 builder.Services.AddScoped<INationManager, NationManager>();
 builder.Services.AddScoped<IProduitManager, ProduitManager>();
-builder.Services.AddScoped<IThemeVoteManager, ThemeVoteManager>();
 builder.Services.AddScoped<ICommandeManager, CommandeManager>();
+
+builder.Services.AddScoped<IJoueurManager, JoueurManager>();
+builder.Services.AddScoped<IFaqJoueurManager, FaqJoueurManager>();
+builder.Services.AddScoped<ITropheeManager, TropheeManager>();
+builder.Services.AddScoped<IClubManager, ClubManager>();
+builder.Services.AddScoped<IThemeVoteManager, ThemeVoteManager>();
 #endregion
 
 // Authentication

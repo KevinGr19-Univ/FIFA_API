@@ -6,7 +6,7 @@ namespace FIFA_API.Models.EntityFramework
 	[Table("t_e_statistiques_stt")]
     public partial class Statistiques
     {
-        [Key, Column("jou_id"), Required]
+        [Key, Column("jou_id")]
         public int IdJoueur { get; set; }
 
 		[Column("stt_matchsjoues"), Required]

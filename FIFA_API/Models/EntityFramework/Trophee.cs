@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,9 +11,13 @@ using System.ComponentModel.DataAnnotations.Schema;
     {
         public const int MAX_NOM_LENGTH = 60;
 
-        public Trophee()
+        private readonly ILazyLoader _loader;
+
+        public Trophee() { }
+
+        public Trophee(ILazyLoader loader)
         {
-            Joueurs = new HashSet<Joueur>();
+            _loader = loader;
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,6 +28,11 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 60 caractères.")]
         public string Nom { get; set; }
 
-        public ICollection<Joueur> Joueurs { get; set; }
+        private ICollection<Joueur> _joueurs = new HashSet<Joueur>();
+        public virtual ICollection<Joueur> Joueurs
+        {
+            get => _loader.Load(this, ref _joueurs);
+            set => _joueurs = value;
+        }
     }
 }
