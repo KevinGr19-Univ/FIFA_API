@@ -7,6 +7,7 @@ using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,13 +20,13 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class LoginController : ControllerBase
     {
-        private readonly IUtilisateurManager _manager;
+        private readonly FifaDbContext _dbContext;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
 
-        public LoginController(IUtilisateurManager repository, IPasswordHasher passwordHasher, ITokenService tokenService)
+        public LoginController(FifaDbContext dbContext, IPasswordHasher passwordHasher, ITokenService tokenService)
         {
-            _manager = repository;
+            _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
         }
@@ -48,14 +49,14 @@ namespace FIFA_API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterInfo registerInfo)
         {
-            if(await _manager.IsEmailTaken(registerInfo.Mail))
+            if(await _dbContext.Utilisateurs.AnyAsync(u => u.Mail == registerInfo.Mail))
             {
                 return BadRequest("Email taken");
             }
 
             Utilisateur newUser = registerInfo.BuildUser(_passwordHasher);
 
-            await _manager.AddAsync(newUser);
+            await _dbContext.AddAsync(newUser);
             return Ok();
         }
 
@@ -86,7 +87,7 @@ namespace FIFA_API.Controllers
 
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
-            Utilisateur? user = await _manager.GetByEmailAsync(email);
+            Utilisateur? user = await _dbContext.Utilisateurs.FirstOrDefaultAsync(u => u.Mail == email);
             if (user is null) return null;
 
             bool passwordMatch = _passwordHasher.Verify(user.HashMotDePasse, password);
@@ -104,7 +105,7 @@ namespace FIFA_API.Controllers
             user.RefreshToken = apiToken.RefreshToken;
             user.DerniereConnexion = DateTime.Now;
 
-            await _manager.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return apiToken;
         }
     }
