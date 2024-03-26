@@ -43,7 +43,10 @@ namespace FIFA_API.Controllers
         {
             if(await _dbContext.Utilisateurs.IsEmailTaken(registerInfo.Mail))
             {
-                return BadRequest("Email taken");
+                return BadRequest(new
+                {
+                    Message = "Email taken"
+                });
             }
 
             Utilisateur newUser = registerInfo.BuildUser(_passwordHasher);
