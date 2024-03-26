@@ -2,6 +2,7 @@ using FIFA_API.Models.Annotations;
 using FIFA_API.Models.Utils;
 using FIFA_API.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,10 +23,12 @@ namespace FIFA_API.Models.EntityFramework
     [Index(nameof(Mail), IsUnique = true)]
     public partial class Utilisateur
     {
-        public Utilisateur()
+        private readonly ILazyLoader _loader;
+
+        public Utilisateur() { }
+        public Utilisateur(ILazyLoader loader)
         {
-            Commandes = new HashSet<Commande>();
-            Votes = new HashSet<VoteUtilisateur>();
+            _loader = loader;
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -97,10 +100,21 @@ namespace FIFA_API.Models.EntityFramework
         [OnDelete(DeleteBehavior.SetNull)]
         public virtual Pays? PaysFavori { get; set; }
 
+        private ICollection<Commande> _commandes = new HashSet<Commande>();
+        private ICollection<VoteUtilisateur> _votes = new HashSet<VoteUtilisateur>();
+
         [InverseProperty(nameof(Commande.Utilisateur))]
-        public virtual ICollection<Commande> Commandes { get; set; }
+        public virtual ICollection<Commande> Commandes
+        {
+            get => _loader.Load(this, ref _commandes);
+            set => _commandes = value;
+        }
 
         [InverseProperty(nameof(VoteUtilisateur.Utilisateur))]
-        public virtual ICollection<VoteUtilisateur> Votes { get; set; }
+        public virtual ICollection<VoteUtilisateur> Votes
+        {
+            get => _loader.Load(this, ref _votes);
+            set => _votes = value;
+        }
     }
 }

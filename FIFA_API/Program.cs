@@ -29,7 +29,7 @@ builder.Services.AddSwaggerGen(
     }
 );
 
-// Managers
+#region Managers
 builder.Services.AddScoped<ILangueManager, LangueManager>(); 
 builder.Services.AddScoped<IPaysManager, PaysManager>();
 builder.Services.AddScoped<IUtilisateurManager, UtilisateurManager>();
@@ -41,6 +41,8 @@ builder.Services.AddScoped<IGenreManager, GenreManager>();
 builder.Services.AddScoped<INationManager, NationManager>();
 builder.Services.AddScoped<IProduitManager, ProduitManager>();
 builder.Services.AddScoped<IThemeVoteManager, ThemeVoteManager>();
+builder.Services.AddScoped<ICommandeManager, CommandeManager>();
+#endregion
 
 // Authentication
 builder.Services.AddScoped<ITokenService, TokenService>();
