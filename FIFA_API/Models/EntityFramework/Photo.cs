@@ -26,7 +26,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         private ICollection<Album> _albums { get; set; }
         private ICollection<Article> _articles { get; set; }
         private ICollection<Blog> _blogs { get; set; }
-        private ICollection<Joueur> _joueurs { get; set; }
+        private ICollection<Joueur> _joueurs { get; set; } // TODO: Enlever Photo <-> Joueur
         #endregion
     }
 }
