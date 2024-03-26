@@ -16,7 +16,7 @@ namespace FIFA_API.Controllers
     [ApiController]
     public class LanguesController : ControllerBase
     {
-        private const string MANAGER_POLICY = Policies.Admin;
+        public const string MANAGER_POLICY = Policies.Admin;
 
         private readonly FifaDbContext _context;
 

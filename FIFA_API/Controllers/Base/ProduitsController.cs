@@ -16,7 +16,7 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class ProduitsController : ControllerBase
     {
-        private const string MANAGER_POLICY = Policies.DirecteurVente;
+        public const string MANAGER_POLICY = Policies.DirecteurVente;
 
         private readonly FifaDbContext _context;
 
@@ -37,9 +37,9 @@ namespace FIFA_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Produit>> GetProduit(int id)
         {
-            var produit = await _context.Produits.FindAsync(id);
+            var produit = await _context.Produits.GetByIdAsync(id);
 
-            if (produit == null)
+            if (produit is null)
             {
                 return NotFound();
             }

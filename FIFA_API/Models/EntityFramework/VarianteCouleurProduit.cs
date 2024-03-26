@@ -36,5 +36,8 @@ namespace FIFA_API.Models.EntityFramework
 
         [ForeignKey(nameof(IdCouleur))]
         public virtual Couleur Couleur { get; set; }
+
+        [InverseProperty(nameof(StockProduit.VCProduit))]
+        public virtual ICollection<StockProduit> Stocks { get; set; }
     }
 }

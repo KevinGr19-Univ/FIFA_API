@@ -6,64 +6,63 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
-using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
 
 namespace FIFA_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tailles")]
     [ApiController]
-    public class PaysController : ControllerBase
+    public partial class TaillesController : ControllerBase
     {
-        public const string MANAGER_POLICY = Policies.Admin;
+        public const string MANAGER_POLICY = ProduitsController.MANAGER_POLICY;
 
         private readonly FifaDbContext _context;
 
-        public PaysController(FifaDbContext context)
+        public TaillesController(FifaDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Pays
+        // GET: api/TailleProduits
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pays>>> GetPays()
+        public async Task<ActionResult<IEnumerable<TailleProduit>>> GetTailleProduits()
         {
-            return await _context.Pays.ToListAsync();
+            return await _context.TailleProduits.ToListAsync();
         }
 
-        // GET: api/Pays/5
+        // GET: api/TailleProduits/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pays>> GetPays(int id)
+        public async Task<ActionResult<TailleProduit>> GetTailleProduit(int id)
         {
-            var pays = await _context.Pays.FindAsync(id);
+            var tailleProduit = await _context.TailleProduits.FindAsync(id);
 
-            if (pays is null)
+            if (tailleProduit == null)
             {
                 return NotFound();
             }
 
-            return pays;
+            return tailleProduit;
         }
 
-        // PUT: api/Pays/5
+        // PUT: api/TailleProduits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> PutPays(int id, Pays pays)
+        public async Task<IActionResult> PutTailleProduit(int id, TailleProduit tailleProduit)
         {
-            if (id != pays.Id)
+            if (id != tailleProduit.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _context.UpdateEntity(pays);
+                await _context.UpdateEntity(tailleProduit);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PaysExists(id))
+                if (!TailleProduitExists(id))
                 {
                     return NotFound();
                 }
@@ -76,38 +75,38 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
-        // POST: api/Pays
+        // POST: api/TailleProduits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<Pays>> PostPays(Pays pays)
+        public async Task<ActionResult<TailleProduit>> PostTailleProduit(TailleProduit tailleProduit)
         {
-            await _context.Pays.AddAsync(pays);
+            await _context.TailleProduits.AddAsync(tailleProduit);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPays", new { id = pays.Id }, pays);
+            return CreatedAtAction("GetTailleProduit", new { id = tailleProduit.Id }, tailleProduit);
         }
 
-        // DELETE: api/Pays/5
+        // DELETE: api/TailleProduits/5
         [HttpDelete("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> DeletePays(int id)
+        public async Task<IActionResult> DeleteTailleProduit(int id)
         {
-            var pays = await _context.Pays.FindAsync(id);
-            if (pays is null)
+            var tailleProduit = await _context.TailleProduits.FindAsync(id);
+            if (tailleProduit == null)
             {
                 return NotFound();
             }
 
-            _context.Pays.Remove(pays);
+            _context.TailleProduits.Remove(tailleProduit);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool PaysExists(int id)
+        private bool TailleProduitExists(int id)
         {
-            return (_context.Pays?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.TailleProduits?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

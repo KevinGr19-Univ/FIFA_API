@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
-using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
 
@@ -14,58 +13,56 @@ namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public partial class UtilisateursController : ControllerBase
+    public class CouleursController : ControllerBase
     {
-        public const string MANAGER_POLICY = Policies.Admin;
+        public const string MANAGER_POLICY = ProduitsController.MANAGER_POLICY;
 
         private readonly FifaDbContext _context;
 
-        public UtilisateursController(FifaDbContext context)
+        public CouleursController(FifaDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Utilisateurs
+        // GET: api/Couleurs
         [HttpGet]
-        [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
+        public async Task<ActionResult<IEnumerable<Couleur>>> GetCouleurs()
         {
-            return await _context.Utilisateurs.ToListAsync();
+            return await _context.Couleurs.ToListAsync();
         }
 
-        // GET: api/Utilisateurs/5
+        // GET: api/Couleurs/5
         [HttpGet("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<Utilisateur>> GetUtilisateur(int id)
+        public async Task<ActionResult<Couleur>> GetCouleur(int id)
         {
-            var utilisateur = await _context.Utilisateurs.GetByIdAsync(id);
+            var couleur = await _context.Couleurs.FindAsync(id);
 
-            if (utilisateur is null)
+            if (couleur == null)
             {
                 return NotFound();
             }
 
-            return utilisateur;
+            return couleur;
         }
 
-        // PUT: api/Utilisateurs/5
+        // PUT: api/Couleurs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> PutUtilisateur(int id, Utilisateur utilisateur)
+        public async Task<IActionResult> PutCouleur(int id, Couleur couleur)
         {
-            if (id != utilisateur.Id)
+            if (id != couleur.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _context.UpdateEntity(utilisateur);
+                await _context.UpdateEntity(couleur);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UtilisateurExists(id))
+                if (!CouleurExists(id))
                 {
                     return NotFound();
                 }
@@ -78,38 +75,38 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
-        // POST: api/Utilisateurs
+        // POST: api/Couleurs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<Utilisateur>> PostUtilisateur(Utilisateur utilisateur)
+        public async Task<ActionResult<Couleur>> PostCouleur(Couleur couleur)
         {
-            await _context.Utilisateurs.AddAsync(utilisateur);
+            await _context.Couleurs.AddAsync(couleur);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUtilisateur", new { id = utilisateur.Id }, utilisateur);
+            return CreatedAtAction("GetCouleur", new { id = couleur.Id }, couleur);
         }
 
-        // DELETE: api/Utilisateurs/5
+        // DELETE: api/Couleurs/5
         [HttpDelete("{id}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> DeleteUtilisateur(int id)
+        public async Task<IActionResult> DeleteCouleur(int id)
         {
-            var utilisateur = await _context.Utilisateurs.FindAsync(id);
-            if (utilisateur is null)
+            var couleur = await _context.Couleurs.FindAsync(id);
+            if (couleur == null)
             {
                 return NotFound();
             }
 
-            _context.Utilisateurs.Remove(utilisateur);
+            _context.Couleurs.Remove(couleur);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool UtilisateurExists(int id)
+        private bool CouleurExists(int id)
         {
-            return (_context.Utilisateurs?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Couleurs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

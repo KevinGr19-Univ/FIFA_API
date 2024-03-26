@@ -49,6 +49,8 @@ namespace FIFA_API.Controllers
             else if (desc == false)
                 query = query.OrderByDescending(p => p.Variantes.Select(v => v.Prix).Min());
 
+            // TODO: Pagination
+
             return Ok(await query.ToListAsync());
         }
     }
