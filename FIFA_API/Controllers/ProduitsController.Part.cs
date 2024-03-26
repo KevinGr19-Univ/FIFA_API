@@ -6,6 +6,8 @@ namespace FIFA_API.Controllers
 {
     public partial class ProduitsController
     {
+        public const int PRODUCTS_PER_PAGE = 50;
+
         [HttpGet("Search")]
         public async Task<ActionResult<IEnumerable<Produit>>> SearchProduits(
             [FromQuery] string? q,
@@ -49,7 +51,14 @@ namespace FIFA_API.Controllers
             else if (desc == false)
                 query = query.OrderByDescending(p => p.Variantes.Select(v => v.Prix).Min());
 
-            // TODO: Pagination
+            // TODO : Pagination PAS OPTI
+            if (page is not null)
+            {
+                int _page = (int)page;
+                if (_page < 1) return BadRequest(new { Message = "Invalid page" });
+
+                query = query.Skip(PRODUCTS_PER_PAGE * (_page - 1)).Take(PRODUCTS_PER_PAGE);
+            }
 
             return Ok(await query.ToListAsync());
         }
