@@ -11,7 +11,7 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<IEnumerable<Produit>>> SearchProducts([FromQuery] string q)
         {
             var products = await _manager.SearchProductsAsync(q);
-            return Ok(products);
+            return Ok(products); 
         }
     }
 }
