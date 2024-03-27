@@ -3,11 +3,13 @@ using FIFA_API.Models;
 using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
+using Humanizer.Localisation.TimeToClockNotation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using Stripe.Checkout;
 
 namespace FIFA_API.Controllers
@@ -77,7 +79,7 @@ namespace FIFA_API.Controllers
             }
             catch(CommandeException e)
             {
-                return BadRequest(e.Cause);
+                return BadRequest(new { e.Cause, e.Message });
             }
         }
 
@@ -143,14 +145,14 @@ namespace FIFA_API.Controllers
                 if(stocks is null)
                     throw new CommandeException(CommandeExceptionCause.NoStocks, $"Stock inconnu (ID_VCP: {item.IdVCProduit}, ID_TPR: {item.IdTaille})");
 
-                if (stocks.Stocks - item.Quantite <= 0)
+                if (stocks.Stocks - item.Quantite < 0)
                     throw new CommandeException(CommandeExceptionCause.StocksEmpty, $"Stocks épuisés (ID_VCP: {item.IdVCProduit}, ID_TPR: {item.IdTaille})");
 
                 items.Add(new()
                 {
                     PriceData = new()
                     {
-                        UnitAmount = (long)(variante.Prix * 100),
+                        UnitAmountDecimal = variante.Prix * 100,
                         Currency = "EUR",
                         ProductData = new()
                         {
@@ -196,6 +198,76 @@ namespace FIFA_API.Controllers
                     Metadata = new() { { "IdTypeLivraison", type.Id.ToString() } }
                 }
             }).ToList();
+        }
+
+        [HttpGet("checkout/success")]
+        [Authorize(Policy = Policies.User)]
+        public async Task<ActionResult<StripeSuccessResult>> StripeSuccess([FromQuery] string sessionId)
+        {
+            var service = new SessionService();
+            var session = await service.GetAsync(sessionId);
+            if (session is null) return NotFound();
+
+            int iduser = int.Parse(session.ClientReferenceId);
+            Utilisateur? user = await _context.Utilisateurs.FindAsync(iduser);
+            if (user is null) return Unauthorized();
+
+            Commande commande;
+            try { commande = await RegisterStripeCommand(session, user); }
+            catch(CommandeException e)
+            {
+                return StatusCode(500, new { e.Cause, e.Message });
+            }
+
+            var deliveryEstimate = session.ShippingCost.ShippingRate.DeliveryEstimate;
+
+            return Ok(new StripeSuccessResult()
+            {
+                IdCommande = commande.Id,
+                EstimateMaxValue = deliveryEstimate.Maximum.Value,
+                EstimateUnit = deliveryEstimate.Maximum.Unit,
+            });
+        }
+
+        [NonAction]
+        public async Task<Commande> RegisterStripeCommand(Session session, Utilisateur user)
+        {
+            user.StripeId = session.Customer.Id;
+
+            Commande commande = new Commande()
+            {
+                IdUtilisateur = user.Id,
+                IdTypeLivraison = int.Parse(session.ShippingCost.ShippingRate.Metadata["IdTypeLivraison"]),
+                PrixLivraison = (decimal)session.ShippingCost.AmountTotal / 100,
+                UrlFacture = session.Invoice.InvoicePdf
+            };
+
+            foreach (var item in session.LineItems)
+            {
+                int idVCProduit = int.Parse(item.Price.Metadata["IdVCProduit"]);
+                int idTaille = int.Parse(item.Price.Metadata["IdTaille"]);
+
+                var stocks = await _context.StockProduits.FindAsync(idVCProduit, idTaille);
+                if (stocks is null)
+                    throw new CommandeException(CommandeExceptionCause.NoStocks, $"Stock inconnu (ID_VCP: {idVCProduit}, ID_TPR: {idTaille})");
+
+                if (stocks.Stocks - item.Quantity < 0)
+                    throw new CommandeException(CommandeExceptionCause.StocksEmpty, $"Stocks épuisés (ID_VCP: {idVCProduit}, ID_TPR: {idTaille})");
+
+                commande.Lignes.Add(new()
+                {
+                    Commande = commande,
+                    IdVCProduit = idVCProduit,
+                    IdTaille = idTaille,
+                    PrixUnitaire = (decimal)item.Price.UnitAmountDecimal! / 100,
+                    Quantite = (int)item.Quantity!
+                });
+            }
+
+            await _context.Commandes.AddAsync(commande);
+            await _context.SaveChangesAsync();
+
+            return commande;
         }
         #endregion
     }
