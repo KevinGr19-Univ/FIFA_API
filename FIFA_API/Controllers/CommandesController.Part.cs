@@ -47,7 +47,7 @@ namespace FIFA_API.Controllers
         [HttpPost("MyCommands")]
         public async Task InitNewCommande()
         {
-            
+             
         }
     }
 }
