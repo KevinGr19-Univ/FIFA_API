@@ -234,12 +234,23 @@ namespace FIFA_API.Controllers
         {
             user.StripeId = session.Customer.Id;
 
+            var adrLivraison = session.ShippingDetails.Address;
+            var adrFacturation = session.CustomerDetails.Address;
+
             Commande commande = new Commande()
             {
                 IdUtilisateur = user.Id,
                 IdTypeLivraison = int.Parse(session.ShippingCost.ShippingRate.Metadata["IdTypeLivraison"]),
                 PrixLivraison = (decimal)session.ShippingCost.AmountTotal / 100,
-                UrlFacture = session.Invoice.InvoicePdf
+                UrlFacture = session.Invoice.InvoicePdf,
+
+                VilleLivraison = adrLivraison.City,
+                CodePostalLivraison = adrLivraison.PostalCode,
+                RueLivraison = adrLivraison.Line1,
+
+                VilleFacturation = adrFacturation.City,
+                CodePostalFacturation = adrFacturation.PostalCode,
+                RueFacturation = adrFacturation.Line1,
             };
 
             foreach (var item in session.LineItems)

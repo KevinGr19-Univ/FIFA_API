@@ -29,7 +29,6 @@ namespace FIFA_API.Models.EntityFramework
             _schemaName = config["Schema"];
         }
 
-        public virtual DbSet<Adresse> Adresses { get; set; }
         public virtual DbSet<Album> Albums { get; set; }
         public virtual DbSet<Article> Articles { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
@@ -87,12 +86,6 @@ namespace FIFA_API.Models.EntityFramework
 
         private void AddDatabaseConstraints(ModelBuilder mb)
         {
-            //mb.Entity<Adresse>(entity =>
-            //{
-            //    entity.Property(adr => adr.CodePostal).IsFixedLength();
-            //    entity.HasCheckConstraint("ck_adr_codepostal", $"adr_codepostal ~ '{ModelUtils.REGEX_CODEPOSTAL}'");
-            //});
-
             mb.Entity<Utilisateur>(entity =>
             {
                 entity.Property(utl => utl.HashMotDePasse).IsFixedLength();
@@ -111,6 +104,11 @@ namespace FIFA_API.Models.EntityFramework
             {
                 GreaterThanZero(entity, "cmd_prixlivraison");
                 entity.Property(c => c.DateCommande).HasDefaultValueSql("now()");
+
+                entity.Property(adr => adr.CodePostalLivraison).IsFixedLength();
+                entity.Property(adr => adr.CodePostalFacturation).IsFixedLength();
+                entity.HasCheckConstraint("ck_cmd_codepostallivraison", $"cmd_codepostallivraison ~ '{ModelUtils.REGEX_CODEPOSTAL}'");
+                entity.HasCheckConstraint("ck_cmd_codepostalfacturation", $"cmd_codepostalfacturation ~ '{ModelUtils.REGEX_CODEPOSTAL}'");
             });
 
             mb.Entity<Joueur>(entity =>
