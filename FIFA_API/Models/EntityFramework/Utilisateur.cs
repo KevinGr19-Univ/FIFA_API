@@ -10,15 +10,6 @@ using System.Text.Json.Serialization;
 
 namespace FIFA_API.Models.EntityFramework
 {
-    ////Ajouter les roles
-    //public enum RoleUtilisateur
-    //{
-    //    Utilisateur = 0,
-    //    DirecteurDuServiceVentes = 1,
-    //    MembreDuServiceExpedition = 2,
-    //    MembreDuServiceCommande = 3
-    //}
-
     [Table("t_e_utilisateur_utl")]
     [Index(nameof(Mail), IsUnique = true)]
     public partial class Utilisateur

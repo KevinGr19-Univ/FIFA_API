@@ -64,12 +64,8 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(MAX_BIO_LENGTH, ErrorMessage = "La biographie ne doit pas dépasser 500 caractères.")]
         public string Biographie { get; set; } = null!;
 
-        //Photo
-        [Column("pht_id")]
-        public int? IdPhoto { get; set; }
-
-        [ForeignKey(nameof(IdPhoto))]
-        public Photo? Photo { get; set; } = null!;
+        [Column("jou_imageurl")]
+        public string? ImageUrl { get; set; } = null!;
 
         //Statistiques
         [InverseProperty(nameof(Statistiques.Joueur))]
@@ -100,8 +96,5 @@ namespace FIFA_API.Models.EntityFramework
 
         [ManyToMany(nameof(Trophee.Joueurs))]
         public ICollection<Trophee> Trophees { get; set; }
-
-        [ManyToMany("_joueurs")]
-        public ICollection<Photo> Photos { get; set; }
     }
 }

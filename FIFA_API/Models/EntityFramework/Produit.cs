@@ -22,29 +22,28 @@ namespace FIFA_API.Models.EntityFramework
         public string Titre { get; set; }
 
         [Column("prd_description"), Required]
-        [StringLength(200, ErrorMessage = "La description ne doit pas dépasser 200 caractères")]
         public string Description { get; set; }
 
-        [Column("cmp_id"), Required]
-        public int IdCompetition { get; set; }
+        [Column("cmp_id")]
+        public int? IdCompetition { get; set; }
 
-        [Column("nat_id"), Required]
-        public int IdNation { get; set; }
+        [Column("nat_id")]
+        public int? IdNation { get; set; }
 
-        [Column("gen_id"), Required]
-        public int IdGenre { get; set; }
+        [Column("gen_id")]
+        public int? IdGenre { get; set; }
 
         [Column("cpr_id"), Required]
         public int IdCategorieProduit { get; set; }
 
         [ForeignKey(nameof(IdCompetition))]
-        public Competition Competition { get; set; }
+        public Competition? Competition { get; set; }
 
         [ForeignKey(nameof(IdNation))]
-        public Nation Nation { get; set; }
+        public Nation? Nation { get; set; }
 
         [ForeignKey(nameof(IdGenre))]
-        public Genre Genre { get; set; }
+        public Genre? Genre { get; set; }
 
         [ForeignKey(nameof(IdCategorieProduit))]
         public CategorieProduit Categorie { get; set; }

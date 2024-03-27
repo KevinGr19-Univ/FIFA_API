@@ -28,6 +28,17 @@ namespace FIFA_API.Controllers
             return await GetVoteUtilisateur(idtheme, user.Id);
         }
 
+        [HttpPost("myvotes")]
+        [Authorize(Policy = Policies.User)]
+        public async Task<ActionResult<VoteUtilisateur>> CreateVote(VoteUtilisateur vote)
+        {
+            Utilisateur? user = await this.UtilisateurAsync();
+            if (user is null) return Unauthorized();
+
+            vote.IdUtilisateur = user.Id;
+            return await PostVoteUtilisateur(vote);
+        }
+
         [HttpPut("myvotes")]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> UpdateMyVote(int idtheme, VoteUtilisateur vote)

@@ -10,7 +10,7 @@ namespace FIFA_API.Models.EntityFramework
     [ComposedKey(nameof(IdUtilisateur), nameof(IdTheme))]
     public partial class VoteUtilisateur
     {
-        [Column("utl_id", Order = 0), Required]
+        [Column("utl_id", Order = 0)]
         public int IdUtilisateur { get; set; }
 
         [Column("thv_id", Order = 1), Required]

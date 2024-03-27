@@ -28,7 +28,7 @@ namespace FIFA_API.Controllers
             return Ok(SortedCommands(user.Commandes, desc));
         }
 
-        [HttpGet("MyCommand/{idcommande}")]
+        [HttpGet("MyCommands/{idcommande}")]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<Commande>> GetMyCommand(int idCommande)
         {
@@ -43,5 +43,11 @@ namespace FIFA_API.Controllers
 
         private static IEnumerable<Commande> SortedCommands(IEnumerable<Commande> commands, bool? desc)
             => desc == true ? commands.OrderBy(c => c.DateCommande) : commands.OrderByDescending(c => c.DateCommande);
+
+        [HttpPost("MyCommands")]
+        public async Task InitNewCommande()
+        {
+            
+        }
     }
 }
