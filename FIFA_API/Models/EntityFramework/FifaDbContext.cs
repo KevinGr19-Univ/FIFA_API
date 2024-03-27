@@ -87,11 +87,11 @@ namespace FIFA_API.Models.EntityFramework
 
         private void AddDatabaseConstraints(ModelBuilder mb)
         {
-            mb.Entity<Adresse>(entity =>
-            {
-                entity.Property(adr => adr.CodePostal).IsFixedLength();
-                entity.HasCheckConstraint("ck_adr_codepostal", $"adr_codepostal ~ '{ModelUtils.REGEX_CODEPOSTAL}'");
-            });
+            //mb.Entity<Adresse>(entity =>
+            //{
+            //    entity.Property(adr => adr.CodePostal).IsFixedLength();
+            //    entity.HasCheckConstraint("ck_adr_codepostal", $"adr_codepostal ~ '{ModelUtils.REGEX_CODEPOSTAL}'");
+            //});
 
             mb.Entity<Utilisateur>(entity =>
             {

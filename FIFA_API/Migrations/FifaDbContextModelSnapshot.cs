@@ -23,7 +23,7 @@ namespace FIFA_API.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "sa15_fifa", "code_status_commande", new[] { "preparation", "validation", "expedition", "livre", "annule", "refuse", "refus_accepte" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "sa15_fifa", "pied_joueur", new[] { "gaucher", "droitier", "ambidextre" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "sa15_fifa", "poste_joueur", new[] { "attaquant", "defenseur", "gardien" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "sa15_fifa", "poste_joueur", new[] { "attaquant", "defenseur", "milieu", "gardien" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Adresse", b =>

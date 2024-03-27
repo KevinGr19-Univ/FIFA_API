@@ -34,12 +34,14 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int IdAdresseLivraison { get; set; }
 
         [ForeignKey(nameof(IdAdresseLivraison))]
+        //[Column("cmd_adresselivraison"), Required]
         public Adresse AdresseLivraison { get; set; }
-        
+
         [Column("adr_facuration_id"), Required]
         public int IdAdresseFacturation { get; set; }
 
         [ForeignKey(nameof(IdAdresseFacturation))]
+        //[Column("cmd_adressefacturation"), Required]
         public Adresse AdresseFacturation { get; set; }
 
 		[Column("cmd_prixlivraison"), Required]

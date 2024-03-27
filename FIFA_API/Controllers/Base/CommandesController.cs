@@ -18,10 +18,12 @@ namespace FIFA_API.Controllers
     {
         public const string MANAGER_POLICY = Policies.Admin;
 
+        private readonly IConfiguration _config;
         private readonly FifaDbContext _context;
 
-        public CommandesController(FifaDbContext context)
+        public CommandesController(FifaDbContext context, IConfiguration config)
         {
+            _config = config;
             _context = context;
         }
 
