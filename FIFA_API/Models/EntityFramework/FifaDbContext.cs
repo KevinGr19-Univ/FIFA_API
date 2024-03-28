@@ -139,7 +139,7 @@ namespace FIFA_API.Models.EntityFramework
 
             mb.Entity<StockProduit>(entity =>
             {
-                GreaterThanZero(entity, "spr_stocks");
+                GreaterOrEqualThanZero(entity, "spr_stocks");
                 entity.Property(s => s.Stocks).HasDefaultValue(0);
             });
 

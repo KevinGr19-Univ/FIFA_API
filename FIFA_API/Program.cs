@@ -9,9 +9,6 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-DotNetEnv.Env.Load();
-builder.Configuration.AddEnvironmentVariables();
-
 builder.Services.AddDbContext<FifaDbContext>();
 
 builder.Services.AddControllers(

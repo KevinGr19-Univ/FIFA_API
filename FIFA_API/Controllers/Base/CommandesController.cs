@@ -40,7 +40,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Commande>> GetCommande(int id)
         {
-            var commande = await _context.Commandes.Include(c => c.Utilisateur).GetByIdAsync(id);
+            var commande = await _context.Commandes.GetByIdAsync(id);
 
             if (commande is null)
             {

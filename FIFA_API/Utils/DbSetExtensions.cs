@@ -26,6 +26,7 @@ namespace FIFA_API.Utils
         public static async Task<Commande?> GetByIdAsync(this IQueryable<Commande> query, int id)
         {
             return await query.Include(c => c.Status)
+                .Include(c => c.Lignes)
                 .Include(c => c.TypeLivraison)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }

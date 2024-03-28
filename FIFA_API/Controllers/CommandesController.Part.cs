@@ -62,12 +62,6 @@ namespace FIFA_API.Controllers
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            //var server = sp.GetRequiredService<IServer>();
-            //var serverAddressesFeature = server.Features.Get<IServerAddressesFeature>();
-
-            //string? fifApiUrl = serverAddressesFeature?.Addresses.FirstOrDefault();
-            //if (fifApiUrl is null) return StatusCode(500, new{ Message = "Could not resolve API URL" });
-
             try
             {
                 var url = await Checkout(user, panier);
@@ -197,7 +191,8 @@ namespace FIFA_API.Controllers
             }).ToList();
         }
 
-        [HttpPost("checkout/webhook")]
+        [HttpPost("webhook")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> StripeWebhook()
         {
             try
@@ -207,12 +202,13 @@ namespace FIFA_API.Controllers
                 var webhookEndpointSecret = _config["Stripe:WebhookSecret"];
 
                 var stripeEvent = EventUtility.ConstructEvent(json, signatureHeader, webhookEndpointSecret);
+                Console.WriteLine(stripeEvent.Data.Object);
 
                 switch (stripeEvent.Type)
                 {
                     case Events.CheckoutSessionCompleted:
                         var session = stripeEvent.Data.Object as Session;
-                        return await HandleSessionSuccess(session!);
+                        return await HandleSessionSuccess(session!.Id);
 
                     default:
                         break;
@@ -231,8 +227,20 @@ namespace FIFA_API.Controllers
         }
 
         [NonAction]
-        public async Task<IActionResult> HandleSessionSuccess(Session session)
+        public async Task<IActionResult> HandleSessionSuccess(string sessionId)
         {
+            var service = new SessionService();
+            var session = await service.GetAsync(sessionId, new()
+            {
+                Expand = new()
+                {
+                    "customer",
+                    "line_items.data.price.product",
+                    "invoice",
+                    "shipping_cost.shipping_rate"
+                }
+            });
+
             int iduser = int.Parse(session.ClientReferenceId);
             Utilisateur? user = await _context.Utilisateurs.FindAsync(iduser);
             if (user is null) return Unauthorized();
