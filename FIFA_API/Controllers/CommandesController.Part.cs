@@ -57,20 +57,20 @@ namespace FIFA_API.Controllers
         #region Stripe
         [HttpPost("checkout")]
         [Authorize(Policy = Policies.User)]
-        public async Task<ActionResult<StartStripeSessionResponse>> StartStripeCommand([FromBody] Panier panier, [FromServices] IServiceProvider sp)
+        public async Task<ActionResult<StartStripeSessionResponse>> StartStripeCommand([FromBody] Panier panier)
         {
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            var server = sp.GetRequiredService<IServer>();
-            var serverAddressesFeature = server.Features.Get<IServerAddressesFeature>();
+            //var server = sp.GetRequiredService<IServer>();
+            //var serverAddressesFeature = server.Features.Get<IServerAddressesFeature>();
 
-            string? fifApiUrl = serverAddressesFeature?.Addresses.FirstOrDefault();
-            if (fifApiUrl is null) return StatusCode(500, new{ Message = "Could not resolve API URL" });
+            //string? fifApiUrl = serverAddressesFeature?.Addresses.FirstOrDefault();
+            //if (fifApiUrl is null) return StatusCode(500, new{ Message = "Could not resolve API URL" });
 
             try
             {
-                var url = await Checkout(user, panier, fifApiUrl);
+                var url = await Checkout(user, panier);
                 return Ok(new StartStripeSessionResponse()
                 {
                     SessionId = url,
@@ -84,13 +84,13 @@ namespace FIFA_API.Controllers
         }
 
         [NonAction]
-        public async Task<string> Checkout(Utilisateur user, Panier panier, string apiUrl)
+        public async Task<string> Checkout(Utilisateur user, Panier panier)
         {
             var options = new SessionCreateOptions()
             {
                 ClientReferenceId = user.Id.ToString(),
-                SuccessUrl = $"{apiUrl}/checkout/success?sessionId={{CHECKOUT_SESSION_ID}}",
-                CancelUrl = "",
+                SuccessUrl = $"{panier.SuccessUrl}?sessionId={{CHECKOUT_SESSION_ID}}",
+                CancelUrl = panier.CancelUrl,
                 InvoiceCreation = new() { Enabled = true },
 
                 LineItems = await GetCommandLines(panier),
@@ -119,9 +119,6 @@ namespace FIFA_API.Controllers
 
             var service = new SessionService();
             var session = await service.CreateAsync(options);
-
-            user.StripeId = session.Customer.Id;
-            await _context.SaveChangesAsync();
 
             return session.Url;
         }
@@ -175,7 +172,7 @@ namespace FIFA_API.Controllers
         [NonAction]
         public async Task<List<SessionShippingOptionOptions>> GetShippingOptions()
         {
-            var types = await _context.TypeLivraisons.ToListAsync();
+            var types = await _context.TypeLivraisons.Take(5).ToListAsync();
             return types.Select(type => new SessionShippingOptionOptions()
             {
                 ShippingRateData = new()
@@ -185,7 +182,7 @@ namespace FIFA_API.Controllers
                     {
                         Maximum = new()
                         {
-                            Unit = "business_days",
+                            Unit = "business_day",
                             Value = type.MaxBusinessDays
                         }
                     },
@@ -205,7 +202,16 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<StripeSuccessResult>> StripeSuccess([FromQuery] string sessionId)
         {
             var service = new SessionService();
-            var session = await service.GetAsync(sessionId);
+            var session = await service.GetAsync(sessionId, options: new()
+            {
+                Expand = new()
+                {
+                    "customer",
+                    "shipping_cost.shipping_rate",
+                    "line_items.data.price.product",
+                    "invoice"
+                }
+            });
             if (session is null) return NotFound();
 
             int iduser = int.Parse(session.ClientReferenceId);
@@ -250,13 +256,13 @@ namespace FIFA_API.Controllers
 
                 VilleFacturation = adrFacturation.City,
                 CodePostalFacturation = adrFacturation.PostalCode,
-                RueFacturation = adrFacturation.Line1,
+                RueFacturation = adrFacturation.Line1
             };
 
-            foreach (var item in session.LineItems)
+            foreach (var item in session.LineItems.Data)
             {
-                int idVCProduit = int.Parse(item.Price.Metadata["IdVCProduit"]);
-                int idTaille = int.Parse(item.Price.Metadata["IdTaille"]);
+                int idVCProduit = int.Parse(item.Price.Product.Metadata["IdVCProduit"]);
+                int idTaille = int.Parse(item.Price.Product.Metadata["IdTaille"]);
 
                 var stocks = await _context.StockProduits.FindAsync(idVCProduit, idTaille);
                 if (stocks is null)
@@ -273,6 +279,8 @@ namespace FIFA_API.Controllers
                     PrixUnitaire = (decimal)item.Price.UnitAmountDecimal! / 100,
                     Quantite = (int)item.Quantity!
                 });
+
+                stocks.Stocks -= (int)item.Quantity;
             }
 
             await _context.Commandes.AddAsync(commande);

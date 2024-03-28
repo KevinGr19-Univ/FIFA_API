@@ -6,6 +6,8 @@ namespace FIFA_API.Models.Controllers
     public class Panier
     {
         [Required] public List<PanierItem> Items { get; set; }
+        [Required] public string SuccessUrl { get; set; }
+        [Required] public string CancelUrl { get; set; }
     }
 
     public class PanierItem
