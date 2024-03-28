@@ -89,7 +89,7 @@ namespace FIFA_API.Controllers
             var options = new SessionCreateOptions()
             {
                 ClientReferenceId = user.Id.ToString(),
-                SuccessUrl = $"{panier.SuccessUrl}?sessionId={{CHECKOUT_SESSION_ID}}",
+                SuccessUrl = panier.SuccessUrl,
                 CancelUrl = panier.CancelUrl,
                 InvoiceCreation = new() { Enabled = true },
 
@@ -197,42 +197,54 @@ namespace FIFA_API.Controllers
             }).ToList();
         }
 
-        [HttpGet("checkout/success")]
-        [Authorize(Policy = Policies.User)]
-        public async Task<ActionResult<StripeSuccessResult>> StripeSuccess([FromQuery] string sessionId)
+        [HttpPost("checkout/webhook")]
+        public async Task<IActionResult> StripeWebhook()
         {
-            var service = new SessionService();
-            var session = await service.GetAsync(sessionId, options: new()
+            try
             {
-                Expand = new()
-                {
-                    "customer",
-                    "shipping_cost.shipping_rate",
-                    "line_items.data.price.product",
-                    "invoice"
-                }
-            });
-            if (session is null) return NotFound();
+                var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+                var signatureHeader = Request.Headers["Stripe-Signature"];
+                var webhookEndpointSecret = _config["Stripe:WebhookSecret"];
 
+                var stripeEvent = EventUtility.ConstructEvent(json, signatureHeader, webhookEndpointSecret);
+
+                switch (stripeEvent.Type)
+                {
+                    case Events.CheckoutSessionCompleted:
+                        var session = stripeEvent.Data.Object as Session;
+                        return await HandleSessionSuccess(session!);
+
+                    default:
+                        break;
+                }
+            }
+            catch(CommandeException e)
+            {
+                return BadRequest(new { e.Cause, e.Message });
+            }
+            catch(Exception e)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [NonAction]
+        public async Task<IActionResult> HandleSessionSuccess(Session session)
+        {
             int iduser = int.Parse(session.ClientReferenceId);
             Utilisateur? user = await _context.Utilisateurs.FindAsync(iduser);
             if (user is null) return Unauthorized();
 
             Commande commande;
             try { commande = await RegisterStripeCommand(session, user); }
-            catch(CommandeException e)
+            catch (CommandeException e)
             {
                 return StatusCode(500, new { e.Cause, e.Message });
             }
 
-            var deliveryEstimate = session.ShippingCost.ShippingRate.DeliveryEstimate;
-
-            return Ok(new StripeSuccessResult()
-            {
-                IdCommande = commande.Id,
-                EstimateMaxValue = deliveryEstimate.Maximum.Value,
-                EstimateUnit = deliveryEstimate.Maximum.Unit,
-            });
+            return Ok();
         }
 
         [NonAction]
@@ -259,6 +271,8 @@ namespace FIFA_API.Controllers
                 RueFacturation = adrFacturation.Line1
             };
 
+            List<Tuple<StockProduit, int>> quantityToRemove = new();
+
             foreach (var item in session.LineItems.Data)
             {
                 int idVCProduit = int.Parse(item.Price.Product.Metadata["IdVCProduit"]);
@@ -280,10 +294,15 @@ namespace FIFA_API.Controllers
                     Quantite = (int)item.Quantity!
                 });
 
-                stocks.Stocks -= (int)item.Quantity;
+                quantityToRemove.Add(new(stocks, (int)item.Quantity));
             }
 
             await _context.Commandes.AddAsync(commande);
+
+            // Remove from stocks later and all at once to prevent unwanted updates (if an exception occurs early)
+            foreach (var stocksQuantity in quantityToRemove)
+                stocksQuantity.Item1.Stocks -= stocksQuantity.Item2;
+
             await _context.SaveChangesAsync();
 
             return commande;
