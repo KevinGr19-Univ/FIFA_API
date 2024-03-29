@@ -8,10 +8,7 @@ namespace FIFA_API.Models.EntityFramework
     [Index(nameof(IdProduit), nameof(IdCouleur), IsUnique = true)]
     public partial class VarianteCouleurProduit
     {
-        public VarianteCouleurProduit()
-        {
-            ImageUrls = new List<string>();
-        }
+        public VarianteCouleurProduit() { }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("vcp_id")]
@@ -29,7 +26,7 @@ namespace FIFA_API.Models.EntityFramework
         public decimal Prix { get; set; }
 
         [Column("vcp_images", TypeName = "varchar[]")]
-        public List<string> ImageUrls { get; set; }
+        public List<string> ImageUrls { get; set; } = new List<string>();
 
         [ForeignKey(nameof(IdProduit))]
         public virtual Produit Produit { get; set; }

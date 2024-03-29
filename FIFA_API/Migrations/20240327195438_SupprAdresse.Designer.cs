@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    partial class FifaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240327195438_SupprAdresse")]
+    partial class SupprAdresse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -675,7 +677,7 @@ namespace FIFA_API.Migrations
 
                     b.ToTable("t_j_stockproduit_spr");
 
-                    b.HasCheckConstraint("ck_spr_stocks", "spr_stocks >= 0");
+                    b.HasCheckConstraint("ck_spr_stocks", "spr_stocks > 0");
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.TailleProduit", b =>

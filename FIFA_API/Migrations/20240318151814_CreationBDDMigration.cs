@@ -15,7 +15,7 @@ namespace FIFA_API.Migrations
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:sa15_fifa.code_status_commande", "preparation,validation,expedition,livre,annule,refuse,refus_accepte")
                 .Annotation("Npgsql:Enum:sa15_fifa.pied_joueur", "gaucher,droitier,ambidextre")
-                .Annotation("Npgsql:Enum:sa15_fifa.poste_joueur", "attaquant,defenseur,gardien");
+                .Annotation("Npgsql:Enum:sa15_fifa.poste_joueur", "attaquant,defenseur,milieu,gardien");
 
             migrationBuilder.CreateTable(
                 name: "t_e_adresse_adr",

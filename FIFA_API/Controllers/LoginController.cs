@@ -52,7 +52,8 @@ namespace FIFA_API.Controllers
             Utilisateur newUser = registerInfo.BuildUser(_passwordHasher);
 
             await _dbContext.AddAsync(newUser);
-            return Ok();
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
         }
 
         [HttpPost("Login/Refresh")]

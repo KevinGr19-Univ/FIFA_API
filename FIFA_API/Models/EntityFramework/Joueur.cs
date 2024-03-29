@@ -16,7 +16,8 @@ namespace FIFA_API.Models.EntityFramework
         // TODO: A remplir
         Attaquant = 0,
         Defenseur = 1,
-        Gardien = 2
+        Milieu = 2,
+        Gardien = 3
     }
 
     [Table("t_e_joueur_jou")]

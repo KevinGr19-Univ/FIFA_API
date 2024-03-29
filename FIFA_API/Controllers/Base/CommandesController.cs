@@ -18,10 +18,12 @@ namespace FIFA_API.Controllers
     {
         public const string MANAGER_POLICY = Policies.Admin;
 
+        private readonly IConfiguration _config;
         private readonly FifaDbContext _context;
 
-        public CommandesController(FifaDbContext context)
+        public CommandesController(FifaDbContext context, IConfiguration config)
         {
+            _config = config;
             _context = context;
         }
 
@@ -38,7 +40,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Commande>> GetCommande(int id)
         {
-            var commande = await _context.Commandes.Include(c => c.Utilisateur).GetByIdAsync(id);
+            var commande = await _context.Commandes.GetByIdAsync(id);
 
             if (commande is null)
             {
