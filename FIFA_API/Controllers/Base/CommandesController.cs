@@ -37,15 +37,16 @@ namespace FIFA_API.Controllers
 
         // GET: api/Commandes/5
         [HttpGet("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<Commande>> GetCommande(int id)
         {
+            Utilisateur? user = await this.UtilisateurAsync();
+            if (user is null) return Unauthorized();
+
             var commande = await _context.Commandes.GetByIdAsync(id);
 
-            if (commande is null)
-            {
-                return NotFound();
-            }
+            if (commande is null) return NotFound();
+            if(!User.IsInRole(MANAGER_POLICY) && commande.Id != user.Id) return NotFound(); 
 
             return commande;
         }

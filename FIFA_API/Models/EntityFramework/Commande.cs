@@ -7,7 +7,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_commande_cmd")]
-    [Index(nameof(UrlFacture), IsUnique = true)]
     public partial class Commande
     {
         public const int MAX_VILLE_LENGTH = 150;

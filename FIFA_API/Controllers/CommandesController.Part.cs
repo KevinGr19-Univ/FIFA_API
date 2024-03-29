@@ -23,13 +23,13 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<ApercuCommande>>> GetUserCommands(int idUtilisateur, [FromQuery] bool? desc, [FromQuery] int? page)
         {
-            return Ok(_context.Commandes.Where(c => c.IdUtilisateur == idUtilisateur)
+            return Ok(await _context.Commandes.Where(c => c.IdUtilisateur == idUtilisateur)
                 .Sort(desc == true)
                 .Paginate(Math.Max(page ?? 1, 1), COMMANDES_PER_PAGE)
                 .ToApercus());
         }
 
-        [HttpGet("MyCommands")]
+        [HttpGet("me")]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<IEnumerable<ApercuCommande>>> GetMyCommands([FromQuery] bool? desc, [FromQuery] int? page)
         {
@@ -37,19 +37,6 @@ namespace FIFA_API.Controllers
             if (user is null) return Unauthorized();
 
             return await GetUserCommands(user.Id, desc, page);
-        }
-
-        [HttpGet("MyCommands/{idcommande}")]
-        [Authorize(Policy = Policies.User)]
-        public async Task<ActionResult<Commande>> GetMyCommand(int idCommande)
-        {
-            Utilisateur? user = await this.UtilisateurAsync();
-            if (user is null) return Unauthorized();
-
-            Commande? commande = await _context.Commandes.GetByIdAsync(idCommande);
-            if (commande is null || commande.IdUtilisateur != user.Id) return NotFound();
-
-            return Ok(commande);
         }
         #endregion
 
