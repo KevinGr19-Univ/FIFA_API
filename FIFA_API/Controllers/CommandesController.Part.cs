@@ -16,25 +16,27 @@ namespace FIFA_API.Controllers
 {
     public partial class CommandesController
     {
+        public const int COMMANDES_PER_PAGE = 20;
+
         #region User commands
         [HttpGet("UserCommands/{idUtilisateur}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<IEnumerable<Commande>>> GetUserCommands(int idUtilisateur, [FromQuery] bool? desc)
+        public async Task<ActionResult<IEnumerable<ApercuCommande>>> GetUserCommands(int idUtilisateur, [FromQuery] bool? desc, [FromQuery] int? page)
         {
-            Utilisateur? user = await _context.Utilisateurs.GetByIdAsync(idUtilisateur);
-            if (user is null) return NotFound();
-
-            return Ok(SortedCommands(user.Commandes, desc));
+            return Ok(_context.Commandes.Where(c => c.IdUtilisateur == idUtilisateur)
+                .Sort(desc == true)
+                .Paginate(Math.Max(page ?? 1, 1), COMMANDES_PER_PAGE)
+                .ToApercus());
         }
 
         [HttpGet("MyCommands")]
         [Authorize(Policy = Policies.User)]
-        public async Task<ActionResult<IEnumerable<Commande>>> GetMyCommands([FromQuery] bool? desc)
+        public async Task<ActionResult<IEnumerable<ApercuCommande>>> GetMyCommands([FromQuery] bool? desc, [FromQuery] int? page)
         {
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            return Ok(SortedCommands(user.Commandes, desc));
+            return await GetUserCommands(user.Id, desc, page);
         }
 
         [HttpGet("MyCommands/{idcommande}")]
@@ -49,9 +51,6 @@ namespace FIFA_API.Controllers
 
             return Ok(commande);
         }
-
-        private static IEnumerable<Commande> SortedCommands(IEnumerable<Commande> commands, bool? desc)
-            => desc == true ? commands.OrderBy(c => c.DateCommande) : commands.OrderByDescending(c => c.DateCommande);
         #endregion
 
         #region Stripe

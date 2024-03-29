@@ -1,10 +1,17 @@
-﻿using FIFA_API.Models.EntityFramework;
+﻿using FIFA_API.Models.Controllers;
+using FIFA_API.Models.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Utils
 {
     public static class DbSetExtensions
     {
+        // TODO : Pagination PAS OPTI
+        public static IQueryable<T> Paginate<T>(this IQueryable<T> query, int page, int pageSize)
+        {
+            return query.Skip((page-1) * pageSize).Take(pageSize);
+        }
+
         #region Utilisateurs
         public static async Task<Utilisateur?> GetByIdAsync(this IQueryable<Utilisateur> query, int id)
         {
@@ -23,6 +30,16 @@ namespace FIFA_API.Utils
         #endregion
 
         #region Commande
+        public static IQueryable<Commande> Sort(this IQueryable<Commande> query, bool desc)
+        {
+            return desc ? query.OrderByDescending(c => c.DateCommande) : query.OrderBy(c => c.DateCommande);
+        }
+
+        public static async Task<IEnumerable<ApercuCommande>> ToApercus(this IQueryable<Commande> query)
+        {
+            return (await query.ToListAsync()).Select(c => ApercuCommande.FromCommande(c));
+        }
+
         public static async Task<Commande?> GetByIdAsync(this IQueryable<Commande> query, int id)
         {
             return await query.Include(c => c.Status)

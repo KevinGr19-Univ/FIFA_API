@@ -60,15 +60,7 @@ namespace FIFA_API.Controllers
             else if (desc == true)
                 query = query.OrderByDescending(p => p.Produit.Variantes.Min(v => v.Prix));
 
-            // TODO : Pagination PAS OPTI
-            if (page is not null)
-            {
-                int _page = (int)page;
-                if (_page < 1) return BadRequest(new { Message = "Invalid page" });
-
-                query = query.Skip(PRODUCTS_PER_PAGE * (_page - 1)); 
-            }
-            query = query.Take(PRODUCTS_PER_PAGE);
+            query = query.Paginate(Math.Max(page ?? 1, 1), PRODUCTS_PER_PAGE);
 
             return Ok(await query.Select(p => 
                 new {

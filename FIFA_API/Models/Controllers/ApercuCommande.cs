@@ -10,6 +10,7 @@ namespace FIFA_API.Models.Controllers
         public string AdresseVille { get; set; }
         public string AdresseCodePostal { get; set; }
 
+        public DateTime DateCommande { get; set; }
         public StatusCommande DernierStatus { get; set; }
 
         public static ApercuCommande FromCommande(Commande commande)
@@ -20,6 +21,7 @@ namespace FIFA_API.Models.Controllers
                 AdresseRue = commande.RueLivraison,
                 AdresseVille = commande.VilleLivraison,
                 AdresseCodePostal = commande.CodePostalLivraison,
+                DateCommande = commande.DateCommande,
                 DernierStatus = commande.Status.OrderByDescending(s => s.Date).First()
             };
         }

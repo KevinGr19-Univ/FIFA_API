@@ -1,21 +1,24 @@
 using FIFA_API.Models.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.EntityFramework
 {
-	[Table("t_e_commande_cmd")]
-    [Index(nameof(UrlFacture),IsUnique =true)]
+    [Table("t_e_commande_cmd")]
+    [Index(nameof(UrlFacture), IsUnique = true)]
     public partial class Commande
     {
         public const int MAX_VILLE_LENGTH = 150;
         public const int MAX_RUE_LENGTH = 200;
 
-        public Commande()
+        private readonly ILazyLoader _loader;
+
+        public Commande() { }
+        public Commande(ILazyLoader loader)
         {
-            Lignes = new HashSet<LigneCommande>();
-            Status = new HashSet<StatusCommande>();
+            _loader = loader;
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -61,25 +64,36 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string CodePostalFacturation { get; set; }
 
         [Column("cmd_prixlivraison"), Required]
-        [Precision(7,2)]
+        [Precision(7, 2)]
         public decimal PrixLivraison { get; set; }
 
-		[Column("cmd_datecommande"), Required]
+        [Column("cmd_datecommande"), Required]
         public DateTime DateCommande { get; set; }
 
-		[Column("cmd_dateexpedition")]
+        [Column("cmd_dateexpedition")]
         public DateTime? DateExpedition { get; set; }
 
-		[Column("cmd_datelivraison")]
+        [Column("cmd_datelivraison")]
         public DateTime? DateLivraison { get; set; }
 
-		[Column("cmd_urlfacture", TypeName ="text"), Required]
+        [Column("cmd_urlfacture", TypeName = "text"), Required]
         public string UrlFacture { get; set; }
 
+        private ICollection<LigneCommande> _lignes = new HashSet<LigneCommande>();
+        private ICollection<StatusCommande> _status = new HashSet<StatusCommande>();
+
         [InverseProperty(nameof(LigneCommande.Commande))]
-        public ICollection<LigneCommande> Lignes { get; set; }
+        public ICollection<LigneCommande> Lignes
+        {
+            get => _loader.Load(this, ref _lignes);
+            set => _lignes = value;
+        }
 
         [InverseProperty(nameof(StatusCommande.Commande))]
-        public ICollection<StatusCommande> Status { get; set; }
+        public ICollection<StatusCommande> Status
+        {
+            get => _loader.Load(this, ref _status);
+            set => _status = value;
+        }
     }
 }
