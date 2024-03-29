@@ -9,7 +9,7 @@ namespace FIFA_API.Controllers
 {
     public partial class UtilisateursController
     {
-        [HttpGet("GetInfo")]
+        [HttpGet("me")]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<UserInfo>> GetInfo()
         {
@@ -19,7 +19,7 @@ namespace FIFA_API.Controllers
             return UserInfo.FromUser(user);
         }
 
-        [HttpPost("UpdateInfo")]
+        [HttpPost("me")]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> UpdateInfo(UserInfo userInfo)
         {
