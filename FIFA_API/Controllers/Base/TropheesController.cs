@@ -51,6 +51,15 @@ namespace FIFA_API.Controllers
             return trophee;
         }
 
+        [HttpGet("{id}/joueurs")]
+        public async Task<ActionResult<IEnumerable<Joueur>>> GetTropheeJoueurs(int id)
+        {
+            var tropheeRes = await GetTrophee(id);
+            if (tropheeRes.Value is null) return NotFound();
+
+            return Ok(tropheeRes.Value.Joueurs);
+        }
+
         // PUT: api/Trophees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

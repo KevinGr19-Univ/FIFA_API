@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -28,10 +29,10 @@ namespace FIFA_API.Models.EntityFramework
         [Column("vcp_images", TypeName = "varchar[]")]
         public List<string> ImageUrls { get; set; } = new List<string>();
 
-        [ForeignKey(nameof(IdProduit))]
+        [ForeignKey(nameof(IdProduit)), JsonIgnore]
         public virtual Produit Produit { get; set; }
 
-        [ForeignKey(nameof(IdCouleur))]
+        [ForeignKey(nameof(IdCouleur)), JsonIgnore]
         public virtual Couleur Couleur { get; set; }
 
         [InverseProperty(nameof(StockProduit.VCProduit))]

@@ -5,6 +5,7 @@ namespace FIFA_API.Models.Controllers
     public class ApercuCommande
     {
         public int Id { get; set; }
+        public int IdTypeLivraison { get; set; }
 
         public string AdresseRue { get; set; }
         public string AdresseVille { get; set; }
@@ -18,6 +19,7 @@ namespace FIFA_API.Models.Controllers
             return new()
             {
                 Id = commande.Id,
+                IdTypeLivraison = commande.IdTypeLivraison,
                 AdresseRue = commande.RueLivraison,
                 AdresseVille = commande.VilleLivraison,
                 AdresseCodePostal = commande.CodePostalLivraison,

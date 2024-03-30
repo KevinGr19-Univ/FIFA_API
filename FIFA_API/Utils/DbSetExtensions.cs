@@ -52,8 +52,8 @@ namespace FIFA_API.Utils
         #region Produit
         public static async Task<Produit?> GetByIdAsync(this IQueryable<Produit> query, int id)
         {
-            return await query.Include(p => p.Variantes)
-                .ThenInclude(v => v.Stocks)
+            return await query.Include(p => p.Variantes).ThenInclude(v => v.Stocks)
+                .Include(p => p.Variantes).ThenInclude(v => v.Couleur)
                 .Include(p => p.Tailles)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
@@ -63,6 +63,15 @@ namespace FIFA_API.Utils
             return await query.Include(v => v.Produit)
                 .Include(v => v.Couleur)
                 .FirstOrDefaultAsync(v => v.Id == id);
+        }
+        #endregion
+
+        #region Joueurs
+        public static async Task<Joueur?> GetByIdAsync(this IQueryable<Joueur> query, int id)
+        {
+            return await query.Include(j => j.Trophees).Include(j => j.FaqJoueurs)
+                .Include(j => j.Club)
+                .FirstOrDefaultAsync(j => j.Id == id);
         }
         #endregion
     }

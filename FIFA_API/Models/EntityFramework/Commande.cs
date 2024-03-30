@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-﻿namespace FIFA_API.Models.EntityFramework
+namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_commande_cmd")]
     public partial class Commande
@@ -33,7 +34,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("utl_id"), Required]
         public int IdUtilisateur { get; set; }
 
-        [ForeignKey(nameof(IdUtilisateur))]
+        [ForeignKey(nameof(IdUtilisateur)), JsonIgnore]
         public virtual Utilisateur Utilisateur { get; set; }
 
         [Column("cmd_villelivraison"), Required]

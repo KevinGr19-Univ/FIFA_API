@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -13,7 +14,7 @@ namespace FIFA_API.Models.EntityFramework
         [Column("jou_id"), Required]
         public int IdJoueur { get; set; }
 
-        [ForeignKey(nameof(IdJoueur))]
+        [ForeignKey(nameof(IdJoueur)), JsonIgnore]
         public Joueur Joueur { get; set; }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
