@@ -8,7 +8,7 @@ namespace FIFA_API.Controllers
 {
     public partial class VotesController
     {
-        [HttpGet("myvotes")]
+        [HttpGet("me")]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<IEnumerable<VoteUtilisateur>>> GetMyVotes()
         {
@@ -18,7 +18,7 @@ namespace FIFA_API.Controllers
             return Ok(user.Votes);
         }
 
-        [HttpGet("myvotes/{idtheme}")]
+        [HttpGet("me/{idtheme}")]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<VoteUtilisateur>> GetMyVote(int idtheme)
         {
@@ -28,7 +28,7 @@ namespace FIFA_API.Controllers
             return await GetVoteUtilisateur(idtheme, user.Id);
         }
 
-        [HttpPost("myvotes")]
+        [HttpPost("me")]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<VoteUtilisateur>> CreateVote(VoteUtilisateur vote)
         {
@@ -39,14 +39,15 @@ namespace FIFA_API.Controllers
             return await PostVoteUtilisateur(vote);
         }
 
-        [HttpPut("myvotes")]
+        [HttpPut("me")]
         [Authorize(Policy = Policies.User)]
-        public async Task<IActionResult> UpdateMyVote(int idtheme, VoteUtilisateur vote)
+        public async Task<IActionResult> UpdateMyVote(VoteUtilisateur vote)
         {
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            return await PutVoteUtilisateur(idtheme, user.Id, vote);
+            vote.IdUtilisateur = user.Id;
+            return await PutVoteUtilisateur(vote.IdTheme, user.Id, vote);
         }
     }
 }

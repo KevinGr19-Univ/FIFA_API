@@ -5,22 +5,26 @@ namespace FIFA_API.Models.Controllers
     public class ApercuCommande
     {
         public int Id { get; set; }
+        public int IdTypeLivraison { get; set; }
 
         public string AdresseRue { get; set; }
         public string AdresseVille { get; set; }
         public string AdresseCodePostal { get; set; }
 
-        public StatusCommande DernierStatus { get; set; }
+        public DateTime DateCommande { get; set; }
+        public IEnumerable<StatusCommande> Status { get; set; }
 
         public static ApercuCommande FromCommande(Commande commande)
         {
             return new()
             {
                 Id = commande.Id,
+                IdTypeLivraison = commande.IdTypeLivraison,
                 AdresseRue = commande.RueLivraison,
                 AdresseVille = commande.VilleLivraison,
                 AdresseCodePostal = commande.CodePostalLivraison,
-                DernierStatus = commande.Status.OrderByDescending(s => s.Date).First()
+                DateCommande = commande.DateCommande,
+                Status = commande.Status
             };
         }
     }

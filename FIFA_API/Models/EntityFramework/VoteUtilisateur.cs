@@ -2,6 +2,7 @@
 using FIFA_API.Models.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -25,19 +26,19 @@ namespace FIFA_API.Models.EntityFramework
         [Column("jou_id3"), Required]
         public int IdJoueur3 { get; set; }
 
-        [ForeignKey(nameof(IdUtilisateur))]
+        [ForeignKey(nameof(IdUtilisateur)), JsonIgnore]
         public virtual Utilisateur Utilisateur { get; set; }
 
-        [ForeignKey(nameof(IdTheme))]
+        [ForeignKey(nameof(IdTheme)), JsonIgnore]
         public ThemeVote ThemeVote { get; set; }
 
-        [ForeignKey(nameof(IdJoueur1))]
+        [ForeignKey(nameof(IdJoueur1)), JsonIgnore]
         public virtual Joueur Joueur1 { get; set; }
 
-        [ForeignKey(nameof(IdJoueur2))]
+        [ForeignKey(nameof(IdJoueur2)), JsonIgnore]
         public virtual Joueur Joueur2 { get; set; }
 
-        [ForeignKey(nameof(IdJoueur3))]
+        [ForeignKey(nameof(IdJoueur3)), JsonIgnore]
         public virtual Joueur Joueur3 { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace FIFA_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Joueur>> GetJoueur(int id)
         {
-            var joueur = await _context.Joueurs.FindAsync(id);
+            var joueur = await _context.Joueurs.GetByIdAsync(id);
 
             if (joueur == null)
             {

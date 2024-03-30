@@ -2,8 +2,9 @@ using FIFA_API.Models.Annotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-﻿namespace FIFA_API.Models.EntityFramework
+namespace FIFA_API.Models.EntityFramework
 {
     public enum CodeStatusCommande
     {
@@ -25,14 +26,14 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("cmd_id"), Required]
         public int IdCommande { get; set; }
 
-		[Column("sco_date"), Required]
+		[Column("sco_date")]
         public DateTime Date { get; set; }
 
 		[Column("sco_commentaire")]
         [StringLength(MAX_COMMENTAIRE_LENGTH, ErrorMessage = "Le commentaire ne doit pas dépasser 500 caractères.")]
         public string? Commentaire { get; set; }
 
-        [ForeignKey(nameof(IdCommande))]
+        [ForeignKey(nameof(IdCommande)), JsonIgnore]
         public Commande Commande { get; set; }
 
         [Column("sco_code"), Required]

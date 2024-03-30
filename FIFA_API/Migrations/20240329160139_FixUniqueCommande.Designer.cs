@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    partial class FifaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240329160139_FixUniqueCommande")]
+    partial class FixUniqueCommande
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1207,21 +1209,21 @@ namespace FIFA_API.Migrations
                     b.HasOne("FIFA_API.Models.EntityFramework.Commande", "Commande")
                         .WithMany("Lignes")
                         .HasForeignKey("IdCommande")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_lignecommande_cmd_id");
 
                     b.HasOne("FIFA_API.Models.EntityFramework.TailleProduit", "Taille")
                         .WithMany()
                         .HasForeignKey("IdTaille")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_lignecommande_tpr_id");
 
                     b.HasOne("FIFA_API.Models.EntityFramework.VarianteCouleurProduit", "VCProduit")
                         .WithMany()
                         .HasForeignKey("IdVCProduit")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_lignecommande_prd_id");
 

@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Models.Controllers;
 
 namespace FIFA_API.Controllers
 {
@@ -37,17 +38,18 @@ namespace FIFA_API.Controllers
 
         // GET: api/Commandes/5
         [HttpGet("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<Commande>> GetCommande(int id)
+        [Authorize(Policy = Policies.User)]
+        public async Task<ActionResult<CommandeDetails>> GetCommande(int id)
         {
+            Utilisateur? user = await this.UtilisateurAsync();
+            if (user is null) return Unauthorized();
+
             var commande = await _context.Commandes.GetByIdAsync(id);
 
-            if (commande is null)
-            {
-                return NotFound();
-            }
+            if (commande is null) return NotFound();
+            if(!User.IsInRole(MANAGER_POLICY) && commande.Id != user.Id) return NotFound();
 
-            return commande;
+            return await CommandeDetails.FromCommande(commande, _context);
         }
 
         // PUT: api/Commandes/5

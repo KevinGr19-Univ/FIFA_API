@@ -38,7 +38,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<VoteUtilisateur>> GetVoteUtilisateur(int idtheme, int iduser)
         {
-            var voteUtilisateur = await _context.VoteUtilisateurs.FindAsync(idtheme, iduser);
+            var voteUtilisateur = await _context.VoteUtilisateurs.FindAsync(iduser, idtheme);
 
             if (voteUtilisateur == null)
             {
@@ -101,15 +101,15 @@ namespace FIFA_API.Controllers
                 }
             }
 
-            return CreatedAtAction("GetVoteUtilisateur", new { id = voteUtilisateur.IdUtilisateur }, voteUtilisateur);
+            return CreatedAtAction("GetVoteUtilisateur", new { idtheme = voteUtilisateur.IdTheme, iduser = voteUtilisateur.IdUtilisateur }, voteUtilisateur);
         }
 
         // DELETE: api/Votes/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{idtheme}/{iduser}")]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<IActionResult> DeleteVoteUtilisateur(int id)
+        public async Task<IActionResult> DeleteVoteUtilisateur(int idtheme, int iduser)
         {
-            var voteUtilisateur = await _context.VoteUtilisateurs.FindAsync(id);
+            var voteUtilisateur = await _context.VoteUtilisateurs.FindAsync(iduser, idtheme);
             if (voteUtilisateur == null)
             {
                 return NotFound();

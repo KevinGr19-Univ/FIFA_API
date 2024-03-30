@@ -2,8 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-﻿namespace FIFA_API.Models.EntityFramework
+namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_trophee_tph")]
     [Index(nameof(Nom), IsUnique = true)]
@@ -29,6 +30,8 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Nom { get; set; }
 
         private ICollection<Joueur> _joueurs = new HashSet<Joueur>();
+
+        [JsonIgnore]
         public virtual ICollection<Joueur> Joueurs
         {
             get => _loader.Load(this, ref _joueurs);

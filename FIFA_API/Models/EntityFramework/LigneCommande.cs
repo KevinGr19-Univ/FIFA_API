@@ -1,8 +1,10 @@
+using FIFA_API.Models.Annotations;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-﻿namespace FIFA_API.Models.EntityFramework
+namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_lignecommande_lco")]
     public partial class LigneCommande
@@ -22,6 +24,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("prd_id"), Required]
         public int IdVCProduit { get; set; }
 
+        [OnDelete(DeleteBehavior.SetNull)]
         [ForeignKey(nameof(IdVCProduit))]
         public VarianteCouleurProduit VCProduit { get; set; }
 
@@ -29,14 +32,16 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("tpr_id"), Required]
         public int IdTaille { get; set; }
 
-        [ForeignKey(nameof(IdTaille))]
+        [OnDelete(DeleteBehavior.SetNull)]
+        [ForeignKey(nameof(IdTaille)), JsonIgnore]
         public TailleProduit Taille { get; set; }
 
         //Commande
         [Column("cmd_id"), Required]
         public int IdCommande { get; set; }
 
-        [ForeignKey(nameof(IdCommande))]
+        [OnDelete(DeleteBehavior.Cascade)]
+        [ForeignKey(nameof(IdCommande)), JsonIgnore]
         public Commande Commande { get; set; }
     }
 }
