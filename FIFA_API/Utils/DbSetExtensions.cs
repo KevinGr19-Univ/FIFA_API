@@ -35,8 +35,8 @@ namespace FIFA_API.Utils
         #region Produit
         public static async Task<Produit?> GetByIdAsync(this IQueryable<Produit> query, int id)
         {
-            return await query.Include(p => p.Variantes)
-                .ThenInclude(v => v.Stocks)
+            return await query.Include(p => p.Variantes).ThenInclude(v => v.Stocks)
+                .Include(p => p.Variantes).ThenInclude(v => v.Couleur)
                 .Include(p => p.Tailles)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
