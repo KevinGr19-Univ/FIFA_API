@@ -92,6 +92,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Services.GetService<IEmailSender>().SendAsync("kevingr19dev@gmail.com", "Email de test", "Bonjour, voici un email de test");
-
 app.Run();
