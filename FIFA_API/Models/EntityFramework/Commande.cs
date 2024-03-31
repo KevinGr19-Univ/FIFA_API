@@ -1,3 +1,4 @@
+using FIFA_API.Models.Annotations;
 using FIFA_API.Models.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -31,11 +32,12 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdTypeLivraison))]
         public TypeLivraison TypeLivraison { get; set; }
 
-        [Column("utl_id"), Required]
-        public int IdUtilisateur { get; set; }
+        [Column("utl_id")]
+        public int? IdUtilisateur { get; set; }
 
         [ForeignKey(nameof(IdUtilisateur)), JsonIgnore]
-        public virtual Utilisateur Utilisateur { get; set; }
+        [OnDelete(DeleteBehavior.SetNull)]
+        public virtual Utilisateur? Utilisateur { get; set; }
 
         [Column("cmd_villelivraison"), Required]
         [StringLength(MAX_VILLE_LENGTH, ErrorMessage = "Le nom de la ville ne doit pas dépasser les 150 caractères")]

@@ -1,4 +1,6 @@
-﻿using FIFA_API.Models.EntityFramework;
+﻿using FIFA_API.Models;
+using FIFA_API.Models.Controllers;
+using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +45,18 @@ namespace FIFA_API.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("checkperms")]
+        [Authorize(Policy = Policies.User)]
+        public async Task<ActionResult<ProduitsPermissionCheck>> CheckPerms([FromServices] IAuthorizationService authService)
+        {
+            return Ok(new ProduitsPermissionCheck()
+            {
+                Add = (await authService.AuthorizeAsync(User, ADD_POLICY)).Succeeded,
+                Edit = (await authService.AuthorizeAsync(User, EDIT_POLICY)).Succeeded,
+                Delete = (await authService.AuthorizeAsync(User, DELETE_POLICY)).Succeeded,
+            });
         }
     }
 }

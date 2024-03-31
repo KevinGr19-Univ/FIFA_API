@@ -1,5 +1,6 @@
 
 using FIFA_API.Models.Annotations;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -27,6 +28,7 @@ namespace FIFA_API.Models.EntityFramework
         public int IdJoueur3 { get; set; }
 
         [ForeignKey(nameof(IdUtilisateur)), JsonIgnore]
+        [OnDelete(DeleteBehavior.Cascade)]
         public virtual Utilisateur Utilisateur { get; set; }
 
         [ForeignKey(nameof(IdTheme)), JsonIgnore]

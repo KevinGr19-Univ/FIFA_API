@@ -93,6 +93,7 @@ namespace FIFA_API.Models.EntityFramework
                 entity.HasCheckConstraint("ck_utl_telephone", $"utl_telephone ~ '{ModelUtils.REGEX_TELEPHONE}'");
 
                 entity.Property(utl => utl.DoubleAuthentification).HasDefaultValue(false);
+                entity.Property(utl => utl.Anonyme).HasDefaultValue(false);
             });
 
             mb.Entity<Couleur>(entity =>

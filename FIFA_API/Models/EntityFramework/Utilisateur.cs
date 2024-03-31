@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace FIFA_API.Models.EntityFramework
@@ -39,7 +42,7 @@ namespace FIFA_API.Models.EntityFramework
         public string? Telephone { get; set; }
 
         [Column("utl_mail"), Required]
-        [EmailAddress(ErrorMessage = "L'addresse email doit convenir aux normes des adresses email")]
+        [EmailAddress(ErrorMessage = "L'adresse email doit convenir aux normes des adresses email")]
         public string Mail { get; set; }
 
         [Column("utl_stripeid")]
@@ -63,6 +66,11 @@ namespace FIFA_API.Models.EntityFramework
 
 		[Column("utl_doubleauthentification")]
         public bool DoubleAuthentification { get; set; }
+
+        [Column("utl_anonyme")]
+        public bool Anonyme { get; set; }
+
+        public bool VerifEmail => DateVerificationEmail is not null;
 
         // Role
         [Column("utl_role")]
@@ -106,6 +114,33 @@ namespace FIFA_API.Models.EntityFramework
         {
             get => _loader.Load(this, ref _votes);
             set => _votes = value;
+        }
+
+        public void Anonymize()
+        {
+            if (Anonyme) return;
+
+            string randomString(int length)
+            {
+                const string CHARS = "abcdefghijklmnopqrstuvwxyz";
+                var rng = new Random((int)(DateTime.UtcNow.Ticks * 2045612) + 784810);
+                var sb = new StringBuilder();
+
+                for (int i = 0; i < length; i++) sb.Append(CHARS[rng.Next(CHARS.Length)]);
+                return sb.ToString();
+            }
+
+            Prenom = null;
+            Surnom = null;
+            DateNaissance = null;
+            Telephone = null;
+            StripeId = null;
+            RefreshToken = null;
+            DateVerificationEmail = null;
+
+            Mail = $"{randomString(20)}@{randomString(20)}.com";
+
+            Anonyme = true;
         }
     }
 }

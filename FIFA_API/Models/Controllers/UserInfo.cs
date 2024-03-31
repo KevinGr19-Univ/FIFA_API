@@ -16,6 +16,8 @@ namespace FIFA_API.Models.Controllers
         public Pays? Pays { get; set; }
         public int? IdPaysFavori { get; set; }
         public Pays? PaysFavori { get; set; }
+        public bool VerifEmail { get; set; }
+        public bool Anonyme { get; set; }
 
         public Utilisateur UpdateUser(Utilisateur user)
         {
@@ -45,7 +47,9 @@ namespace FIFA_API.Models.Controllers
                 IdPays = user.IdPays,
                 Pays = user.PaysFavori,
                 IdPaysFavori = user.IdPaysFavori,
-                PaysFavori = user.PaysFavori
+                PaysFavori = user.PaysFavori,
+                VerifEmail = user.VerifEmail,
+                Anonyme = user.Anonyme
             };
         }
     }
