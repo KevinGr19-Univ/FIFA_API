@@ -15,8 +15,6 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class CompetitionsController : ControllerBase
     {
-        public const string MANAGER_POLICY = ProduitsController.MANAGER_POLICY;
-
         private readonly FifaDbContext _context;
 
         public CompetitionsController(FifaDbContext context)
@@ -33,7 +31,6 @@ namespace FIFA_API.Controllers
 
         // GET: api/Competitions/5
         [HttpGet("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Competition>> GetCompetition(int id)
         {
             var competition = await _context.Competitions.FindAsync(id);
@@ -49,7 +46,7 @@ namespace FIFA_API.Controllers
         // PUT: api/Competitions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutCompetition(int id, Competition competition)
         {
             if (id != competition.Id)
@@ -79,7 +76,7 @@ namespace FIFA_API.Controllers
         // POST: api/Competitions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Competition>> PostCompetition(Competition competition)
         {
             await _context.Competitions.AddAsync(competition);
@@ -90,7 +87,7 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Competitions/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteCompetition(int id)
         {
             var competition = await _context.Competitions.FindAsync(id);

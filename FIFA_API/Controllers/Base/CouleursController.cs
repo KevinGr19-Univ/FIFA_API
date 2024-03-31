@@ -15,8 +15,6 @@ namespace FIFA_API.Controllers
     [ApiController]
     public class CouleursController : ControllerBase
     {
-        public const string MANAGER_POLICY = ProduitsController.MANAGER_POLICY;
-
         private readonly FifaDbContext _context;
 
         public CouleursController(FifaDbContext context)
@@ -48,7 +46,7 @@ namespace FIFA_API.Controllers
         // PUT: api/Couleurs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutCouleur(int id, Couleur couleur)
         {
             if (id != couleur.Id)
@@ -78,7 +76,7 @@ namespace FIFA_API.Controllers
         // POST: api/Couleurs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Couleur>> PostCouleur(Couleur couleur)
         {
             await _context.Couleurs.AddAsync(couleur);
@@ -89,7 +87,7 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Couleurs/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteCouleur(int id)
         {
             var couleur = await _context.Couleurs.FindAsync(id);

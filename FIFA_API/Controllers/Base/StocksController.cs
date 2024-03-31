@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
+using FIFA_API.Models;
 
 namespace FIFA_API.Controllers.Base
 {
@@ -15,7 +16,8 @@ namespace FIFA_API.Controllers.Base
     [ApiController]
     public partial class StocksController : ControllerBase
     {
-        public const string MANAGER_POLICY = ProduitsController.MANAGER_POLICY;
+        public const string EDIT_POLICY = Policies.Admin;
+        public const string DELETE_POLICY = Policies.Admin;
 
         private readonly FifaDbContext _context;
 
@@ -26,7 +28,7 @@ namespace FIFA_API.Controllers.Base
 
         // GET: api/Stocks
         [HttpGet]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<IEnumerable<StockProduit>>> GetStockProduits()
         {
             return await _context.StockProduits.ToListAsync();
@@ -34,7 +36,7 @@ namespace FIFA_API.Controllers.Base
 
         // GET: api/Stocks/5
         [HttpGet("{idvariante}/{idtaille}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<StockProduit>> GetStockProduit(int idvariante, int idtaille)
         {
             var stockProduit = await _context.StockProduits.FindAsync(idvariante, idtaille);
@@ -50,7 +52,7 @@ namespace FIFA_API.Controllers.Base
         // PUT: api/Stocks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{idvariante}/{idtaille}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> PutStockProduit(int idvariante, int idtaille, [FromBody] StockProduit stockProduit)
         {
             if (idvariante != stockProduit.IdVCProduit || idtaille != stockProduit.IdTaille)
@@ -80,7 +82,7 @@ namespace FIFA_API.Controllers.Base
         // POST: api/Stocks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<StockProduit>> PostStockProduit(StockProduit stockProduit)
         {
             await _context.StockProduits.AddAsync(stockProduit);
@@ -105,7 +107,7 @@ namespace FIFA_API.Controllers.Base
 
         // DELETE: api/Stocks/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = DELETE_POLICY)]
         public async Task<IActionResult> DeleteStockProduit(int id)
         {
             if (_context.StockProduits == null)

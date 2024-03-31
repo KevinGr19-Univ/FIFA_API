@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FIFA_API.Controllers.Base
 {
@@ -14,8 +15,6 @@ namespace FIFA_API.Controllers.Base
     [ApiController]
     public partial class VariantesController : ControllerBase
     {
-        public const string MANAGER_POLICY = ProduitsController.MANAGER_POLICY;
-
         private readonly FifaDbContext _context;
 
         public VariantesController(FifaDbContext context)
@@ -25,84 +24,78 @@ namespace FIFA_API.Controllers.Base
 
         // GET: api/Variantes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VarianteCouleurProduit>>> GetVarianteCouleurProduits()
+        public async Task<ActionResult<IEnumerable<VarianteCouleurProduit>>> GetVariantes()
         {
             return await _context.VarianteCouleurProduits.ToListAsync();
         }
 
         // GET: api/Variantes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<VarianteCouleurProduit>> GetVarianteCouleurProduit(int id)
+        public async Task<ActionResult<VarianteCouleurProduit>> GetVariante(int id)
         {
-            var varianteCouleurProduit = await _context.VarianteCouleurProduits.GetByIdAsync(id);
-
-            if (varianteCouleurProduit == null)
+            var variante = await _context.VarianteCouleurProduits.GetByIdAsync(id);
+            if (variante is null)
             {
                 return NotFound();
             }
 
-            return varianteCouleurProduit;
+            return variante;
         }
 
         // PUT: api/Variantes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVarianteCouleurProduit(int id, VarianteCouleurProduit varianteCouleurProduit)
+        [Authorize(Policy = ProduitsController.EDIT_POLICY)]
+        public async Task<IActionResult> PutVariante(int id, VarianteCouleurProduit variante)
         {
-            if (id != varianteCouleurProduit.Id)
-            {
+            if (id != variante.Id) return BadRequest();
+
+            var oldVariante = await _context.VarianteCouleurProduits.FindAsync(id);
+            if (oldVariante is null) return NotFound();
+
+            if (oldVariante.IdCouleur != variante.IdCouleur || oldVariante.IdProduit != variante.IdProduit)
                 return BadRequest();
-            }
 
-            try
-            {
-                await _context.UpdateEntity(varianteCouleurProduit);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VarianteCouleurProduitExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _context.UpdateEntity(variante);
             return NoContent();
         }
 
         // POST: api/Variantes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<VarianteCouleurProduit>> PostVarianteCouleurProduit(VarianteCouleurProduit varianteCouleurProduit)
+        [Authorize(Policy = ProduitsController.EDIT_POLICY)] // Adding color = Editing product
+        public async Task<ActionResult<VarianteCouleurProduit>> PostVariante(VarianteCouleurProduit variante)
         {
-            await _context.VarianteCouleurProduits.AddAsync(varianteCouleurProduit);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.VarianteCouleurProduits.AddAsync(variante);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                bool combinationExists = await _context.VarianteCouleurProduits.AnyAsync(v => v.IdCouleur == variante.IdCouleur && v.IdProduit == variante.IdProduit);
+                if (combinationExists) return Conflict();
+                throw;
+            }
 
-            return CreatedAtAction("GetVarianteCouleurProduit", new { id = varianteCouleurProduit.Id }, varianteCouleurProduit);
+            return CreatedAtAction("GetVariante", new { id = variante.Id }, variante);
         }
 
         // DELETE: api/Variantes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVarianteCouleurProduit(int id)
+        [Authorize(Policy = ProduitsController.DELETE_POLICY)]
+        public async Task<IActionResult> DeleteVariante(int id)
         {
-            var varianteCouleurProduit = await _context.VarianteCouleurProduits.FindAsync(id);
-            if (varianteCouleurProduit == null)
-            {
-                return NotFound();
-            }
+            var variante = await _context.VarianteCouleurProduits.FindAsync(id);
+            if (variante is null) return NotFound();
 
-            _context.VarianteCouleurProduits.Remove(varianteCouleurProduit);
+            bool stocksExists = await _context.StockProduits.AnyAsync(s => s.IdVCProduit == id);
+            if (stocksExists) return Forbid();
+
+            _context.VarianteCouleurProduits.Remove(variante);
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool VarianteCouleurProduitExists(int id)
-        {
-            return (_context.VarianteCouleurProduits?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

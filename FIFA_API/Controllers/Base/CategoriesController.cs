@@ -15,8 +15,6 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class CategoriesController : ControllerBase
     {
-        public const string MANAGER_POLICY = ProduitsController.MANAGER_POLICY;
-
         private readonly FifaDbContext _context;
 
         public CategoriesController(FifaDbContext context)
@@ -33,7 +31,6 @@ namespace FIFA_API.Controllers
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<CategorieProduit>> GetCategorieProduit(int id)
         {
             var categorieProduit = await _context.CategorieProduits.FindAsync(id);
@@ -49,7 +46,7 @@ namespace FIFA_API.Controllers
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutCategorieProduit(int id, CategorieProduit categorieProduit)
         {
             if (id != categorieProduit.Id)
@@ -79,7 +76,7 @@ namespace FIFA_API.Controllers
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<CategorieProduit>> PostCategorieProduit(CategorieProduit categorieProduit)
         {
             await _context.CategorieProduits.AddAsync(categorieProduit);
@@ -90,7 +87,7 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteCategorieProduit(int id)
         {
             var categorieProduit = await _context.CategorieProduits.FindAsync(id);

@@ -32,7 +32,7 @@ namespace FIFA_API.Models.EntityFramework
         [ForeignKey(nameof(IdProduit)), JsonIgnore]
         public virtual Produit Produit { get; set; }
 
-        [ForeignKey(nameof(IdCouleur)), JsonIgnore]
+        [ForeignKey(nameof(IdCouleur))]
         public virtual Couleur Couleur { get; set; }
 
         [InverseProperty(nameof(StockProduit.VCProduit))]
