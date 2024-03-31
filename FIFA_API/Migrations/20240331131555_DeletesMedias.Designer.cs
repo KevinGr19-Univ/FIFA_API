@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    partial class FifaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240331131555_DeletesMedias")]
+    partial class DeletesMedias
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,59 +177,6 @@ namespace FIFA_API.Migrations
                     b.HasCheckConstraint("ck_cmd_codepostallivraison", "cmd_codepostallivraison ~ '^([0-9]{2}|2[AB])[0-9]{3}$'");
 
                     b.HasCheckConstraint("ck_cmd_prixlivraison", "cmd_prixlivraison > 0");
-                });
-
-            modelBuilder.Entity("FIFA_API.Models.EntityFramework.CommentaireBlog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("cbl_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("cbl_date")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<bool>("EstReponse")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("cbl_estreponse");
-
-                    b.Property<int>("IdBlog")
-                        .HasColumnType("integer")
-                        .HasColumnName("pub_id");
-
-                    b.Property<int?>("IdOriginal")
-                        .HasColumnType("integer")
-                        .HasColumnName("cbl_id_original");
-
-                    b.Property<int?>("IdUtilisateur")
-                        .HasColumnType("integer")
-                        .HasColumnName("utl_id");
-
-                    b.Property<string>("Texte")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("cbl_texte");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdBlog")
-                        .HasDatabaseName("IX_commentaireblog_pub_id");
-
-                    b.HasIndex("IdOriginal")
-                        .HasDatabaseName("IX_commentaireblog_cbl_id_original");
-
-                    b.HasIndex("IdUtilisateur")
-                        .HasDatabaseName("IX_commentaireblog_utl_id");
-
-                    b.ToTable("t_j_commentaireblog_cbl");
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Competition", b =>
@@ -1222,34 +1171,6 @@ namespace FIFA_API.Migrations
                     b.Navigation("Utilisateur");
                 });
 
-            modelBuilder.Entity("FIFA_API.Models.EntityFramework.CommentaireBlog", b =>
-                {
-                    b.HasOne("FIFA_API.Models.EntityFramework.Blog", "Blog")
-                        .WithMany("Commentaires")
-                        .HasForeignKey("IdBlog")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_commentaireblog_pub_id");
-
-                    b.HasOne("FIFA_API.Models.EntityFramework.CommentaireBlog", "CommentaireOriginal")
-                        .WithMany()
-                        .HasForeignKey("IdOriginal")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("FK_commentaireblog_cbl_id_original");
-
-                    b.HasOne("FIFA_API.Models.EntityFramework.Utilisateur", "Utilisateur")
-                        .WithMany()
-                        .HasForeignKey("IdUtilisateur")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("FK_commentaireblog_utl_id");
-
-                    b.Navigation("Blog");
-
-                    b.Navigation("CommentaireOriginal");
-
-                    b.Navigation("Utilisateur");
-                });
-
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.FaqJoueur", b =>
                 {
                     b.HasOne("FIFA_API.Models.EntityFramework.Joueur", "Joueur")
@@ -1712,11 +1633,6 @@ namespace FIFA_API.Migrations
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.VarianteCouleurProduit", b =>
                 {
                     b.Navigation("Stocks");
-                });
-
-            modelBuilder.Entity("FIFA_API.Models.EntityFramework.Blog", b =>
-                {
-                    b.Navigation("Commentaires");
                 });
 #pragma warning restore 612, 618
         }
