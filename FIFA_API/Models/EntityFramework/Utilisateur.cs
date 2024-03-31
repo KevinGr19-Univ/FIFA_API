@@ -3,7 +3,6 @@ using FIFA_API.Models.Utils;
 using FIFA_API.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
@@ -114,33 +113,6 @@ namespace FIFA_API.Models.EntityFramework
         {
             get => _loader.Load(this, ref _votes);
             set => _votes = value;
-        }
-
-        public void Anonymize()
-        {
-            if (Anonyme) return;
-
-            string randomString(int length)
-            {
-                const string CHARS = "abcdefghijklmnopqrstuvwxyz";
-                var rng = new Random((int)(DateTime.UtcNow.Ticks * 2045612) + 784810);
-                var sb = new StringBuilder();
-
-                for (int i = 0; i < length; i++) sb.Append(CHARS[rng.Next(CHARS.Length)]);
-                return sb.ToString();
-            }
-
-            Prenom = null;
-            Surnom = null;
-            DateNaissance = null;
-            Telephone = null;
-            StripeId = null;
-            RefreshToken = null;
-            DateVerificationEmail = null;
-
-            Mail = $"{randomString(20)}@{randomString(20)}.com";
-
-            Anonyme = true;
         }
     }
 }
