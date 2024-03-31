@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_typelivraison_tli")]
@@ -26,7 +27,7 @@ namespace FIFA_API.Models.EntityFramework
         [Precision(7,2), Required]
         public decimal Prix { get; set; }
 
-        [InverseProperty(nameof(Commande.TypeLivraison))]
+        [InverseProperty(nameof(Commande.TypeLivraison)), JsonIgnore]
         public ICollection<Commande> Commandes { get; set; }
     }
 }
