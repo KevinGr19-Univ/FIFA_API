@@ -25,7 +25,7 @@ namespace FIFA_API.Controllers
 
         [HttpPost("Login")]
         [AllowAnonymous]
-        public async Task<ActionResult<APITokenInfo>> Login([FromBody] LoginInfo loginInfo)
+        public async Task<ActionResult<APITokenInfo>> Login([FromBody] LoginRequest loginInfo)
         {
             Utilisateur? user = await Authenticate(loginInfo.Mail, loginInfo.Password);
 
@@ -39,7 +39,7 @@ namespace FIFA_API.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterInfo registerInfo)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest registerInfo)
         {
             if(await _dbContext.Utilisateurs.IsEmailTaken(registerInfo.Mail))
             {
@@ -61,7 +61,7 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<APITokenInfo>> Refresh([FromBody] APITokenInfo apiToken)
         {
             Utilisateur? user = await _tokenService.GetUserFromExpiredAsync(apiToken.AccessToken);
-            if(user is null)
+            if(user is null || user.Anonyme)
             {
                 return NotFound();
             }
@@ -78,13 +78,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> CheckLogin()
         {
-            return Ok();
+            Utilisateur? user = await this.UtilisateurAsync();
+            return user is null ? Unauthorized() : Ok();
         }
 
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
             Utilisateur? user = await _dbContext.Utilisateurs.GetByEmailAsync(email);
-            if (user is null) return null;
+            if (user is null || user.Anonyme) return null;
 
             bool passwordMatch = _passwordHasher.Verify(user.HashMotDePasse, password);
             return passwordMatch ? user : null;

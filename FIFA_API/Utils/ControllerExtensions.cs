@@ -1,8 +1,6 @@
 ﻿using FIFA_API.Contracts;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
-using System.Security.Claims;
 
 namespace FIFA_API.Utils
 {
@@ -16,7 +14,10 @@ namespace FIFA_API.Utils
         public static async Task<Utilisateur?> UtilisateurAsync(this ControllerBase controller)
         {
             ITokenService tokenService = controller.HttpContext.RequestServices.GetService<ITokenService>()!;
-            return await tokenService.GetUserFromPrincipalAsync(controller.User);
+            var user = await tokenService.GetUserFromPrincipalAsync(controller.User);
+
+            if (user is null) return null;
+            return user.Anonyme ? null : user;
         }
     }
 }

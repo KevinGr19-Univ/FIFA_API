@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-﻿namespace FIFA_API.Models.EntityFramework
+namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_pays_pys")]
     public partial class Pays
@@ -21,7 +22,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 50 caractères")]
         public string Nom { get; set; }
 
-        [InverseProperty(nameof(Utilisateur.Pays))]
+        [InverseProperty(nameof(Utilisateur.Pays)), JsonIgnore]
         public ICollection<Utilisateur> Utilisateurs { get; set; }
     }
 }

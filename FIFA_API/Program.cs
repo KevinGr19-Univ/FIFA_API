@@ -57,6 +57,7 @@ builder.Services.AddAuthorization(config =>
 });
 
 // Services
+builder.Services.AddSingleton<IEmailSender, EmailService>();
 builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
     _ => new Argon2PasswordHasher(secret: Convert.FromHexString(builder.Configuration["Argon2:Secret"]))
 );
@@ -74,7 +75,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 var app = builder.Build();
 app.UseCors(policyName);
 
@@ -91,5 +91,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.Services.GetService<IEmailSender>().SendAsync("kevingr19dev@gmail.com", "Email de test", "Bonjour, voici un email de test");
 
 app.Run();

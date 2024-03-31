@@ -1,3 +1,6 @@
+using FIFA_API.Models.Annotations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,6 +11,14 @@ using System.ComponentModel.DataAnnotations.Schema;
     {
         public const int MAX_TITRE_LENGTH = 200;
         public const int MAX_RESUME_LENGTH = 600;
+
+        protected readonly ILazyLoader loader;
+
+        public Publication() { }
+        public Publication(ILazyLoader loader)
+        {
+            this.loader = loader;
+        }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("pub_id")]
@@ -28,6 +39,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int? IdPhoto { get; set; }
 
         [ForeignKey(nameof(IdPhoto))]
+        [OnDelete(DeleteBehavior.SetNull)]
         public Photo? Photo { get; set; }
     }
 }

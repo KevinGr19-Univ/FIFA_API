@@ -16,7 +16,9 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class ProduitsController : ControllerBase
     {
-        public const string MANAGER_POLICY = Policies.DirecteurVente;
+        public const string ADD_POLICY = Policies.DirecteurVente;
+        public const string EDIT_POLICY = Policies.DirecteurVente;
+        public const string DELETE_POLICY = Policies.Admin;
 
         private readonly FifaDbContext _context;
 
@@ -27,7 +29,7 @@ namespace FIFA_API.Controllers
 
         // GET: api/Produits
         [HttpGet]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ADD_POLICY)]
         public async Task<ActionResult<IEnumerable<Produit>>> GetProduits()
         {
             return await _context.Produits.ToListAsync();
@@ -50,7 +52,7 @@ namespace FIFA_API.Controllers
         // PUT: api/Produits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> PutProduit(int id, Produit produit)
         {
             if (id != produit.Id)
@@ -80,7 +82,7 @@ namespace FIFA_API.Controllers
         // POST: api/Produits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ADD_POLICY)]
         public async Task<ActionResult<Produit>> PostProduit(Produit produit)
         {
             await _context.Produits.AddAsync(produit);
@@ -91,7 +93,7 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Produits/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = DELETE_POLICY)]
         public async Task<IActionResult> DeleteProduit(int id)
         {
             var produit = await _context.Produits.FindAsync(id);

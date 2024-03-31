@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Utils
 {
-    public static class DbSetExtensions
+    public static partial class DbSetExtensions
     {
         // TODO : Pagination PAS OPTI
         public static IQueryable<T> Paginate<T>(this IQueryable<T> query, int page, int pageSize)
@@ -72,6 +72,25 @@ namespace FIFA_API.Utils
             return await query.Include(j => j.Trophees).Include(j => j.FaqJoueurs)
                 .Include(j => j.Club)
                 .FirstOrDefaultAsync(j => j.Id == id);
+        }
+        #endregion
+
+        #region Publications
+        public static async Task<T?> GetByIdAsync<T>(this IQueryable<T> query, int id)
+            where T : Publication
+        {
+            query = query.Include(p => p.Photo);
+
+            if (query is IQueryable<Album> alQuery)
+                query = (IQueryable<T>) alQuery.Include(a => a.Photos);
+
+            else if (query is IQueryable<Article> arQuery)
+                query = (IQueryable<T>) arQuery.Include(a => a.Photos).Include(a => a.Videos);
+
+            else if (query is IQueryable<Blog> bQuery)
+                query = (IQueryable<T>) bQuery.Include(a => a.Photos).Include(b => b.Commentaires);
+
+            return await query.FirstOrDefaultAsync(p => p.Id == id);
         }
         #endregion
     }

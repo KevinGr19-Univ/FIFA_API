@@ -15,8 +15,6 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class GenresController : ControllerBase
     {
-        public const string MANAGER_POLICY = ProduitsController.MANAGER_POLICY;
-
         private readonly FifaDbContext _context;
 
         public GenresController(FifaDbContext context)
@@ -48,7 +46,7 @@ namespace FIFA_API.Controllers
         // PUT: api/Genres/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutGenre(int id, Genre genre)
         {
             if (id != genre.Id)
@@ -78,7 +76,7 @@ namespace FIFA_API.Controllers
         // POST: api/Genres
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Genre>> PostGenre(Genre genre)
         {
             await _context.Genres.AddAsync(genre);
@@ -89,7 +87,7 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Genres/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = MANAGER_POLICY)]
+        [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteGenre(int id)
         {
             var genre = await _context.Genres.FindAsync(id);

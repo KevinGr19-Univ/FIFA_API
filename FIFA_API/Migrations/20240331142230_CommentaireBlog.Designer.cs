@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    partial class FifaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240331142230_CommentaireBlog")]
+    partial class CommentaireBlog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,7 +124,7 @@ namespace FIFA_API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("tli_id");
 
-                    b.Property<int?>("IdUtilisateur")
+                    b.Property<int>("IdUtilisateur")
                         .HasColumnType("integer")
                         .HasColumnName("utl_id");
 
@@ -839,12 +841,6 @@ namespace FIFA_API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Anonyme")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("utl_anonyme");
-
                     b.Property<DateTime?>("DateNaissance")
                         .HasColumnType("date")
                         .HasColumnName("utl_datenaissance");
@@ -1219,7 +1215,8 @@ namespace FIFA_API.Migrations
                     b.HasOne("FIFA_API.Models.EntityFramework.Utilisateur", "Utilisateur")
                         .WithMany("Commandes")
                         .HasForeignKey("IdUtilisateur")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
                         .HasConstraintName("FK_commande_utl_id");
 
                     b.Navigation("TypeLivraison");
@@ -1493,7 +1490,7 @@ namespace FIFA_API.Migrations
                     b.HasOne("FIFA_API.Models.EntityFramework.Utilisateur", "Utilisateur")
                         .WithMany("Votes")
                         .HasForeignKey("IdUtilisateur")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_voteutilisateur_utl_id");
 

@@ -2,12 +2,11 @@
 
 namespace FIFA_API.Models.Controllers
 {
-    public class LoginInfo
+    public class DeleteRequest
     {
         [Required]
-        public string Mail { get; set; }
-
-        [Required]
         public string Password { get; set; }
+
+        public string Reason { get; set; }
     }
 }

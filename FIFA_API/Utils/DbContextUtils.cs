@@ -148,6 +148,8 @@ namespace FIFA_API.Models.Utils
         {
             foreach (var fk in mb.Model.GetEntityTypes().SelectMany(e => e.GetDeclaredForeignKeys()))
             {
+                if (fk.DeclaringEntityType.IsPropertyBag) continue;
+
                 DeleteBehavior? deleteBehavior = fk.GetNavigations()
                     .Select(n => n.PropertyInfo)
                     .Select(p => p.GetCustomAttribute<OnDeleteAttribute>())

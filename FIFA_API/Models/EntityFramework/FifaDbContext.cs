@@ -35,6 +35,7 @@ namespace FIFA_API.Models.EntityFramework
         public virtual DbSet<CategorieProduit> CategorieProduits { get; set; }
         public virtual DbSet<Club> Clubs { get; set; }
         public virtual DbSet<Commande> Commandes { get; set; }
+        public virtual DbSet<CommentaireBlog> Commentaires { get; set; }
         public virtual DbSet<Competition> Competitions { get; set; }
         public virtual DbSet<Couleur> Couleurs { get; set; }
         public virtual DbSet<Document> Documents { get; set; }
@@ -92,6 +93,7 @@ namespace FIFA_API.Models.EntityFramework
                 entity.HasCheckConstraint("ck_utl_telephone", $"utl_telephone ~ '{ModelUtils.REGEX_TELEPHONE}'");
 
                 entity.Property(utl => utl.DoubleAuthentification).HasDefaultValue(false);
+                entity.Property(utl => utl.Anonyme).HasDefaultValue(false);
             });
 
             mb.Entity<Couleur>(entity =>
@@ -151,6 +153,12 @@ namespace FIFA_API.Models.EntityFramework
             mb.Entity<VarianteCouleurProduit>(entity =>
             {
                 GreaterThanZero(entity, "vcp_prix");
+            });
+
+            mb.Entity<CommentaireBlog>(entity =>
+            {
+                entity.Property(c => c.EstReponse).HasDefaultValue(false);
+                entity.Property(c => c.Date).HasDefaultValueSql("now()");
             });
         }
 

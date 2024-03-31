@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-﻿namespace FIFA_API.Models.EntityFramework
+namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_categorieproduit_cpr")]
     [Index(nameof(Nom), IsUnique = true)]
@@ -31,7 +32,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         [InverseProperty(nameof(Parent))]
         public ICollection<CategorieProduit> SousCategories { get; set; }
 
-        [InverseProperty(nameof(Produit.Categorie))]
+        [InverseProperty(nameof(Produit.Categorie)), JsonIgnore]
         public ICollection<Produit> Produits { get; set; }
     }
 }
