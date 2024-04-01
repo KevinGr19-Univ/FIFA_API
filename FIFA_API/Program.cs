@@ -3,12 +3,15 @@ using FIFA_API.Models;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.WebSockets;
+using Microsoft.Build.Framework;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+DotNetEnv.Env.Load();
+builder.Configuration.AddEnvironmentVariables(prefix: "FIFA_");
 
 builder.Services.AddDbContext<FifaDbContext>();
 
