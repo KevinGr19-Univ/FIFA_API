@@ -51,7 +51,7 @@ namespace FIFA_API.Services
 
         public async Task<bool> ChangePasswordAsync(ChangePasswordRequest request, string code)
         {
-            var reset = await _context.PasswordResets.FindAsync(request.Mail);
+            var reset = await _context.PasswordResets.SingleOrDefaultAsync(r => r.Code == code);
             if (reset is null || reset.Code != code) return false;
 
             _context.PasswordResets.Remove(reset);

@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,6 +90,17 @@ builder.Services.AddScoped<IEmailVerificator, EmailVerificator>();
 builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 
 Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
+builder.Services.AddScoped<ILogin2FAService, Login2FAService>();
+builder.Services.AddScoped<ISmsService, TwilioSmsService>(
+    svp => new TwilioSmsService(
+        builder.Configuration["Twilio:PhoneNumber"],
+        builder.Configuration["Twilio:OverrideTo"])
+);
+
+TwilioClient.Init(
+    builder.Configuration["Twilio:AccountSid"],
+    builder.Configuration["Twilio:AuthToken"]);
 
 // CORS
 var policyName = "FIFA_CORS";

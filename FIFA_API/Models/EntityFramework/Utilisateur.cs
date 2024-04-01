@@ -14,6 +14,7 @@ namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_utilisateur_utl")]
     [Index(nameof(Mail), IsUnique = true)]
+    [Index(nameof(Token2FA), IsUnique = true)]
     public partial class Utilisateur
     {
         private readonly ILazyLoader _loader;
@@ -66,6 +67,9 @@ namespace FIFA_API.Models.EntityFramework
 		[Column("utl_doubleauthentification")]
         public bool DoubleAuthentification { get; set; }
 
+        [Column("utl_token2fa")]
+        public string? Token2FA { get; set; }
+            
         [Column("utl_anonyme")]
         public bool Anonyme { get; set; }
 
