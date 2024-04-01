@@ -1,4 +1,5 @@
-﻿using FIFA_API.Contracts;
+﻿using FIFA_API.Authorization;
+using FIFA_API.Contracts;
 using FIFA_API.Models;
 using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
@@ -39,7 +40,7 @@ namespace FIFA_API.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest registerInfo)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest registerInfo, [FromServices] IEmailVerificator emailVerificator)
         {
             if(await _dbContext.Utilisateurs.IsEmailTaken(registerInfo.Mail))
             {
@@ -53,6 +54,8 @@ namespace FIFA_API.Controllers
 
             await _dbContext.AddAsync(newUser);
             await _dbContext.SaveChangesAsync();
+
+            await emailVerificator.SendVerificationAsync(newUser);
             return NoContent();
         }
 
@@ -80,6 +83,28 @@ namespace FIFA_API.Controllers
         {
             Utilisateur? user = await this.UtilisateurAsync();
             return user is null ? Unauthorized() : Ok();
+        }
+
+        [HttpGet("SendEmailVerification")]
+        [Authorize(Policy = Policies.User)]
+        public async Task<IActionResult> SendEmailVerification([FromServices] IEmailVerificator emailVerificator)
+        {
+            Utilisateur? user = await this.UtilisateurAsync();
+            if (user is null) return Unauthorized();
+
+            await emailVerificator.SendVerificationAsync(user);
+            return NoContent();
+        }
+
+        [HttpGet("VerifyEmail")]
+        [Authorize(Policy = Policies.User)]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string code, [FromServices] IEmailVerificator emailVerificator)
+        {
+            Utilisateur? user = await this.UtilisateurAsync();
+            if (user is null) return Unauthorized();
+
+            bool ok = await emailVerificator.Verify(user, code);
+            return ok ? NoContent() : BadRequest();
         }
 
         private async Task<Utilisateur?> Authenticate(string email, string password)

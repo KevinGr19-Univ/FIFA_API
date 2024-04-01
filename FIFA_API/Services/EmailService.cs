@@ -28,7 +28,11 @@ namespace FIFA_API.Services
                 Credentials = new NetworkCredential(username, pwd)
             };
 
-            return smtp.SendMailAsync(new MailMessage(mail, to, subject, message));
+            var msg = new MailMessage(mail, to, subject, message)
+            {
+                IsBodyHtml = true
+            };
+            return smtp.SendMailAsync(msg);
         }
     }
 }

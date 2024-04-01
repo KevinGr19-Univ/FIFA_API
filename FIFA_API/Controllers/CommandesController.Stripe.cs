@@ -1,4 +1,5 @@
-﻿using FIFA_API.Exceptions;
+﻿using FIFA_API.Authorization;
+using FIFA_API.Exceptions;
 using FIFA_API.Models;
 using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
@@ -15,6 +16,7 @@ namespace FIFA_API.Controllers
     {
 		[HttpPost("checkout")]
 		[Authorize(Policy = Policies.User)]
+		[VerifiedEmail]
 		public async Task<ActionResult<StartStripeSessionResponse>> StartStripeCommand([FromBody] Panier panier)
 		{
 			Utilisateur? user = await this.UtilisateurAsync();

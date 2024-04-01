@@ -3,6 +3,7 @@ using FIFA_API.Models;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.WebSockets;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -61,6 +62,8 @@ builder.Services.AddSingleton<IEmailSender, EmailService>();
 builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
     _ => new Argon2PasswordHasher(secret: Convert.FromHexString(builder.Configuration["Argon2:Secret"]))
 );
+
+builder.Services.AddScoped<IEmailVerificator, EmailVerificator>();
 
 Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 

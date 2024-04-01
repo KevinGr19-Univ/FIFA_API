@@ -61,6 +61,8 @@ namespace FIFA_API.Models.EntityFramework
         public virtual DbSet<Video> Videos { get; set; }
         public virtual DbSet<VoteUtilisateur> VoteUtilisateurs { get; set; }
 
+        public virtual DbSet<AuthEmailVerif> EmailVerifs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
