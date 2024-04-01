@@ -24,7 +24,7 @@ namespace FIFA_API.Controllers
             _tokenService = tokenService;
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult<APITokenInfo>> Login([FromBody] LoginRequest loginInfo)
         {
@@ -38,7 +38,7 @@ namespace FIFA_API.Controllers
             return Unauthorized();
         }
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerInfo, [FromServices] IEmailVerificator emailVerificator)
         {
@@ -59,7 +59,7 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
-        [HttpPost("Login/Refresh")]
+        [HttpPost("login/refresh")]
         [AllowAnonymous]
         public async Task<ActionResult<APITokenInfo>> Refresh([FromBody] APITokenInfo apiToken)
         {
@@ -77,7 +77,7 @@ namespace FIFA_API.Controllers
             return await LoginUser(user);
         }
 
-        [HttpGet("CheckLogin")]
+        [HttpGet("checklogin")]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> CheckLogin()
         {
@@ -85,7 +85,15 @@ namespace FIFA_API.Controllers
             return user is null ? Unauthorized() : Ok();
         }
 
-        [HttpGet("SendEmailVerification")]
+        [HttpGet("email/checkverified")]
+        [Authorize(Policy = Policies.User)]
+        [VerifiedEmail]
+        public async Task<IActionResult> CheckEmailVerified()
+        {
+            return Ok();
+        }
+
+        [HttpGet("email/sendverify")]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> SendEmailVerification([FromServices] IEmailVerificator emailVerificator)
         {
@@ -96,14 +104,28 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
-        [HttpGet("VerifyEmail")]
+        [HttpGet("email/verify")]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> VerifyEmail([FromQuery] string code, [FromServices] IEmailVerificator emailVerificator)
         {
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            bool ok = await emailVerificator.Verify(user, code);
+            bool ok = await emailVerificator.VerifyAsync(user, code);
+            return ok ? NoContent() : BadRequest();
+        }
+
+        [HttpGet("password/sendreset")]
+        public async Task<IActionResult> SendResetPassword([FromQuery] string mail, [FromServices] IPasswordResetService resetService)
+        {
+            await resetService.SendPasswordResetCodeAsync(mail);
+            return NoContent();
+        }
+
+        [HttpPost("password/reset")]
+        public async Task<IActionResult> ResetPassword([FromQuery] string code, [FromBody] ChangePasswordRequest request, [FromServices] IPasswordResetService resetService)
+        {
+            bool ok = await resetService.ChangePasswordAsync(request, code);
             return ok ? NoContent() : BadRequest();
         }
 

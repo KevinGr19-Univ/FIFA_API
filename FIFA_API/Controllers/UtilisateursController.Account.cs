@@ -22,13 +22,21 @@ namespace FIFA_API.Controllers
 
         [HttpPost("me")]
         [Authorize(Policy = Policies.User)]
-        public async Task<IActionResult> UpdateInfo(UserInfo userInfo)
+        public async Task<IActionResult> UpdateInfo(UserInfo userInfo, [FromServices] IEmailVerificator emailVerificator)
         {
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
+            bool emailChanged = user.Mail != userInfo.Mail;
             userInfo.UpdateUser(user);
+
             await _context.UpdateEntity(user);
+            if (emailChanged)
+            {
+                await emailVerificator.SendVerificationAsync(user);
+                return Ok(new { verification_email_sent = true });
+            }
+
             return NoContent();
         }
 

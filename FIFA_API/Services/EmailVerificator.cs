@@ -43,7 +43,7 @@ namespace FIFA_API.Services
             );
         }
 
-        public async Task<bool> Verify(Utilisateur user, string code)
+        public async Task<bool> VerifyAsync(Utilisateur user, string code)
         {
             if (user.Anonyme) return false;
 
@@ -51,12 +51,15 @@ namespace FIFA_API.Services
             var emailverif = await _context.EmailVerifs.FindAsync(user.Id);
 
             if (emailverif is null || emailverif.Code != code) return false;
-            if (expireMinutes > 0 && emailverif.Date.AddMinutes(expireMinutes) < DateTime.Now) return false;
 
             _context.EmailVerifs.Remove(emailverif);
-            user.DateVerificationEmail = DateTime.Now;
-
             await _context.SaveChangesAsync();
+
+            if (expireMinutes > 0 && emailverif.Date.AddMinutes(expireMinutes) < DateTime.Now) return false;
+
+            user.DateVerificationEmail = DateTime.Now;
+            await _context.SaveChangesAsync();
+
             return true;
         }
 

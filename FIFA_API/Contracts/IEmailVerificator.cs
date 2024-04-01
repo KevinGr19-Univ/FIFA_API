@@ -6,6 +6,6 @@ namespace FIFA_API.Contracts
     {
         Task SendVerificationAsync(Utilisateur user);
 
-        Task<bool> Verify(Utilisateur user, string code);
+        Task<bool> VerifyAsync(Utilisateur user, string code);
     }
 }

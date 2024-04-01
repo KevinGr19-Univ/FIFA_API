@@ -64,6 +64,7 @@ builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
 );
 
 builder.Services.AddScoped<IEmailVerificator, EmailVerificator>();
+builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 
 Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 

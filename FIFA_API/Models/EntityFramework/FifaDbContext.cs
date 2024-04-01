@@ -62,6 +62,7 @@ namespace FIFA_API.Models.EntityFramework
         public virtual DbSet<VoteUtilisateur> VoteUtilisateurs { get; set; }
 
         public virtual DbSet<AuthEmailVerif> EmailVerifs { get; set; }
+        public virtual DbSet<AuthPasswordReset> PasswordResets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
