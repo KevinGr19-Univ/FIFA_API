@@ -25,21 +25,31 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<ActionResult<APITokenInfo>> Login([FromBody] LoginRequest loginInfo)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginInfo, [FromServices] ILogin2FAService login2FAService)
         {
             Utilisateur? user = await Authenticate(loginInfo.Mail, loginInfo.Password);
 
-            if(user is not null)
+            if (user is null) return Unauthorized();
+
+            if (user.DoubleAuthentification && user.Telephone is not null)
             {
-                return await LoginUser(user);
+                string token = await login2FAService.Send2FACodeAsync(user);
+                return Ok(new { token });
             }
 
-            return Unauthorized();
+            return Ok(await LoginUser(user));
+        }
+
+        [HttpPost("login/2fa")]
+        public async Task<ActionResult<APITokenInfo>> Login2FA([FromBody] Login2FAInfo loginInfo, [FromServices] ILogin2FAService login2FAService)
+        {
+            var user = await login2FAService.AuthenticateAsync(loginInfo.Token, loginInfo.Code);
+            if (user is null) return Unauthorized();
+
+            return Ok(await LoginUser(user));
         }
 
         [HttpPost("register")]
-        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerInfo, [FromServices] IEmailVerificator emailVerificator)
         {
             if(await _dbContext.Utilisateurs.IsEmailTaken(registerInfo.Mail))
@@ -60,7 +70,6 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("login/refresh")]
-        [AllowAnonymous]
         public async Task<ActionResult<APITokenInfo>> Refresh([FromBody] APITokenInfo apiToken)
         {
             Utilisateur? user = await _tokenService.GetUserFromExpiredAsync(apiToken.AccessToken);
@@ -104,7 +113,7 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
-        [HttpGet("email/verify")]
+        [HttpPost("email/verify")]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> VerifyEmail([FromQuery] string code, [FromServices] IEmailVerificator emailVerificator)
         {
