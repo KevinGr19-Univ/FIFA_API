@@ -3,16 +3,34 @@ using FIFA_API.Models;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Build.Framework;
+using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Logging
+if (builder.Environment.IsProduction())
+{
+    builder.Services.Configure<AzureFileLoggerOptions>(options =>
+    {
+        options.FileName = "logs-";
+        options.FileSizeLimit = 50 * 1024;
+        options.RetainedFileCountLimit = 5;
+    });
+
+    builder.Logging.AddAzureWebAppDiagnostics(options =>
+    {
+        options.BlobName = "logs.txt";
+    });
+}
+
+// Env variables
 DotNetEnv.Env.Load();
 builder.Configuration.AddEnvironmentVariables(prefix: "FIFA_");
 
+// DB & Controllers
 builder.Services.AddDbContext<FifaDbContext>();
 
 builder.Services.AddControllers(
