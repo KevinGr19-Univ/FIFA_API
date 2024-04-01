@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    partial class FifaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240401105930_AuthEmailVerif")]
+    partial class AuthEmailVerif
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,27 +50,11 @@ namespace FIFA_API.Migrations
 
                     b.HasKey("IdUtilisateur");
 
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("IX_authemailverif_aev_code");
+
                     b.ToTable("t_e_authemailverif_aev");
-                });
-
-            modelBuilder.Entity("FIFA_API.Models.EntityFramework.AuthPasswordReset", b =>
-                {
-                    b.Property<string>("Mail")
-                        .HasColumnType("text")
-                        .HasColumnName("utl_mail");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("apr_code");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("apr_date");
-
-                    b.HasKey("Mail");
-
-                    b.ToTable("t_e_authpasswordreset_apr");
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.CategorieProduit", b =>
