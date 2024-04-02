@@ -22,7 +22,7 @@ namespace FIFA_API.Models.EntityFramework
         [InverseProperty(nameof(ThemeVoteJoueur.Theme)), JsonIgnore]
         public ICollection<ThemeVoteJoueur> AssocJoueurs { get; set; }
 
-        [NotMapped]
+        [NotMapped, JsonIgnore]
         public IEnumerable<Joueur> Joueurs => AssocJoueurs.Select(a => a.Joueur);
     }
 }

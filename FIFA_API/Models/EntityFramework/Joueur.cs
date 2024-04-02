@@ -99,7 +99,7 @@ namespace FIFA_API.Models.EntityFramework
         [ManyToMany(nameof(Trophee.Joueurs))]
         public ICollection<Trophee> Trophees { get; set; }
 
-        [ManyToMany(nameof(Publication.Joueurs))]
-        private ICollection<Publication> _publications { get; set; }
+        [ManyToMany(nameof(Publication.Joueurs)), JsonIgnore]
+        public ICollection<Publication> Publications { get; set; }
     }
 }

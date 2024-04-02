@@ -25,6 +25,13 @@ namespace FIFA_API.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        [Authorize(Policy = MANAGER_POLICY)]
+        public async Task<ActionResult<IEnumerable<Publication>>> GetAllPublications()
+        {
+            return await _context.Publications.ToListAsync();
+        }
+
         #region Generic actions
         [NonAction]
         public async Task<ActionResult<IEnumerable<T>>> GetPublications<T>() where T : Publication

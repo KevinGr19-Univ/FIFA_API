@@ -136,7 +136,7 @@ namespace FIFA_API.Models.EntityFramework
 
             mb.Entity<Statistiques>(entity =>
             {
-                GreaterThanZero(entity, "stt_matchsjoues", "stt_titularisations", "stt_minutesjouees", "stt_buts");
+                GreaterOrEqualThanZero(entity, "stt_matchsjoues", "stt_titularisations", "stt_minutesjouees", "stt_buts");
             });
 
             mb.Entity<StatusCommande>(entity =>

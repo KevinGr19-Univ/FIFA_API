@@ -41,5 +41,14 @@ namespace FIFA_API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("{id}/joueurs")]
+        public async Task<ActionResult<IEnumerable<Joueur>>> GetThemeJoueurs(int id)
+        {
+            var theme = await _context.ThemeVotes.GetByIdAsync(id);
+            if(theme is null) return NotFound();
+
+            return Ok(theme.Joueurs);
+        }
     }
 }

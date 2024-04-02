@@ -73,6 +73,11 @@ namespace FIFA_API.Utils
                 .Include(j => j.Club)
                 .FirstOrDefaultAsync(j => j.Id == id);
         }
+
+        public static async Task<Joueur?> GetByIdWithPublications(this IQueryable<Joueur> query, int id)
+        {
+            return await query.Include(j => j.Publications).SingleOrDefaultAsync(j => j.Id == id);
+        }
         #endregion
 
         #region Publications
