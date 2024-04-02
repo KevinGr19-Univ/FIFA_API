@@ -26,7 +26,9 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Nation>>> GetNations()
         {
-            return await _context.Nations.ToListAsync();
+            IQueryable<Nation> query = _context.Nations;
+            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
         }
 
         // GET: api/Nations/5
@@ -35,10 +37,10 @@ namespace FIFA_API.Controllers
         {
             var nation = await _context.Nations.FindAsync(id);
 
-            if (nation == null)
-            {
+            if (nation == null) return NotFound();
+            if (!nation.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
                 return NotFound();
-            }
 
             return nation;
         }

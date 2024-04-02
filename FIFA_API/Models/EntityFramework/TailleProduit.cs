@@ -1,3 +1,4 @@
+using FIFA_API.Models.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 {
 	[Table("t_e_tailleproduit_tpr")]
     [Index(nameof(Nom), IsUnique = true)]
-    public partial class TailleProduit
+    public partial class TailleProduit : IVisible
     {
         public TailleProduit()
         {
@@ -24,5 +25,8 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Nom { get; set; }
 
         public ICollection<Produit> Produits { get; set; }
+
+        [Column("tpr_visible")]
+        public bool Visible { get; set; } = true;
     }
 }

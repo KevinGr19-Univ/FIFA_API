@@ -81,6 +81,8 @@ builder.Services.AddAuthorization(config =>
 });
 
 // Services
+Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
 builder.Services.AddSingleton<IEmailSender, EmailService>();
 builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
     _ => new Argon2PasswordHasher(secret: Convert.FromHexString(builder.Configuration["Argon2:Secret"]))
@@ -88,9 +90,6 @@ builder.Services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>(
 
 builder.Services.AddScoped<IEmailVerificator, EmailVerificator>();
 builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
-
-Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
-
 builder.Services.AddScoped<ILogin2FAService, Login2FAService>();
 
 var twilio = builder.Configuration["Twilio:Enabled"];
@@ -103,7 +102,8 @@ if (string.IsNullOrEmpty(twilio) || bool.Parse(twilio))
     builder.Services.AddScoped<ISmsService, TwilioSmsService>(
         svp => new TwilioSmsService(
             builder.Configuration["Twilio:PhoneNumber"],
-            builder.Configuration["Twilio:OverrideTo"])
+            builder.Configuration["Twilio:OverrideTo"],
+            svp.GetService<ILogger<ISmsService>>())
     );
 }
 else

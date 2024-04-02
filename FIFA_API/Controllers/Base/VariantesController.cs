@@ -26,7 +26,9 @@ namespace FIFA_API.Controllers.Base
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VarianteCouleurProduit>>> GetVariantes()
         {
-            return await _context.VarianteCouleurProduits.ToListAsync();
+            IQueryable<VarianteCouleurProduit> query = _context.VarianteCouleurProduits;
+            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
         }
 
         // GET: api/Variantes/5
@@ -34,10 +36,10 @@ namespace FIFA_API.Controllers.Base
         public async Task<ActionResult<VarianteCouleurProduit>> GetVariante(int id)
         {
             var variante = await _context.VarianteCouleurProduits.GetByIdAsync(id);
-            if (variante is null)
-            {
+            if (variante is null) return NotFound();
+            if (!variante.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
                 return NotFound();
-            }
 
             return variante;
         }

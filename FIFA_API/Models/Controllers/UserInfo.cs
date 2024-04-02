@@ -7,20 +7,20 @@ namespace FIFA_API.Models.Controllers
         public int Id { get; set; }
         public string? Prenom { get; set; }
         public string? Surnom { get; set; }
-        public string Mail { get; set; }
-        public string? Telephone { get; set; }
         public DateTime? DateNaissance { get; set; }
+
+        public string Mail { get; set; }
         public bool VerifEmail { get; set; }
+
+        public string? Telephone { get; set; }
         public bool DoubleAuthentification { get; set; }
+        public bool Login2FA { get; set; }
+
         public bool Anonyme { get; set; }
 
         public int IdLangue { get; set; }
-        public Langue? Langue { get; set; }
         public int IdPays { get; set; }
-        public Pays? Pays { get; set; }
         public int? IdPaysFavori { get; set; }
-        public Pays? PaysFavori { get; set; }
-
 
         public Utilisateur UpdateUser(Utilisateur user)
         {
@@ -47,14 +47,12 @@ namespace FIFA_API.Models.Controllers
                 Telephone = user.Telephone,
                 DateNaissance = user.DateNaissance,
                 IdLangue = user.IdLangue,
-                Langue = user.Langue,
                 IdPays = user.IdPays,
-                Pays = user.PaysFavori,
                 IdPaysFavori = user.IdPaysFavori,
-                PaysFavori = user.PaysFavori,
                 VerifEmail = user.VerifEmail,
                 Anonyme = user.Anonyme,
-                DoubleAuthentification = user.DoubleAuthentification
+                DoubleAuthentification = user.DoubleAuthentification,
+                Login2FA = user.Login2FA
             };
         }
     }

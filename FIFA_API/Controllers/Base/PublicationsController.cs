@@ -44,6 +44,10 @@ namespace FIFA_API.Controllers
         {
             var publication = await _context.Set<T>().GetByIdAsync(id);
             if (publication == null) return NotFound();
+            if (!publication.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
+                return NotFound();
+
             return publication;
         }
 

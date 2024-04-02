@@ -16,6 +16,7 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class ProduitsController : ControllerBase
     {
+        public const string SEE_POLICY = Policies.DirecteurVente;
         public const string ADD_POLICY = Policies.DirecteurVente;
         public const string EDIT_POLICY = Policies.DirecteurVente;
         public const string DELETE_POLICY = Policies.Admin;
@@ -32,7 +33,9 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ADD_POLICY)]
         public async Task<ActionResult<IEnumerable<Produit>>> GetProduits()
         {
-            return await _context.Produits.ToListAsync();
+            IQueryable<Produit> query = _context.Produits;
+            if (!await this.MatchPolicyAsync(SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
         }
 
         // GET: api/Produits/5
@@ -41,10 +44,10 @@ namespace FIFA_API.Controllers
         {
             var produit = await _context.Produits.GetByIdAsync(id);
 
-            if (produit is null)
-            {
+            if (produit is null)  return NotFound();
+            if (!produit.Visible
+                && !await this.MatchPolicyAsync(SEE_POLICY))
                 return NotFound();
-            }
 
             return produit;
         }

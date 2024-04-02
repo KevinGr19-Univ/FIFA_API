@@ -1,4 +1,5 @@
-﻿using FIFA_API.Models.Utils;
+﻿using FIFA_API.Models.Contracts;
+using FIFA_API.Models.Utils;
 using FIFA_API.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -165,6 +166,22 @@ namespace FIFA_API.Models.EntityFramework
                 entity.Property(c => c.EstReponse).HasDefaultValue(false);
                 entity.Property(c => c.Date).HasDefaultValueSql("now()");
             });
+
+            DefValVisible<CategorieProduit>(mb);
+            DefValVisible<Competition>(mb);
+            DefValVisible<Couleur>(mb);
+            DefValVisible<TailleProduit>(mb);
+            DefValVisible<Produit>(mb);
+            DefValVisible<Genre>(mb);
+            DefValVisible<Nation>(mb);
+            DefValVisible<ThemeVote>(mb);
+            DefValVisible<Publication>(mb);
+            DefValVisible<VarianteCouleurProduit>(mb);
+        }
+
+        private void DefValVisible<T>(ModelBuilder mb) where T : class, IVisible
+        {
+            mb.Entity<T>().Property(e => e.Visible).HasDefaultValue(true);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder mb);

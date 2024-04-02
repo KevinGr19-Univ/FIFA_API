@@ -3,6 +3,7 @@ using FIFA_API.Contracts;
 using FIFA_API.Models;
 using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
+using FIFA_API.Services;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,38 +14,42 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class LoginController : ControllerBase
     {
-        private readonly FifaDbContext _dbContext;
+        private readonly FifaDbContext _context;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ITokenService _tokenService;
+        private readonly ILogin2FAService _login2FAService;
 
-        public LoginController(FifaDbContext dbContext, IPasswordHasher passwordHasher, ITokenService tokenService)
+        public LoginController(FifaDbContext dbContext, IPasswordHasher passwordHasher, ITokenService tokenService, ILogin2FAService login2FAService)
         {
-            _dbContext = dbContext;
+            _context = dbContext;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
+            _login2FAService = login2FAService;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginInfo, [FromServices] ILogin2FAService login2FAService)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginInfo)
         {
             Utilisateur? user = await Authenticate(loginInfo.Mail, loginInfo.Password);
-
             if (user is null) return Unauthorized();
 
-            if (user.DoubleAuthentification && user.Telephone is not null)
-            {
-                string token = await login2FAService.Send2FACodeAsync(user);
-                return Ok(new { token });
-            }
+            if (user.Login2FA) return await Send2FACodeAsync(user);
 
             return Ok(await LoginUser(user));
         }
 
         [HttpPost("login/2fa")]
-        public async Task<ActionResult<APITokenInfo>> Login2FA([FromBody] Login2FAInfo loginInfo, [FromServices] ILogin2FAService login2FAService)
+        public async Task<ActionResult<APITokenInfo>> Login2FA([FromBody] Login2FAInfo loginInfo)
         {
-            var user = await login2FAService.AuthenticateAsync(loginInfo.Token, loginInfo.Code);
-            if (user is null) return Unauthorized();
+            var user = await _login2FAService.AuthenticateAsync(loginInfo.Token, loginInfo.Code);
+            if (user is null || !user.DoubleAuthentification) return Unauthorized();
+
+            // Verify phone number
+            if (user.DateVerif2FA is null)
+            {
+                user.DateVerif2FA = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
 
             return Ok(await LoginUser(user));
         }
@@ -52,7 +57,7 @@ namespace FIFA_API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerInfo, [FromServices] IEmailVerificator emailVerificator)
         {
-            if(await _dbContext.Utilisateurs.IsEmailTaken(registerInfo.Mail))
+            if(await _context.Utilisateurs.IsEmailTaken(registerInfo.Mail))
             {
                 return BadRequest(new
                 {
@@ -62,8 +67,8 @@ namespace FIFA_API.Controllers
 
             Utilisateur newUser = registerInfo.BuildUser(_passwordHasher);
 
-            await _dbContext.AddAsync(newUser);
-            await _dbContext.SaveChangesAsync();
+            await _context.AddAsync(newUser);
+            await _context.SaveChangesAsync();
 
             await emailVerificator.SendVerificationAsync(newUser);
             return NoContent();
@@ -138,13 +143,32 @@ namespace FIFA_API.Controllers
             return ok ? NoContent() : BadRequest();
         }
 
+        [HttpGet("2fa/resendverify")]
+        [Authorize(Policy = Policies.User)]
+        public async Task<IActionResult> SendVerify2FA()
+        {
+            Utilisateur? user = await this.UtilisateurAsync();
+            if (user is null) return Unauthorized();
+
+            if (user.Login2FA) return NoContent();
+            if (user.Telephone is null || !user.DoubleAuthentification) return BadRequest();
+
+            return await Send2FACodeAsync(user);
+        }
+
         private async Task<Utilisateur?> Authenticate(string email, string password)
         {
-            Utilisateur? user = await _dbContext.Utilisateurs.GetByEmailAsync(email);
+            Utilisateur? user = await _context.Utilisateurs.GetByEmailAsync(email);
             if (user is null || user.Anonyme) return null;
 
             bool passwordMatch = _passwordHasher.Verify(user.HashMotDePasse, password);
             return passwordMatch ? user : null;
+        }
+
+        private async Task<IActionResult> Send2FACodeAsync(Utilisateur user)
+        {
+            string token = await _login2FAService.Send2FACodeAsync(user);
+            return Ok(new { token });
         }
 
         private async Task<APITokenInfo> LoginUser(Utilisateur user)
@@ -158,7 +182,7 @@ namespace FIFA_API.Controllers
             user.RefreshToken = apiToken.RefreshToken;
             user.DerniereConnexion = DateTime.Now;
 
-            await _dbContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return apiToken;
         }
     }

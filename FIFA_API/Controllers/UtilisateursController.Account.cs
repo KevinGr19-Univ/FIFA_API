@@ -22,22 +22,44 @@ namespace FIFA_API.Controllers
 
         [HttpPost("me")]
         [Authorize(Policy = Policies.User)]
-        public async Task<IActionResult> UpdateInfo(UserInfo userInfo, [FromServices] IEmailVerificator emailVerificator)
+        public async Task<IActionResult> UpdateInfo(
+            UserInfo userInfo,
+            [FromServices] IEmailVerificator emailVerificator,
+            [FromServices] ILogin2FAService login2FAService)
         {
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
+            Dictionary<string, object> res = new();
             bool emailChanged = user.Mail != userInfo.Mail;
-            userInfo.UpdateUser(user);
+            bool phoneChanged = user.Telephone != userInfo.Telephone;
+            bool was2fa = user.Login2FA;
 
+            userInfo.UpdateUser(user);
             await _context.UpdateEntity(user);
+
             if (emailChanged)
             {
                 await emailVerificator.SendVerificationAsync(user);
-                return Ok(new { verification_email_sent = true });
+                res["verification_email_sent"] = true;
             }
 
-            return NoContent();
+            if (phoneChanged)
+            {
+                user.DateVerif2FA = null;
+                await _context.SaveChangesAsync();
+                await login2FAService.Remove2FACode(user);
+
+                if (user.Telephone is not null && user.DoubleAuthentification)
+                {
+                    var token = await login2FAService.Send2FACodeAsync(user);
+                    res["verification_2fa_token"] = token;
+                }
+
+                else if (was2fa) res["2fa_disabled"] = true;
+            }
+
+            return Ok(res);
         }
 
         [HttpDelete("me/anonymize")]

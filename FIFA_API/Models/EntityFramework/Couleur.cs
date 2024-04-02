@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FIFA_API.Models.Contracts;
 using FIFA_API.Models.Utils;
 using FIFA_API.Utils;
 
 namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_couleur_col")]
-    public partial class Couleur
+    public partial class Couleur : IVisible
     {
         public const int MAX_NOM_LENGTH = 50;
 
@@ -30,5 +31,8 @@ namespace FIFA_API.Models.EntityFramework
 
         [InverseProperty(nameof(VarianteCouleurProduit.Couleur))]
         public virtual ICollection<VarianteCouleurProduit> VariantesProduits { get; set; }
+
+        [Column("col_visible")]
+        public bool Visible { get; set; } = true;
     }
 }

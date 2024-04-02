@@ -26,7 +26,9 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
         {
-            return await _context.Genres.ToListAsync();
+            IQueryable<Genre> query = _context.Genres;
+            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
         }
 
         // GET: api/Genres/5
@@ -35,10 +37,10 @@ namespace FIFA_API.Controllers
         {
             var genre = await _context.Genres.FindAsync(id);
 
-            if (genre == null)
-            {
+            if (genre == null) return NotFound();
+            if (!genre.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
                 return NotFound();
-            }
 
             return genre;
         }

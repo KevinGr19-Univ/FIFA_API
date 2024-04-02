@@ -1,4 +1,5 @@
-﻿using FIFA_API.Models;
+﻿using FIFA_API.Authorization;
+using FIFA_API.Models;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,7 @@ namespace FIFA_API.Controllers
 
         [HttpPost("blogs/{idblog}/comment")]
         [Authorize(Policy = Policies.User)]
+        [VerifiedEmail]
         public async Task<ActionResult<CommentaireBlog>> PostCommentaire(int idblog, CommentaireBlog commentaire)
         {
             Utilisateur? user = await this.UtilisateurAsync();
@@ -46,6 +48,7 @@ namespace FIFA_API.Controllers
 
         [HttpDelete("commentaires/{id}")]
         [Authorize(Policy = Policies.User)]
+        [VerifiedEmail]
         public async Task<IActionResult> DeleteCommentaire(int id, [FromServices] IAuthorizationService authService)
         {
             Utilisateur? user = await this.UtilisateurAsync();
