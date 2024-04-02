@@ -11,7 +11,6 @@ namespace FIFA_API.Controllers
     {
         [HttpGet("faq/{id}")]
         [ActionName("GetFaq")]
-        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<FaqJoueur>> GetFaq([FromRoute] int id)
         {
             var faq = await _context.FaqJoueurs.FindAsync(id);
