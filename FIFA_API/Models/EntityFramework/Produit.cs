@@ -1,11 +1,12 @@
 using FIFA_API.Models.Annotations;
+using FIFA_API.Models.Contracts;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_produit_prd")]
-    public partial class Produit
+    public partial class Produit : IVisible
     {
         public Produit()
         {
@@ -53,5 +54,8 @@ namespace FIFA_API.Models.EntityFramework
 
         [ManyToMany(nameof(TailleProduit.Produits))]
         public ICollection<TailleProduit> Tailles { get; set; }
+
+        [Column("prd_visible")]
+        public bool Visible { get; set; } = true;
     }
 }

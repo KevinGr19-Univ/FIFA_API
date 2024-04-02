@@ -26,6 +26,14 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Couleur>>> GetCouleurs()
         {
+            IQueryable<Couleur> query = _context.Couleurs;
+            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
+        }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<Couleur>>> GetAllCouleurs()
+        {
             return await _context.Couleurs.ToListAsync();
         }
 
@@ -35,10 +43,10 @@ namespace FIFA_API.Controllers
         {
             var couleur = await _context.Couleurs.FindAsync(id);
 
-            if (couleur == null)
-            {
+            if (couleur == null) return NotFound();
+            if (!couleur.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
                 return NotFound();
-            }
 
             return couleur;
         }

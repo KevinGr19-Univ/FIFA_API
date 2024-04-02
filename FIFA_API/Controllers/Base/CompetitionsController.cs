@@ -26,7 +26,9 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Competition>>> GetCompetitions()
         {
-            return await _context.Competitions.ToListAsync();
+            IQueryable<Competition> query = _context.Competitions;
+            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
         }
 
         // GET: api/Competitions/5
@@ -35,10 +37,10 @@ namespace FIFA_API.Controllers
         {
             var competition = await _context.Competitions.FindAsync(id);
 
-            if (competition == null)
-            {
+            if (competition == null) return NotFound();
+            if (!competition.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
                 return NotFound();
-            }
 
             return competition;
         }

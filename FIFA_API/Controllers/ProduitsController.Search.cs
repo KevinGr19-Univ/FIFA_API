@@ -1,6 +1,8 @@
-﻿using FIFA_API.Models.Controllers;
+﻿using FIFA_API.Models.Contracts;
+using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
+using MessagePack.Formatters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -24,14 +26,24 @@ namespace FIFA_API.Controllers
             [FromQuery] int? page)
         {
             var query = _context.Produits
+                .Where(p => p.Visible)
                 .Include(p => p.Variantes)
+                .ThenInclude(v => v.Couleur)
                 .Include(p => p.Tailles)
                 .Select(p => new
                 {
                     Produit = p,
-                    Couleurs = p.Variantes.Select(v => v.IdCouleur),
-                    Tailles = p.Tailles.Select(t => t.Id)
-                });
+                    Variantes = p.Variantes.Where(c => c.Visible && c.Couleur.Visible),
+                    Tailles = p.Tailles.Where(t => t.Visible).Select(t => t.Id)
+                })
+                .Where(p => p.Variantes.Count() > 0 && p.Tailles.Count() > 0);
+
+            categories = await FilterVisibles(categories, _context.CategorieProduits);
+            competitions = await FilterVisibles(competitions, _context.Competitions);
+            genres = await FilterVisibles(genres, _context.Genres);
+            nations = await FilterVisibles(nations, _context.Nations);
+            couleurs = await FilterVisibles(couleurs, _context.Couleurs);
+            tailles = await FilterVisibles(tailles, _context.TailleProduits);
 
             if (categories.Length > 0)
                 query = query.Where(p => categories.Contains(p.Produit.IdCategorieProduit));
@@ -46,7 +58,7 @@ namespace FIFA_API.Controllers
                 query = query.Where(p => p.Produit.IdNation != null && nations.Contains((int)p.Produit.IdNation));
 
             if (couleurs.Length > 0)
-                query = query.Where(p => p.Couleurs.Any(c => couleurs.Contains(c)));
+                query = query.Where(p => p.Variantes.Any(c => couleurs.Contains(c.IdCouleur)));
 
             if (tailles.Length > 0)
                 query = query.Where(p => p.Tailles.Any(t => tailles.Contains(t)));
@@ -65,7 +77,7 @@ namespace FIFA_API.Controllers
             return Ok(await query.Select(p => 
                 new {
                     p.Produit,
-                    p.Couleurs,
+                    Couleurs = p.Variantes.Select(v => v.IdCouleur),
                     p.Tailles,
                     MinVariante = p.Produit.Variantes.OrderBy(v => v.Prix).First()
                 }
@@ -80,6 +92,12 @@ namespace FIFA_API.Controllers
                     ImageUrl = p.MinVariante.ImageUrls[0]
                 }
             ).ToListAsync());
+        }
+
+        private async Task<int[]> FilterVisibles(int[] ids, IQueryable<IVisible> visibles)
+        {
+            if (ids.Length == 0) return ids;
+            return await visibles.Where(v => v.Visible && ids.Contains(v.Id)).Select(v => v.Id).ToArrayAsync();
         }
     }
 }

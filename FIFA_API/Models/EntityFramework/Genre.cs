@@ -1,10 +1,11 @@
+using FIFA_API.Models.Contracts;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_genre_gen")]
-    public partial class Genre
+    public partial class Genre : IVisible
     {
         public Genre()
         {
@@ -23,5 +24,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
         [InverseProperty(nameof(Produit.Genre))]
         public ICollection<Produit> Produits { get; set; }
+
+        [Column("gen_visible")]
+        public bool Visible { get; set; } = true;
     }
 }

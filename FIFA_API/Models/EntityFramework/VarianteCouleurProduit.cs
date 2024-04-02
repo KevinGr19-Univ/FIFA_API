@@ -1,3 +1,4 @@
+using FIFA_API.Models.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +8,7 @@ namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_j_variantecouleurproduit_vcp")]
     [Index(nameof(IdProduit), nameof(IdCouleur), IsUnique = true)]
-    public partial class VarianteCouleurProduit
+    public partial class VarianteCouleurProduit : IVisible
     {
         public VarianteCouleurProduit() { }
 
@@ -37,5 +38,8 @@ namespace FIFA_API.Models.EntityFramework
 
         [InverseProperty(nameof(StockProduit.VCProduit))]
         public virtual ICollection<StockProduit> Stocks { get; set; }
+
+        [Column("vcp_visible")]
+        public bool Visible { get; set; } = true;
     }
 }

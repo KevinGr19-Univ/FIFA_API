@@ -1,10 +1,11 @@
+using FIFA_API.Models.Contracts;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_nation_nat")]
-    public partial class Nation
+    public partial class Nation : IVisible
     {
         public const int MAX_NOM_LENGTH = 50;
 
@@ -23,5 +24,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
         [InverseProperty(nameof(Produit.Nation))]
         public ICollection<Produit> Produits { get; set; }
+
+        [Column("nat_visible")]
+        public bool Visible { get; set; } = true;
     }
 }

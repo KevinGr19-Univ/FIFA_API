@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models;
 using FIFA_API.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FIFA_API.Controllers
 {
@@ -28,7 +29,9 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ThemeVote>>> GetThemeVotes()
         {
-            return await _context.ThemeVotes.ToListAsync();
+            IQueryable<ThemeVote> query = _context.ThemeVotes;
+            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
         }
 
         // GET: api/ThemeVotes/5
@@ -37,10 +40,10 @@ namespace FIFA_API.Controllers
         {
             var themeVote = await _context.ThemeVotes.FindAsync(id);
 
-            if (themeVote == null)
-            {
+            if (themeVote == null) return NotFound();
+            if (!themeVote.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
                 return NotFound();
-            }
 
             return themeVote;
         }
@@ -48,6 +51,7 @@ namespace FIFA_API.Controllers
         // PUT: api/ThemeVotes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutThemeVote(int id, ThemeVote themeVote)
         {
             if (id != themeVote.Id)
@@ -77,6 +81,7 @@ namespace FIFA_API.Controllers
         // POST: api/ThemeVotes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<ThemeVote>> PostThemeVote(ThemeVote themeVote)
         {
             await _context.ThemeVotes.AddAsync(themeVote);
@@ -87,6 +92,7 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/ThemeVotes/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteThemeVote(int id)
         {
             var themeVote = await _context.ThemeVotes.FindAsync(id);

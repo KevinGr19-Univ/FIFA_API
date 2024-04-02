@@ -1,5 +1,8 @@
-﻿using FIFA_API.Models.Controllers;
+﻿using FIFA_API.Models.Contracts;
+using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Utils
@@ -10,6 +13,11 @@ namespace FIFA_API.Utils
         public static IQueryable<T> Paginate<T>(this IQueryable<T> query, int page, int pageSize)
         {
             return query.Skip((page-1) * pageSize).Take(pageSize);
+        }
+
+        public static IQueryable<T> FilterVisibles<T>(this IQueryable<T> query) where T : IVisible
+        {
+            return query.Where(v => v.Visible);
         }
 
         #region Utilisateurs

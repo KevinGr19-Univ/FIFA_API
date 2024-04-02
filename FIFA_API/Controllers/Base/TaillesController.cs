@@ -26,7 +26,9 @@ namespace FIFA_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TailleProduit>>> GetTailleProduits()
         {
-            return await _context.TailleProduits.ToListAsync();
+            IQueryable<TailleProduit> query = _context.TailleProduits;
+            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
         }
 
         // GET: api/TailleProduits/5
@@ -35,10 +37,10 @@ namespace FIFA_API.Controllers
         {
             var tailleProduit = await _context.TailleProduits.FindAsync(id);
 
-            if (tailleProduit == null)
-            {
+            if (tailleProduit == null) return NotFound();
+            if (!tailleProduit.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
                 return NotFound();
-            }
 
             return tailleProduit;
         }

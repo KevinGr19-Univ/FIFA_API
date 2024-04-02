@@ -1,4 +1,5 @@
 using FIFA_API.Models.Annotations;
+using FIFA_API.Models.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ﻿namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_g_publication_pub")]
-    public abstract partial class Publication
+    public abstract partial class Publication : IVisible
     {
         public const int MAX_TITRE_LENGTH = 200;
         public const int MAX_RESUME_LENGTH = 600;
@@ -48,5 +49,8 @@ using System.ComponentModel.DataAnnotations.Schema;
             get => loader.Load(this, ref _joueurs);
             set => _joueurs = value;
         }
+
+        [Column("pub_visible")]
+        public bool Visible { get; set; } = true;
     }
 }

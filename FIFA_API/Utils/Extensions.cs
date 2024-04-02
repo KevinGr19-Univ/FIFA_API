@@ -1,5 +1,6 @@
 ﻿using FIFA_API.Contracts;
 using FIFA_API.Models.EntityFramework;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIFA_API.Utils
@@ -28,6 +29,12 @@ namespace FIFA_API.Utils
 
             if (user is null) return null;
             return user.Anonyme ? null : user;
+        }
+
+        public static async Task<bool> MatchPolicyAsync(this ControllerBase controller, string policy)
+        {
+            IAuthorizationService authService = controller.HttpContext.RequestServices.GetService<IAuthorizationService>()!;
+            return (await authService.AuthorizeAsync(controller.User, policy)).Succeeded;
         }
     }
 }

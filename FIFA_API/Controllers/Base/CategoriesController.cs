@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
@@ -26,12 +21,14 @@ namespace FIFA_API.Controllers
         /// <summary>
         /// Retourne la liste des catégories de produit.
         /// </summary>
-        /// <returns>La liste complète des catégories.</returns>
+        /// <returns>La liste des catégories visibles.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<CategorieProduit>>> GetCategorieProduits()
         {
-            return await _context.CategorieProduits.ToListAsync();
+            IQueryable<CategorieProduit> query = _context.CategorieProduits;
+            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
+            return await query.ToListAsync();
         }
 
         // GET: api/Categories/5
@@ -47,10 +44,10 @@ namespace FIFA_API.Controllers
         {
             var categorieProduit = await _context.CategorieProduits.FindAsync(id);
 
-            if (categorieProduit == null)
-            {
+            if (categorieProduit == null) return NotFound();
+            if (!categorieProduit.Visible
+                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
                 return NotFound();
-            }
 
             return categorieProduit;
         }

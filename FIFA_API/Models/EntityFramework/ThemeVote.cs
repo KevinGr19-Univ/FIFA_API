@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FIFA_API.Models.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -7,7 +8,7 @@ namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_themevote_thv")]
     [Index(nameof(NomTheme), IsUnique = true)]
-    public class ThemeVote
+    public class ThemeVote : IVisible
     {
         public const int MAX_NOMTHEME_LENGTH = 60;
 
@@ -24,5 +25,8 @@ namespace FIFA_API.Models.EntityFramework
 
         [NotMapped, JsonIgnore]
         public IEnumerable<Joueur> Joueurs => AssocJoueurs.Select(a => a.Joueur);
+
+        [Column("thv_visible")]
+        public bool Visible { get; set; } = true;
     }
 }

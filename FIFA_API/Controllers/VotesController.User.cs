@@ -39,6 +39,9 @@ namespace FIFA_API.Controllers
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
+            var theme = await _context.ThemeVotes.FindAsync(vote.IdTheme);
+            if (theme is null || !theme.Visible) return NotFound();
+
             vote.IdUtilisateur = user.Id;
             return await PostVoteUtilisateur(vote);
         }
@@ -50,6 +53,9 @@ namespace FIFA_API.Controllers
         {
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
+
+            var theme = await _context.ThemeVotes.FindAsync(vote.IdTheme);
+            if (theme is null || !theme.Visible) return NotFound();
 
             vote.IdUtilisateur = user.Id;
             return await PutVoteUtilisateur(vote.IdTheme, user.Id, vote);
