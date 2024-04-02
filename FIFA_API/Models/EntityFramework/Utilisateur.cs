@@ -69,11 +69,20 @@ namespace FIFA_API.Models.EntityFramework
 
         [Column("utl_token2fa")]
         public string? Token2FA { get; set; }
+
+        [Column("utl_dateverif2fa")]
+        public DateTime? DateVerif2FA { get; set; }
             
         [Column("utl_anonyme")]
         public bool Anonyme { get; set; }
 
+        [NotMapped]
         public bool VerifEmail => DateVerificationEmail is not null;
+
+        [NotMapped]
+        public bool Login2FA => DoubleAuthentification 
+            && Telephone is not null
+            && DateVerif2FA is not null;
 
         // Role
         [Column("utl_role")]

@@ -17,10 +17,20 @@ namespace FIFA_API.Services
             _smsService = smsService;
         }
 
+        public async Task<bool> Remove2FACode(Utilisateur user)
+        {
+            var auth2fa = await _context.Login2FAs.FindAsync(user.Id);
+            if (auth2fa is null) return false;
+
+            _context.Login2FAs.Remove(auth2fa);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<string> Send2FACodeAsync(Utilisateur user)
         {
-            if (user.Telephone is null || !user.DoubleAuthentification)
-                throw new ArgumentException("User cannot use double authentication");
+            if (user.Telephone is null)
+                throw new ArgumentException("User has no phone");
 
             var auth2fa = await _context.Login2FAs.FindAsync(user.Id);
 
