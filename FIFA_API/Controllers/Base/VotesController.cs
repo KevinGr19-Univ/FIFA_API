@@ -82,16 +82,19 @@ namespace FIFA_API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Policy = MANAGER_POLICY)]
-        public async Task<ActionResult<VoteUtilisateur>> PostVoteUtilisateur(VoteUtilisateur voteUtilisateur)
+        public async Task<ActionResult<VoteUtilisateur>> PostVoteUtilisateur(VoteUtilisateur vote)
         {
-            await _context.VoteUtilisateurs.AddAsync(voteUtilisateur);
+            if(!await IsVoteValid(vote))
+                return BadRequest();
+
+            await _context.VoteUtilisateurs.AddAsync(vote);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (VoteUtilisateurExists(voteUtilisateur.IdTheme, voteUtilisateur.IdUtilisateur))
+                if (VoteUtilisateurExists(vote.IdTheme, vote.IdUtilisateur))
                 {
                     return Conflict();
                 }
@@ -101,7 +104,7 @@ namespace FIFA_API.Controllers
                 }
             }
 
-            return CreatedAtAction("GetVoteUtilisateur", new { idtheme = voteUtilisateur.IdTheme, iduser = voteUtilisateur.IdUtilisateur }, voteUtilisateur);
+            return CreatedAtAction("GetVoteUtilisateur", new { idtheme = vote.IdTheme, iduser = vote.IdUtilisateur }, vote);
         }
 
         // DELETE: api/Votes/5
@@ -124,6 +127,15 @@ namespace FIFA_API.Controllers
         private bool VoteUtilisateurExists(int idtheme, int iduser)
         {
             return (_context.VoteUtilisateurs?.Any(e => e.IdUtilisateur == iduser && e.IdTheme == idtheme)).GetValueOrDefault();
+        }
+
+        private async Task<bool> IsVoteValid(VoteUtilisateur vote)
+        {
+            return await _context.ThemeVoteJoueurs.Where(t => t.IdTheme == vote.IdTheme 
+                && (t.IdJoueur == vote.IdJoueur1 
+                    || t.IdJoueur == vote.IdJoueur2 
+                    || t.IdJoueur == vote.IdJoueur3))
+                .CountAsync() == 3;
         }
     }
 }

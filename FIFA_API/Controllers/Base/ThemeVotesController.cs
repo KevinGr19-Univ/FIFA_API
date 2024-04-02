@@ -35,7 +35,7 @@ namespace FIFA_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ThemeVote>> GetThemeVote(int id)
         {
-            var themeVote = await _context.ThemeVotes.FindAsync(id);
+            var themeVote = await _context.ThemeVotes.GetByIdAsync(id);
 
             if (themeVote == null)
             {

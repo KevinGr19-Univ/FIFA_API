@@ -54,6 +54,7 @@ namespace FIFA_API.Models.EntityFramework
         public virtual DbSet<StockProduit> StockProduits { get; set; }
         public virtual DbSet<TailleProduit> TailleProduits { get; set; }
         public virtual DbSet<ThemeVote> ThemeVotes { get; set; }
+        public virtual DbSet<ThemeVoteJoueur> ThemeVoteJoueurs { get; set; }
         public virtual DbSet<Trophee> Trophees { get; set; }
         public virtual DbSet<TypeLivraison> TypeLivraisons { get; set; }
         public virtual DbSet<Utilisateur> Utilisateurs { get; set; }

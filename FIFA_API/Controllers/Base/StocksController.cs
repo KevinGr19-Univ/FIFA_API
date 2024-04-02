@@ -36,7 +36,6 @@ namespace FIFA_API.Controllers.Base
 
         // GET: api/Stocks/5
         [HttpGet("{idvariante}/{idtaille}")]
-        [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<StockProduit>> GetStockProduit(int idvariante, int idtaille)
         {
             var stockProduit = await _context.StockProduits.FindAsync(idvariante, idtaille);

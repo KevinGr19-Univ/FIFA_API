@@ -41,5 +41,12 @@ using System.ComponentModel.DataAnnotations.Schema;
         [ForeignKey(nameof(IdPhoto))]
         [OnDelete(DeleteBehavior.SetNull)]
         public Photo? Photo { get; set; }
+
+        private ICollection<Joueur> _joueurs;
+        public ICollection<Joueur> Joueurs
+        {
+            get => loader.Load(this, ref _joueurs);
+            set => _joueurs = value;
+        }
     }
 }

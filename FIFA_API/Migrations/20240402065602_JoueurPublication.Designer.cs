@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FIFA_API.Migrations
 {
     [DbContext(typeof(FifaDbContext))]
-    partial class FifaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402065602_JoueurPublication")]
+    partial class JoueurPublication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -845,26 +847,6 @@ namespace FIFA_API.Migrations
                     b.ToTable("t_e_themevote_thv");
                 });
 
-            modelBuilder.Entity("FIFA_API.Models.EntityFramework.ThemeVoteJoueur", b =>
-                {
-                    b.Property<int>("IdTheme")
-                        .HasColumnType("integer")
-                        .HasColumnName("thv_id")
-                        .HasColumnOrder(0);
-
-                    b.Property<int>("IdJoueur")
-                        .HasColumnType("integer")
-                        .HasColumnName("jou_id")
-                        .HasColumnOrder(1);
-
-                    b.HasKey("IdTheme", "IdJoueur");
-
-                    b.HasIndex("IdJoueur")
-                        .HasDatabaseName("IX_themevotejoueur_jou_id");
-
-                    b.ToTable("t_j_themevotejoueur_thj");
-                });
-
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Trophee", b =>
                 {
                     b.Property<int>("Id")
@@ -1549,27 +1531,6 @@ namespace FIFA_API.Migrations
                     b.Navigation("VCProduit");
                 });
 
-            modelBuilder.Entity("FIFA_API.Models.EntityFramework.ThemeVoteJoueur", b =>
-                {
-                    b.HasOne("FIFA_API.Models.EntityFramework.Joueur", "Joueur")
-                        .WithMany()
-                        .HasForeignKey("IdJoueur")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_themevotejoueur_jou_id");
-
-                    b.HasOne("FIFA_API.Models.EntityFramework.ThemeVote", "Theme")
-                        .WithMany("AssocJoueurs")
-                        .HasForeignKey("IdTheme")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_themevotejoueur_thv_id");
-
-                    b.Navigation("Joueur");
-
-                    b.Navigation("Theme");
-                });
-
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Utilisateur", b =>
                 {
                     b.HasOne("FIFA_API.Models.EntityFramework.Langue", "Langue")
@@ -1877,11 +1838,6 @@ namespace FIFA_API.Migrations
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.Produit", b =>
                 {
                     b.Navigation("Variantes");
-                });
-
-            modelBuilder.Entity("FIFA_API.Models.EntityFramework.ThemeVote", b =>
-                {
-                    b.Navigation("AssocJoueurs");
                 });
 
             modelBuilder.Entity("FIFA_API.Models.EntityFramework.TypeLivraison", b =>

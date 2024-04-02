@@ -93,5 +93,12 @@ namespace FIFA_API.Utils
             return await query.FirstOrDefaultAsync(p => p.Id == id);
         }
         #endregion
+
+        #region Themes
+        public static async Task<ThemeVote?> GetByIdAsync(this IQueryable<ThemeVote> query, int id)
+        {
+            return await query.Include(t => t.AssocJoueurs).FirstOrDefaultAsync(t => t.Id == id);
+        }
+        #endregion
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -17,5 +18,11 @@ namespace FIFA_API.Models.EntityFramework
         [Column("thv_nomtheme"), Required]
         [StringLength(MAX_NOMTHEME_LENGTH, ErrorMessage = "Le nom du thème ne doit pas dépasser 60 caractères")]
         public string NomTheme { get; set; }
+
+        [InverseProperty(nameof(ThemeVoteJoueur.Theme)), JsonIgnore]
+        public ICollection<ThemeVoteJoueur> AssocJoueurs { get; set; }
+
+        [NotMapped]
+        public IEnumerable<Joueur> Joueurs => AssocJoueurs.Select(a => a.Joueur);
     }
 }
