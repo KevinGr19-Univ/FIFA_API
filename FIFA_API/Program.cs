@@ -92,15 +92,24 @@ builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddScoped<ILogin2FAService, Login2FAService>();
-builder.Services.AddScoped<ISmsService, TwilioSmsService>(
-    svp => new TwilioSmsService(
-        builder.Configuration["Twilio:PhoneNumber"],
-        builder.Configuration["Twilio:OverrideTo"])
-);
 
-TwilioClient.Init(
-    builder.Configuration["Twilio:AccountSid"],
-    builder.Configuration["Twilio:AuthToken"]);
+var twilio = builder.Configuration["Twilio:Enabled"];
+if (string.IsNullOrEmpty(twilio) || bool.Parse(twilio))
+{
+    TwilioClient.Init(
+        builder.Configuration["Twilio:AccountSid"],
+        builder.Configuration["Twilio:AuthToken"]);
+
+    builder.Services.AddScoped<ISmsService, TwilioSmsService>(
+        svp => new TwilioSmsService(
+            builder.Configuration["Twilio:PhoneNumber"],
+            builder.Configuration["Twilio:OverrideTo"])
+    );
+}
+else
+{
+    builder.Services.AddScoped<ISmsService, DebugSmsService>();
+}
 
 // CORS
 var policyName = "FIFA_CORS";

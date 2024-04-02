@@ -1,6 +1,7 @@
 ﻿using FIFA_API.Models.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FIFA_API.Models.EntityFramework
 {
@@ -97,5 +98,8 @@ namespace FIFA_API.Models.EntityFramework
 
         [ManyToMany(nameof(Trophee.Joueurs))]
         public ICollection<Trophee> Trophees { get; set; }
+
+        [ManyToMany(nameof(Publication.Joueurs))]
+        private ICollection<Publication> _publications { get; set; }
     }
 }
