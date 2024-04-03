@@ -8,6 +8,9 @@ namespace FIFA_API.Controllers
     public partial class PublicationsController
     {
         [HttpPost("{id}/photo")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Photo>> PostPhoto(int id, Photo photo)
         {
@@ -18,6 +21,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("{id}/photo/{idphoto}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Photo>> PostPhoto(int id, int idphoto)
         {
@@ -45,6 +51,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("{id}/photo/{idphoto}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeletePhoto(int id, int idphoto)
         {
@@ -70,6 +79,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("{id}/video")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Video>> PostVideo(int id, Video video)
         {
@@ -80,6 +92,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("{id}/video/{idvideo}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Video>> PostVideo(int id, int idvideo)
         {
@@ -100,6 +115,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("{id}/video/{idvideo}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteVideo(int id, int idvideo)
         {
@@ -115,6 +133,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("photos/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Photo>> GetPhoto(int id)
         {
@@ -123,6 +144,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("photos/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeletePhoto(int id)
         {
@@ -136,6 +160,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("videos/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Photo>> GetVideo(int id)
         {
@@ -144,6 +171,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("videos/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteVideo(int id)
         {

@@ -27,6 +27,7 @@ namespace FIFA_API.Controllers
 
         // GET: api/ThemeVotes
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ThemeVote>>> GetThemeVotes()
         {
             IQueryable<ThemeVote> query = _context.ThemeVotes;
@@ -36,6 +37,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/ThemeVotes/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ThemeVote>> GetThemeVote(int id)
         {
             var themeVote = await _context.ThemeVotes.FindAsync(id);
@@ -51,6 +54,10 @@ namespace FIFA_API.Controllers
         // PUT: api/ThemeVotes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutThemeVote(int id, ThemeVote themeVote)
         {
@@ -81,6 +88,9 @@ namespace FIFA_API.Controllers
         // POST: api/ThemeVotes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<ThemeVote>> PostThemeVote(ThemeVote themeVote)
         {
@@ -92,6 +102,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/ThemeVotes/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteThemeVote(int id)
         {

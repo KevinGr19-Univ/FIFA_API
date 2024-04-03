@@ -11,6 +11,8 @@ namespace FIFA_API.Controllers
     public partial class PublicationsController
     {
         [HttpGet("commentaires")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<CommentaireBlog>>> GetCommentaires()
         {
@@ -18,6 +20,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("commentaires/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentaireBlog>> GetCommentaire(int id)
         {
             var commentaire = await _context.Commentaires.FindAsync(id);
@@ -25,6 +30,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("blogs/{idblog}/comment")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = Policies.User)]
         [VerifiedEmail]
         public async Task<ActionResult<CommentaireBlog>> PostCommentaire(int idblog, CommentaireBlog commentaire)
@@ -47,6 +55,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("commentaires/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         [VerifiedEmail]
         public async Task<IActionResult> DeleteCommentaire(int id, [FromServices] IAuthorizationService authService)

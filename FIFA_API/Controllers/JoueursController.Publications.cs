@@ -10,6 +10,8 @@ namespace FIFA_API.Controllers
     public partial class JoueursController
     {
         [HttpGet("{id}/publications")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Dictionary<string, List<int>>>> GetJoueurPublications(int id)
         {
             var joueur = await _context.Joueurs.GetByIdWithPublications(id);
@@ -19,6 +21,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("{id}/publications/{idpub}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<IActionResult> AddPublicationToJoueur(int id, int idpub)
         {
@@ -34,6 +39,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("{id}/publications/{idpub}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<IActionResult> RemovePublicationToJoueur(int id, int idpub)
         {

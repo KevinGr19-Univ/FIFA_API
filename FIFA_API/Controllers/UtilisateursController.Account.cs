@@ -11,6 +11,8 @@ namespace FIFA_API.Controllers
     public partial class UtilisateursController
     {
         [HttpGet("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<UserInfo>> GetInfo()
         {
@@ -21,6 +23,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> UpdateInfo(
             UserInfo userInfo,
@@ -63,6 +68,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("me/anonymize")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> AnonymizeAccount([FromBody] AnonymizeRequest req, [FromServices] IPasswordHasher passwordHasher)
         {
@@ -80,6 +87,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> DeleteAccount([FromBody] DeleteRequest req, [FromServices] IPasswordHasher passwordHasher)
         {

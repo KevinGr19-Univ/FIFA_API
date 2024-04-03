@@ -12,6 +12,8 @@ namespace FIFA_API.Controllers
         public const int COMMANDES_PER_PAGE = 20;
 
         [HttpGet("search")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<ApercuCommande>>> SearchCommandes(
             [FromQuery] int? idUser,
@@ -34,6 +36,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<IEnumerable<ApercuCommande>>> SearchMyCommands(
             [FromQuery] int[] typesLivraison,

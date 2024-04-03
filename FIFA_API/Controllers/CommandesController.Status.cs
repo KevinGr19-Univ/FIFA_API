@@ -9,6 +9,8 @@ namespace FIFA_API.Controllers
     public partial class CommandesController
     {
         [HttpPost("status")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<StatusCommande>> PostStatus([FromBody] StatusCommande status, [FromServices] IAuthorizationService authorizationService)
         {

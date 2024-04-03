@@ -9,6 +9,9 @@ namespace FIFA_API.Controllers
     public partial class ThemeVotesController
     {
         [HttpPost("{id}/joueurs/{idjoueur}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> AddJoueurToTheme(int id, int idjoueur)
         {
@@ -31,10 +34,14 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("{id}/joueurs/{idjoueur}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteJoueurFromTheme(int id, int idjoueur)
         {
             var themevotejoueur = await _context.ThemeVoteJoueurs.FindAsync(id, idjoueur);
+            if (themevotejoueur is null) return NotFound();
 
             _context.ThemeVoteJoueurs.Remove(themevotejoueur);
             await _context.SaveChangesAsync();
@@ -43,6 +50,7 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("{id}/joueurs")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetThemeJoueurs(int id)
         {
             var theme = await _context.ThemeVotes.GetByIdAsync(id);

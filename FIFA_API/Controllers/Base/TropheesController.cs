@@ -27,6 +27,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/Trophees
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Trophee>>> GetTrophees()
         {
@@ -39,6 +41,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/Trophees/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Trophee>> GetTrophee(int id)
         {
             var trophee = await _context.Trophees.FindAsync(id);
@@ -52,6 +56,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("{id}/joueurs")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetTropheeJoueurs(int id)
         {
             var tropheeRes = await GetTrophee(id);
@@ -63,6 +69,10 @@ namespace FIFA_API.Controllers
         // PUT: api/Trophees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutTrophee(int id, Trophee trophee)
         {
@@ -93,6 +103,9 @@ namespace FIFA_API.Controllers
         // POST: api/Trophees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Trophee>> PostTrophee(Trophee trophee)
         {
@@ -104,6 +117,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Trophees/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteTrophee(int id)
         {

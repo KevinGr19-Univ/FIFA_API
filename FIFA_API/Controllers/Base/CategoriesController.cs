@@ -38,8 +38,8 @@ namespace FIFA_API.Controllers
         /// <param name="id">L'id de la catégorie.</param>
         /// <returns>La catégorie de produit.</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CategorieProduit>> GetCategorieProduit(int id)
         {
             var categorieProduit = await _context.CategorieProduits.FindAsync(id);
@@ -62,10 +62,11 @@ namespace FIFA_API.Controllers
         /// <returns>Réponse HTTP</returns>
         /// <remarks>NOTE: Requiert les droits d'édition de produit.</remarks>
         [HttpPut("{id}")]
-        [Authorize(Policy = ProduitsController.EDIT_POLICY)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutCategorieProduit(int id, CategorieProduit categorieProduit)
         {
             if (id != categorieProduit.Id)
@@ -101,8 +102,10 @@ namespace FIFA_API.Controllers
         /// <returns>La catégorie de produit ajoutée.</returns>
         /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
         [HttpPost]
-        [Authorize(Policy = ProduitsController.ADD_POLICY)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<CategorieProduit>> PostCategorieProduit(CategorieProduit categorieProduit)
         {
             await _context.CategorieProduits.AddAsync(categorieProduit);
@@ -119,9 +122,9 @@ namespace FIFA_API.Controllers
         /// <returns>Réponse HTTP</returns>
         /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
         [HttpDelete("{id}")]
-        [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteCategorieProduit(int id)
         {
             var categorieProduit = await _context.CategorieProduits.FindAsync(id);

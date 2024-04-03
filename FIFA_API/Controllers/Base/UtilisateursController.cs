@@ -27,6 +27,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/Utilisateurs
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
         {
@@ -35,6 +37,9 @@ namespace FIFA_API.Controllers
 
         // GET: api/Utilisateurs/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateur(int id)
         {
@@ -51,6 +56,10 @@ namespace FIFA_API.Controllers
         // PUT: api/Utilisateurs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutUtilisateur(int id, Utilisateur utilisateur)
         {
@@ -81,6 +90,9 @@ namespace FIFA_API.Controllers
         // POST: api/Utilisateurs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Utilisateur>> PostUtilisateur(Utilisateur utilisateur)
         {
@@ -92,6 +104,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Utilisateurs/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {

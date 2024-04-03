@@ -15,7 +15,10 @@ namespace FIFA_API.Controllers
     public partial class CommandesController
     {
 		[HttpPost("checkout")]
-		[Authorize(Policy = Policies.User)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = Policies.User)]
 		[VerifiedEmail]
 		public async Task<ActionResult<StartStripeSessionResponse>> StartStripeCommand([FromBody] Panier panier)
 		{

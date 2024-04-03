@@ -10,6 +10,8 @@ namespace FIFA_API.Controllers
     public partial class VotesController
     {
         [HttpGet("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         [VerifiedEmail]
         public async Task<ActionResult<IEnumerable<VoteUtilisateur>>> GetMyVotes()
@@ -21,6 +23,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("me/{idtheme}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         [VerifiedEmail]
         public async Task<ActionResult<VoteUtilisateur>> GetMyVote(int idtheme)
@@ -32,6 +37,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = Policies.User)]
         [VerifiedEmail]
         public async Task<ActionResult<VoteUtilisateur>> CreateVote(VoteUtilisateur vote)
@@ -47,6 +55,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPut("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         [VerifiedEmail]
         public async Task<IActionResult> UpdateMyVote(VoteUtilisateur vote)

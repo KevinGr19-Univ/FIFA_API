@@ -10,6 +10,8 @@ namespace FIFA_API.Controllers
     public partial class JoueursController
     {
         [HttpGet("faq/{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ActionName("GetFaq")]
         public async Task<ActionResult<FaqJoueur>> GetFaq([FromRoute] int id)
         {
@@ -18,6 +20,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("faq")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<FaqJoueur>> PostFaq([FromBody] FaqJoueur faq)
         {
@@ -31,6 +36,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPut("faq/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutFaq([FromRoute] int id, [FromBody] FaqJoueur faq)
         {
@@ -49,6 +57,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("faq/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteFaq([FromRoute] int id)
         {

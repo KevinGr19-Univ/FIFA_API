@@ -27,6 +27,7 @@ namespace FIFA_API.Controllers
 
         // GET: api/Joueurs
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetJoueurs()
         {
             return await _context.Joueurs.ToListAsync();
@@ -34,6 +35,9 @@ namespace FIFA_API.Controllers
 
         // GET: api/Joueurs/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Joueur>> GetJoueur(int id)
         {
             var joueur = await _context.Joueurs.GetByIdAsync(id);
@@ -49,6 +53,10 @@ namespace FIFA_API.Controllers
         // PUT: api/Joueurs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutJoueur(int id, Joueur joueur)
         {
@@ -79,6 +87,9 @@ namespace FIFA_API.Controllers
         // POST: api/Joueurs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Joueur>> PostJoueur(Joueur joueur)
         {
@@ -90,6 +101,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Joueurs/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteJoueur(int id)
         {

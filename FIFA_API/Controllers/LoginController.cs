@@ -28,6 +28,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginInfo)
         {
             Utilisateur? user = await Authenticate(loginInfo.Mail, loginInfo.Password);
@@ -39,6 +41,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("login/2fa")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APITokenInfo>> Login2FA([FromBody] Login2FAInfo loginInfo)
         {
             var user = await _login2FAService.AuthenticateAsync(loginInfo.Token, loginInfo.Code);
@@ -55,6 +59,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerInfo, [FromServices] IEmailVerificator emailVerificator)
         {
             if(await _context.Utilisateurs.IsEmailTaken(registerInfo.Mail))
@@ -75,6 +81,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("login/refresh")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APITokenInfo>> Refresh([FromBody] APITokenInfo apiToken)
         {
             Utilisateur? user = await _tokenService.GetUserFromExpiredAsync(apiToken.AccessToken);
@@ -92,6 +101,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("checklogin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> CheckLogin()
         {
@@ -100,6 +111,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("email/checkverified")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         [VerifiedEmail]
         public async Task<IActionResult> CheckEmailVerified()
@@ -108,6 +121,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("email/sendverify")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> SendEmailVerification([FromServices] IEmailVerificator emailVerificator)
         {
@@ -119,6 +134,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("email/verify")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> VerifyEmail([FromQuery] string code, [FromServices] IEmailVerificator emailVerificator)
         {
@@ -130,6 +148,7 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("password/sendreset")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> SendResetPassword([FromQuery] string mail, [FromServices] IPasswordResetService resetService)
         {
             await resetService.SendPasswordResetCodeAsync(mail);
@@ -137,6 +156,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpPost("password/reset")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> ResetPassword([FromQuery] string code, [FromBody] ChangePasswordRequest request, [FromServices] IPasswordResetService resetService)
         {
             bool ok = await resetService.ChangePasswordAsync(request, code);
@@ -144,6 +165,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("2fa/resendverify")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> SendVerify2FA()
         {

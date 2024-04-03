@@ -30,6 +30,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/Commandes
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Commande>>> GetCommandes()
         {
@@ -38,6 +40,9 @@ namespace FIFA_API.Controllers
 
         // GET: api/Commandes/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<CommandeDetails>> GetCommande(int id, [FromServices] IAuthorizationService authService)
         {
@@ -59,6 +64,10 @@ namespace FIFA_API.Controllers
         // PUT: api/Commandes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutCommande(int id, Commande commande)
         {
@@ -89,6 +98,9 @@ namespace FIFA_API.Controllers
         // POST: api/Commandes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Commande>> PostCommande(Commande commande)
         {
@@ -100,6 +112,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Commandes/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteCommande(int id)
         {

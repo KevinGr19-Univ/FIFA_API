@@ -24,6 +24,7 @@ namespace FIFA_API.Controllers
 
         // GET: api/TailleProduits
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TailleProduit>>> GetTailleProduits()
         {
             IQueryable<TailleProduit> query = _context.TailleProduits;
@@ -33,6 +34,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/TailleProduits/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<TailleProduit>> GetTailleProduit(int id)
         {
             var tailleProduit = await _context.TailleProduits.FindAsync(id);
@@ -48,6 +51,10 @@ namespace FIFA_API.Controllers
         // PUT: api/TailleProduits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutTailleProduit(int id, TailleProduit tailleProduit)
         {
@@ -78,6 +85,9 @@ namespace FIFA_API.Controllers
         // POST: api/TailleProduits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<TailleProduit>> PostTailleProduit(TailleProduit tailleProduit)
         {
@@ -89,6 +99,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/TailleProduits/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteTailleProduit(int id)
         {

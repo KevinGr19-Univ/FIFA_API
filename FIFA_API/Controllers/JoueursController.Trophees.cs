@@ -7,6 +7,9 @@ namespace FIFA_API.Controllers
     public partial class JoueursController
     {
         [HttpPost("{idjoueur}/trophee/{idtrophee}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PostJoueurTrophee([FromRoute] int idjoueur, [FromRoute] int idtrophee)
         {
@@ -26,6 +29,9 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("{idjoueur}/trophee/{idtrophee}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteJoueurTrophee([FromRoute] int idjoueur, [FromRoute] int idtrophee)
         {

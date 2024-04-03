@@ -14,6 +14,7 @@ namespace FIFA_API.Controllers
         public const int PRODUCTS_PER_PAGE = 20;
 
         [HttpGet("Search")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<SearchProductItem>>> SearchProduits(
             [FromQuery] string? q,
             [FromQuery] int[] categories,

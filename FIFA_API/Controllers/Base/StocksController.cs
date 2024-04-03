@@ -28,6 +28,8 @@ namespace FIFA_API.Controllers.Base
 
         // GET: api/Stocks
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<IEnumerable<StockProduit>>> GetStockProduits()
         {
@@ -36,6 +38,8 @@ namespace FIFA_API.Controllers.Base
 
         // GET: api/Stocks/5
         [HttpGet("{idvariante}/{idtaille}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<StockProduit>> GetStockProduit(int idvariante, int idtaille)
         {
             var stockProduit = await _context.StockProduits.FindAsync(idvariante, idtaille);
@@ -51,6 +55,10 @@ namespace FIFA_API.Controllers.Base
         // PUT: api/Stocks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{idvariante}/{idtaille}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> PutStockProduit(int idvariante, int idtaille, [FromBody] StockProduit stockProduit)
         {
@@ -81,6 +89,9 @@ namespace FIFA_API.Controllers.Base
         // POST: api/Stocks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<StockProduit>> PostStockProduit(StockProduit stockProduit)
         {
@@ -106,6 +117,9 @@ namespace FIFA_API.Controllers.Base
 
         // DELETE: api/Stocks/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = DELETE_POLICY)]
         public async Task<IActionResult> DeleteStockProduit(int id)
         {

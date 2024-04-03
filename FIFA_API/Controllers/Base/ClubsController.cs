@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FIFA_API.Controllers
 {
@@ -25,6 +26,9 @@ namespace FIFA_API.Controllers
 
         // GET: api/Clubs
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Club>>> GetClubs()
         {
             return await _context.Clubs.ToListAsync();
@@ -32,6 +36,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/Clubs/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Club>> GetClub(int id)
         {
             var club = await _context.Clubs.FindAsync(id);
@@ -47,6 +53,11 @@ namespace FIFA_API.Controllers
         // PUT: api/Clubs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutClub(int id, Club club)
         {
             if (id != club.Id)
@@ -76,6 +87,10 @@ namespace FIFA_API.Controllers
         // POST: api/Clubs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Club>> PostClub(Club club)
         {
             await _context.Clubs.AddAsync(club);
@@ -86,6 +101,10 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Clubs/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteClub(int id)
         {
             var club = await _context.Clubs.FindAsync(id);

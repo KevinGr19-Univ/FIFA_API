@@ -30,16 +30,18 @@ namespace FIFA_API.Controllers
 
         // GET: api/Produits
         [HttpGet]
-        [Authorize(Policy = ADD_POLICY)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = SEE_POLICY)]
         public async Task<ActionResult<IEnumerable<Produit>>> GetProduits()
         {
-            IQueryable<Produit> query = _context.Produits;
-            if (!await this.MatchPolicyAsync(SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            return await _context.Produits .ToListAsync();
         }
 
         // GET: api/Produits/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Produit>> GetProduit(int id)
         {
             var produit = await _context.Produits.GetByIdAsync(id);
@@ -55,6 +57,10 @@ namespace FIFA_API.Controllers
         // PUT: api/Produits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> PutProduit(int id, Produit produit)
         {
@@ -85,6 +91,9 @@ namespace FIFA_API.Controllers
         // POST: api/Produits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = ADD_POLICY)]
         public async Task<ActionResult<Produit>> PostProduit(Produit produit)
         {
@@ -96,6 +105,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Produits/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = DELETE_POLICY)]
         public async Task<IActionResult> DeleteProduit(int id)
         {

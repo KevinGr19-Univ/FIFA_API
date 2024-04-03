@@ -24,6 +24,7 @@ namespace FIFA_API.Controllers
 
         // GET: api/Genres
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
         {
             IQueryable<Genre> query = _context.Genres;
@@ -33,6 +34,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/Genres/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Genre>> GetGenre(int id)
         {
             var genre = await _context.Genres.FindAsync(id);
@@ -48,6 +51,10 @@ namespace FIFA_API.Controllers
         // PUT: api/Genres/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutGenre(int id, Genre genre)
         {
@@ -78,6 +85,9 @@ namespace FIFA_API.Controllers
         // POST: api/Genres
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Genre>> PostGenre(Genre genre)
         {
@@ -89,6 +99,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Genres/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteGenre(int id)
         {

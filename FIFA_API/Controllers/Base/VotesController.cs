@@ -27,6 +27,8 @@ namespace FIFA_API.Controllers
 
         // GET: api/Votes
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<VoteUtilisateur>>> GetVoteUtilisateurs()
         {
@@ -35,6 +37,9 @@ namespace FIFA_API.Controllers
 
         // GET: api/Votes/5
         [HttpGet("{idtheme}/{iduser}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<VoteUtilisateur>> GetVoteUtilisateur(int idtheme, int iduser)
         {
@@ -51,6 +56,10 @@ namespace FIFA_API.Controllers
         // PUT: api/Votes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{idtheme}/{iduser}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutVoteUtilisateur(int idtheme, int iduser, VoteUtilisateur voteUtilisateur)
         {
@@ -81,6 +90,9 @@ namespace FIFA_API.Controllers
         // POST: api/Votes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<VoteUtilisateur>> PostVoteUtilisateur(VoteUtilisateur vote)
         {
@@ -109,6 +121,9 @@ namespace FIFA_API.Controllers
 
         // DELETE: api/Votes/5
         [HttpDelete("{idtheme}/{iduser}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteVoteUtilisateur(int idtheme, int iduser)
         {

@@ -24,6 +24,7 @@ namespace FIFA_API.Controllers.Base
 
         // GET: api/Variantes
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<VarianteCouleurProduit>>> GetVariantes()
         {
             IQueryable<VarianteCouleurProduit> query = _context.VarianteCouleurProduits;
@@ -33,6 +34,8 @@ namespace FIFA_API.Controllers.Base
 
         // GET: api/Variantes/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<VarianteCouleurProduit>> GetVariante(int id)
         {
             var variante = await _context.VarianteCouleurProduits.GetByIdAsync(id);
@@ -47,6 +50,10 @@ namespace FIFA_API.Controllers.Base
         // PUT: api/Variantes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutVariante(int id, VarianteCouleurProduit variante)
         {
@@ -65,6 +72,9 @@ namespace FIFA_API.Controllers.Base
         // POST: api/Variantes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = ProduitsController.EDIT_POLICY)] // Adding color = Editing product
         public async Task<ActionResult<VarianteCouleurProduit>> PostVariante(VarianteCouleurProduit variante)
         {
@@ -85,6 +95,9 @@ namespace FIFA_API.Controllers.Base
 
         // DELETE: api/Variantes/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteVariante(int id)
         {

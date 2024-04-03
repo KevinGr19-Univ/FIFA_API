@@ -11,6 +11,9 @@ namespace FIFA_API.Controllers
     public partial class ProduitsController
     {
         [HttpPost("{id}/tailles/{idtaille}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> PostProduitTaille(int id, int idtaille)
         {
@@ -27,6 +30,10 @@ namespace FIFA_API.Controllers
         }
 
         [HttpDelete("{id}/tailles/{idtaille}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> DeleteProduitTaille(int id, int idtaille)
         {
@@ -48,6 +55,8 @@ namespace FIFA_API.Controllers
         }
 
         [HttpGet("checkperms")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<ProduitsPermissionCheck>> CheckPerms([FromServices] IAuthorizationService authService)
         {
