@@ -16,6 +16,9 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class PublicationsController : ControllerBase
     {
+        /// <summary>
+        /// Le nom de la <see cref="AuthorizationPolicy"/> requise pour les actions de modifications.
+        /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
         private readonly FifaDbContext _context;
@@ -25,6 +28,11 @@ namespace FIFA_API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retourne la liste de toutes les publications.
+        /// </summary>
+        /// <returns>La liste des publications.</returns>
+        /// <response code="401">Accès refusé.</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -35,12 +43,24 @@ namespace FIFA_API.Controllers
         }
 
         #region Generic actions
+        /// <summary>
+        /// Retourne la liste des publications de type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <returns>La liste des publications de type <typeparamref name="T"/>.</returns>
         [NonAction]
         public async Task<ActionResult<IEnumerable<T>>> GetPublications<T>() where T : Publication
         {
             return await _context.Set<T>().ToListAsync();
         }
 
+        /// <summary>
+        /// Retourne une publication de type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="id">L'id de la publication.</param>
+        /// <returns>La publication de type <typeparamref name="T"/> recherchée.</returns>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type <typeparamref name="T"/> ou a été filtrée.</response>
         [NonAction]
         public async Task<ActionResult<T>> GetPublication<T>(int id) where T : Publication
         {
@@ -53,6 +73,15 @@ namespace FIFA_API.Controllers
             return publication;
         }
 
+        /// <summary>
+        /// Modifie une publication de type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="id">L'id de la publication.</param>
+        /// <param name="publication">Les nouvelles informations de la publication.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type <typeparamref name="T"/> ou a été filtrée.</response>
+        /// <response code="400">Les nouvelles informations de la publication sont invalides.</response>
         [NonAction]
         public async Task<IActionResult> PutPublication<T>(int id, T publication) where T : Publication
         {
@@ -74,6 +103,14 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Ajoute une publication de type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="publication">La publication à ajouter.</param>
+        /// <param name="createdAtAction">La route à utiliser pour la réponse <see cref="CreatedResult"/>.</param>
+        /// <returns>La nouvelle publication de type <typeparamref name="T"/>.</returns>
+        /// <response code="400">La publication de type <typeparamref name="T"/> est invalide.</response>
         [NonAction]
         public async Task<ActionResult<T>> PostPublication<T>(T publication, string createdAtAction) where T : Publication
         {
@@ -91,6 +128,7 @@ namespace FIFA_API.Controllers
         #endregion
 
         // GET BY ID
+        /// <inheritdoc cref="GetPublication{T}(int)"/>
         [HttpGet("albums/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -173,7 +211,15 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutDocument(int id, Document document) => await PutPublication(id, document);
 
+        /// <summary>
+        /// Supprime une publication.
+        /// </summary>
+        /// <param name="id">L'id de la publication.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La publication recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = MANAGER_POLICY)]

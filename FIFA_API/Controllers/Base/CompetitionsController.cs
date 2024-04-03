@@ -23,6 +23,11 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Competitions
+        /// <summary>
+        /// Retourne la liste des compétitions.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <returns>La liste des compétitions.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Competition>>> GetCompetitions()
@@ -33,6 +38,13 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Competitions/5
+        /// <summary>
+        /// Retourne une compétition.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <param name="id">L'id de la compétition.</param>
+        /// <returns>La compétition recherchée.</returns>
+        /// <response code="404">La compétition recherchée n'existe pas ou a été filtrée.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -50,6 +62,16 @@ namespace FIFA_API.Controllers
 
         // PUT: api/Competitions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifie une compétition.
+        /// </summary>
+        /// <param name="id">L'id de la compétition.</param>
+        /// <param name="competition">Les nouvelles informations de la compétition.</param>
+        /// <remarks>NOTE: Requiert les droits d'édition de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La compétition recherchée n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations de la compétition sont invalides.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -84,6 +106,14 @@ namespace FIFA_API.Controllers
 
         // POST: api/Competitions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute une nouvelle compétition.
+        /// </summary>
+        /// <param name="competition">La compétition à ajouter.</param>
+        /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
+        /// <returns>La nouvelle compétition.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">La nouvelle compétition est invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,6 +128,14 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/Competitions/5
+        /// <summary>
+        /// Supprime une compétition.
+        /// </summary>
+        /// <param name="id">L'id de la compétition à supprimer.</param>
+        /// <remarks>NOTE: Requiert les droits de suppression de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La compétition recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

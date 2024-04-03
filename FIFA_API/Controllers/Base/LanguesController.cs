@@ -16,6 +16,9 @@ namespace FIFA_API.Controllers
     [ApiController]
     public class LanguesController : ControllerBase
     {
+        /// <summary>
+        /// Le nom de la <see cref="AuthorizationPolicy"/> requise pour les actions de modifications.
+        /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
         private readonly FifaDbContext _context;
@@ -26,6 +29,10 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Langues
+        /// <summary>
+        /// Retourne la liste des langues.
+        /// </summary>
+        /// <returns>La liste des langues.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Langue>>> GetLangues()
@@ -34,6 +41,12 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Langues/5
+        /// <summary>
+        /// Retourne une langue.
+        /// </summary>
+        /// <param name="id">L'id de la langue recherchée.</param>
+        /// <returns>La langue recherchée.</returns>
+        /// <response code="404">La langue recherchée n'existe pas.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -45,6 +58,15 @@ namespace FIFA_API.Controllers
 
         // PUT: api/Langues/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifie une langue.
+        /// </summary>
+        /// <param name="id">L'id de la langue à modifier.</param>
+        /// <param name="langue">Les nouvelles informations de la langue.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La langue recherchée n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations de la langue sont invalides.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -79,6 +101,13 @@ namespace FIFA_API.Controllers
 
         // POST: api/Langues
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute une langue.
+        /// </summary>
+        /// <param name="langue">Le langue à ajouter.</param>
+        /// <returns>Le nouvelle langue.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">Le nouvelle langue est invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -92,6 +121,13 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/Langues/5
+        /// <summary>
+        /// Supprime une langue.
+        /// </summary>
+        /// <param name="id">L'id de la langue à supprimer.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La langue recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

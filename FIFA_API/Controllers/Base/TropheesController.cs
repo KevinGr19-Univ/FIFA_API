@@ -16,6 +16,9 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class TropheesController : ControllerBase
     {
+        /// <summary>
+        /// Le nom de la <see cref="AuthorizationPolicy"/> requise pour les actions de modifications.
+        /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
         private readonly FifaDbContext _context;
@@ -26,6 +29,11 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Trophees
+        /// <summary>
+        /// Retourne la liste des trophées.
+        /// </summary>
+        /// <returns>La liste des trophées.</returns>
+        /// <response code="401">Accès refusé.</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,6 +48,12 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Trophees/5
+        /// <summary>
+        /// Retourne le trophée avec l'id passé.
+        /// </summary>
+        /// <param name="id">L'id du trophée.</param>
+        /// <returns>Le trophée recherché.</returns>
+        /// <response code="404">Le trophée recherché n'existe pas.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -55,6 +69,12 @@ namespace FIFA_API.Controllers
             return trophee;
         }
 
+        /// <summary>
+        /// Retourne la liste des joueurs ayant reçu un trophée.
+        /// </summary>
+        /// <param name="id">L'id du trophée recherché.</param>
+        /// <returns>La liste des joueurs associés.</returns>
+        /// <response code="404">Le trophée recherché n'existe pas.</response>
         [HttpGet("{id}/joueurs")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -68,6 +88,15 @@ namespace FIFA_API.Controllers
 
         // PUT: api/Trophees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifie un trophée avec les informations passés.
+        /// </summary>
+        /// <param name="id">L'id du trophée à modifier.</param>
+        /// <param name="trophee">Les nouvelles informations du trophée.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le trophée recherché n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations du trophée sont invalides.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -102,6 +131,13 @@ namespace FIFA_API.Controllers
 
         // POST: api/Trophees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute un trophée.
+        /// </summary>
+        /// <param name="trophee">Le trophée à ajotuer.</param>
+        /// <returns>Le trophée ajouté.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">Le trophée est invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -116,6 +152,13 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/Trophees/5
+        /// <summary>
+        /// Supprime un trophée.
+        /// </summary>
+        /// <param name="id">L'id du trophée à supprimer.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le trophée recherché n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

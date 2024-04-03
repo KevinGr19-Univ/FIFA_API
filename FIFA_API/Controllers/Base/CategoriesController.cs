@@ -37,6 +37,7 @@ namespace FIFA_API.Controllers
         /// </summary>
         /// <param name="id">L'id de la catégorie.</param>
         /// <returns>La catégorie de produit.</returns>
+        /// <response code="404">La catégorie recherchée n'existe pas.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -58,9 +59,12 @@ namespace FIFA_API.Controllers
         /// Modifie une catégorie de produit.
         /// </summary>
         /// <param name="id">L'id de la catégorie.</param>
-        /// <param name="categorieProduit">La catégorie de produit contenant les nouvelles données.</param>
+        /// <param name="categorieProduit">Les nouvelles informations de la catégorie de produit.</param>
         /// <returns>Réponse HTTP</returns>
         /// <remarks>NOTE: Requiert les droits d'édition de produit.</remarks>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La catégorie recherchée n'existe pas.</response>
+        /// <response code="400">La catégorie est invalide.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -101,6 +105,8 @@ namespace FIFA_API.Controllers
         /// <param name="categorieProduit">La catégorie de produit à ajouter.</param>
         /// <returns>La catégorie de produit ajoutée.</returns>
         /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">La catégorie est invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -120,8 +126,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         /// <param name="id">L'id de la catégorie de produit à supprimer.</param>
         /// <returns>Réponse HTTP</returns>
-        /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
+        /// <remarks>NOTE: Requiert les droits de suppression de produit.</remarks>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La catégorie recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]

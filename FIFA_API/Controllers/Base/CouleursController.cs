@@ -23,6 +23,11 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Couleurs
+        /// <summary>
+        /// Retourne la liste des couleurs.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <returns>La liste des couleurs.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Couleur>>> GetCouleurs()
@@ -33,6 +38,13 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Couleurs/5
+        /// <summary>
+        /// Retourne une couleur.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <param name="id">L'id de la couleur recherchée.</param>
+        /// <returns>La couleur recherchée.</returns>
+        /// <response code="404">La couleur recherchée n'existe pas ou a été filtrée.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -49,7 +61,17 @@ namespace FIFA_API.Controllers
         }
 
         // PUT: api/Couleurs/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=212375
+        /// <summary>
+        /// Modifie une couleur.
+        /// </summary>
+        /// <param name="id">L'id de la couleur à modifier.</param>
+        /// <param name="couleur">Les nouvelles informations de la couleur.</param>
+        /// <remarks>NOTE: Requiert les droits d'édition de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé</response>
+        /// <response code="404">La couleur recherchée n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations de la couleur sont invalides.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -84,6 +106,14 @@ namespace FIFA_API.Controllers
 
         // POST: api/Couleurs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute une nouvelle couleur.
+        /// </summary>
+        /// <param name="couleur">La couleur à ajouter.</param>
+        /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
+        /// <returns>La nouvelle couleur.</returns>
+        /// <response code="401">Accès refusé</response>
+        /// <response code="400">La nouvelle couleur est invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,6 +128,14 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/Couleurs/5
+        /// <summary>
+        /// Supprime une couleur.
+        /// </summary>
+        /// <param name="id">L'id de la couleur à supprimer.</param>
+        /// <remarks>NOTE: Requiert les droits de suppression de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé</response>
+        /// <response code="404">La couleur recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -23,6 +23,11 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/TailleProduits
+        /// <summary>
+        /// Retourne la liste des tailles.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <returns>La liste des tailles.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TailleProduit>>> GetTailleProduits()
@@ -33,6 +38,13 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/TailleProduits/5
+        /// <summary>
+        /// Retourne une taille.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <param name="id">L'id de la taille.</param>
+        /// <returns>La taille recherchée.</returns>
+        /// <response code="404">La taille recherchée n'existe pas ou a été filtrée.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -50,6 +62,16 @@ namespace FIFA_API.Controllers
 
         // PUT: api/TailleProduits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifie une taille.
+        /// </summary>
+        /// <param name="id">L'id de la taille.</param>
+        /// <param name="tailleProduit">Les nouvelles informations de la taille.</param>
+        /// <remarks>NOTE: Requiert les droits d'édition de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La taille recherchée n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations de la taille sont invalides.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -84,6 +106,14 @@ namespace FIFA_API.Controllers
 
         // POST: api/TailleProduits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute une nouvelle taille.
+        /// </summary>
+        /// <param name="tailleProduit">La taille à ajouter.</param>
+        /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
+        /// <returns>La nouvelle taille.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">La nouvelle taille est invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,6 +128,14 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/TailleProduits/5
+        /// <summary>
+        /// Supprime une taille.
+        /// </summary>
+        /// <param name="id">L'id de la taille à supprimer.</param>
+        /// <remarks>NOTE: Requiert les droits de suppression de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La taille recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

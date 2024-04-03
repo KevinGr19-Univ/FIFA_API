@@ -16,6 +16,9 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class ThemeVotesController : ControllerBase
     {
+        /// <summary>
+        /// Le nom de la <see cref="AuthorizationPolicy"/> requise pour les actions de modifications.
+        /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
         private readonly FifaDbContext _context;
@@ -26,6 +29,11 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/ThemeVotes
+        /// <summary>
+        /// Retourne la liste des thèmes de vote.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <returns>La liste des thèmes de vote.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ThemeVote>>> GetThemeVotes()
@@ -36,6 +44,13 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/ThemeVotes/5
+        /// <summary>
+        /// Retourne un thème de vote.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <param name="id">L'id du thème de vote recherché.</param>
+        /// <returns>Le thème de vote recherché.</returns>
+        /// <response code="404">Le thème de vote recherché n'existe pas ou a été filtré.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -53,6 +68,16 @@ namespace FIFA_API.Controllers
 
         // PUT: api/ThemeVotes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifie un thème de vote.
+        /// </summary>
+        /// <param name="id">L'id du thème de vote à modifier.</param>
+        /// <param name="themeVote">Les nouvelles informations du thème de vote.</param>
+        /// <remarks>NOTE: Requiert les droits d'édition de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le thème de vote recherché n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations du thème de vote sont invalides.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -87,6 +112,14 @@ namespace FIFA_API.Controllers
 
         // POST: api/ThemeVotes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute un thème de vote.
+        /// </summary>
+        /// <param name="themeVote">Le thème de vote à ajouter.</param>
+        /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
+        /// <returns>Le nouveau thème de vote.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">Le nouveau thème de vote est invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -101,6 +134,14 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/ThemeVotes/5
+        /// <summary>
+        /// Supprime un thème de vote.
+        /// </summary>
+        /// <param name="id">L'id du thème de vote recherché.</param>
+        /// <remarks>NOTE: Requiert les droits de suppression de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le thème de vote recherché n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

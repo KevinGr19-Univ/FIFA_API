@@ -17,6 +17,9 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class CommandesController : ControllerBase
     {
+        /// <summary>
+        /// Le nom de la <see cref="AuthorizationPolicy"/> requise pour les actions de modifications.
+        /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
         private readonly IConfiguration _config;
@@ -29,6 +32,11 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Commandes
+        /// <summary>
+        /// Retourne la liste des commandes.
+        /// </summary>
+        /// <returns>La liste des commandes.</returns>
+        /// <response code="401">Accès refusé</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -39,6 +47,14 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Commandes/5
+        /// <summary>
+        /// Retourne une commande.
+        /// </summary>
+        /// <param name="id">L'id de la commande.</param>
+        /// <param name="authService">Le service d'authorisation à utiliser.</param>
+        /// <returns>La commande recherchée.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La commande n'existe pas ou n'appartient pas à l'utilisateur.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,6 +79,15 @@ namespace FIFA_API.Controllers
 
         // PUT: api/Commandes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifie une commande.
+        /// </summary>
+        /// <param name="id">L'id de la commande.</param>
+        /// <param name="commande">Les nouvelles informations de la commande.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La commande n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations de la commande sont invalides.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -97,6 +122,14 @@ namespace FIFA_API.Controllers
 
         // POST: api/Commandes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute une commande.
+        /// </summary>
+        /// <remarks>NOTE: Cette méthode ne devrait pas être utilisée pour un usage commun.</remarks>
+        /// <param name="commande">La commande à ajouter.</param>
+        /// <returns>La nouvelle commande.</returns>
+        /// <response code="401">Accès refusé</response>
+        /// <response code="400">Les nouvelles informations de la commande sont invalides.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -111,6 +144,13 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/Commandes/5
+        /// <summary>
+        /// Supprime une commande.
+        /// </summary>
+        /// <param name="id">L'id de la commande.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé</response>
+        /// <response code="404">La commande recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

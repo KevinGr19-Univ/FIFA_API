@@ -26,6 +26,11 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Utilisateurs
+        /// <summary>
+        /// Retourne la liste des utilisateurs.
+        /// </summary>
+        /// <returns>La liste des utilisateurs.</returns>
+        /// <response code="401">Accès refusé.</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -36,6 +41,13 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Utilisateurs/5
+        /// <summary>
+        /// Retourne le utilisateur avec l'id passé.
+        /// </summary>
+        /// <param name="id">L'id du utilisateur.</param>
+        /// <returns>Le utilisateur recherché.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le utilisateur recherché n'existe pas.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -55,6 +67,16 @@ namespace FIFA_API.Controllers
 
         // PUT: api/Utilisateurs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifie un utilisateur avec les informations passés.
+        /// </summary>
+        /// <remarks>NOTE: Cette méthode ne devrait pas être utilisée pour un usage commun.</remarks>
+        /// <param name="id">L'id du utilisateur à modifier.</param>
+        /// <param name="utilisateur">Les nouvelles informations du utilisateur.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le utilisateur recherché n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations du utilisateur sont invalides.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -89,6 +111,14 @@ namespace FIFA_API.Controllers
 
         // POST: api/Utilisateurs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute un utilisateur.
+        /// </summary>
+        /// <remarks>NOTE: Cette méthode ne devrait pas être utilisée pour un usage commun.</remarks>
+        /// <param name="utilisateur">Le utilisateur à ajotuer.</param>
+        /// <returns>Le utilisateur ajouté.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">Le utilisateur est invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -103,6 +133,14 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/Utilisateurs/5
+        /// <summary>
+        /// Supprime un utilisateur.
+        /// </summary>
+        /// <remarks>NOTE: Cette méthode ne devrait pas être utilisée pour un usage commun.</remarks>
+        /// <param name="id">L'id du utilisateur à supprimer.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le utilisateur recherché n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
