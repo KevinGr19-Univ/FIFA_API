@@ -14,7 +14,14 @@ namespace FIFA_API.Controllers
 {
     public partial class CommandesController
     {
-		[HttpPost("checkout")]
+        /// <summary>
+        /// Initialise le processus de paiement de commande.
+        /// </summary>
+        /// <param name="panier">Le panier de l'utilisateur.</param>
+        /// <returns>Réponse Stripe contenant le lien de paiement.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">Le panier est invalide.</response>
+        [HttpPost("checkout")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]

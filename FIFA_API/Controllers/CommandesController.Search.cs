@@ -11,6 +11,15 @@ namespace FIFA_API.Controllers
     {
         public const int COMMANDES_PER_PAGE = 20;
 
+        /// <summary>
+        /// Retourne une liste de commandes à partir de critères de recherche.
+        /// </summary>
+        /// <param name="idUser">L'id de l'utilisateur.</param>
+        /// <param name="typesLivraison">Les ids des types de livraison.</param>
+        /// <param name="desc">Si le tri doit être décroissant.</param>
+        /// <param name="page">Le numéro de page à utiliser pour paginer le résultat.</param>
+        /// <returns>Une liste de commandes correspondantes.</returns>
+        /// <response code="401">Accès refusé.</response>
         [HttpGet("search")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -35,6 +44,14 @@ namespace FIFA_API.Controllers
                 .ToApercus());
         }
 
+        /// <summary>
+        /// Retourne une liste de commandes de l'utilisateur à partir de critères de recherche.
+        /// </summary>
+        /// <param name="typesLivraison">Les ids des types de livraison.</param>
+        /// <param name="desc">Si le tri doit être décroissant.</param>
+        /// <param name="page">Le numéro de page à utiliser pour paginer le résultat.</param>
+        /// <returns>Une liste de commandes correspondantes de l'utilisateur.</returns>
+        /// <response code="401">Accès refusé.</response>
         [HttpGet("me")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]

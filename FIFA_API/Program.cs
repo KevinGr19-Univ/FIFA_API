@@ -93,7 +93,7 @@ builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 builder.Services.AddScoped<ILogin2FAService, Login2FAService>();
 
 var twilio = builder.Configuration["Twilio:Enabled"];
-if (string.IsNullOrEmpty(twilio) || bool.Parse(twilio))
+if (!string.IsNullOrEmpty(twilio) && bool.Parse(twilio))
 {
     TwilioClient.Init(
         builder.Configuration["Twilio:AccountSid"],

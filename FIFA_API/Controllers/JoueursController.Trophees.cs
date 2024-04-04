@@ -6,6 +6,15 @@ namespace FIFA_API.Controllers
 {
     public partial class JoueursController
     {
+        /// <summary>
+        /// Associe un joueur et un trophée.
+        /// </summary>
+        /// <param name="idjoueur">L'id du joueur.</param>
+        /// <param name="idtrophee">L'id du trophée.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le joueur recherché ou le trophée recherché n'existe pas.</response>
+        /// <response code="204">Le joueur et le trophée ont été associés ou étaient déjà associés.</response>
         [HttpPost("{idjoueur}/trophee/{idtrophee}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -28,6 +37,14 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Supprime l'association entre un joueur et un trophée.
+        /// </summary>
+        /// <param name="idjoueur">L'id du joueur.</param>
+        /// <param name="idtrophee">L'id du trophée.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le joueur recherché n'existe pas ou le joueur n'est pas associé au trophée recherchée.</response>
         [HttpDelete("{idjoueur}/trophee/{idtrophee}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

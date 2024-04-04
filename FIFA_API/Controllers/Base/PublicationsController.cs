@@ -128,28 +128,59 @@ namespace FIFA_API.Controllers
         #endregion
 
         // GET BY ID
-        /// <inheritdoc cref="GetPublication{T}(int)"/>
+        /// <summary>
+        /// Retourne une publication de type album.
+        /// </summary>
+        /// <param name="id">L'id de la publication.</param>
+        /// <returns>La publication de type album recherchée.</returns>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type album ou a été filtrée.</response>
         [HttpGet("albums/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Album>> GetAlbum(int id) => await GetPublication<Album>(id);
 
+        /// <summary>
+        /// Retourne une publication de type article.
+        /// </summary>
+        /// <param name="id">L'id de la publication.</param>
+        /// <returns>La publication de type article recherchée.</returns>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type article ou a été filtrée.</response>
         [HttpGet("articles/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Article>> GetArticle(int id) => await GetPublication<Article>(id);
 
+        /// <summary>
+        /// Retourne une publication de type blog.
+        /// </summary>
+        /// <param name="id">L'id de la publication.</param>
+        /// <returns>La publication de type blog recherchée.</returns>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type blog ou a été filtrée.</response>
         [HttpGet("blogs/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Blog>> GetBlog(int id) => await GetPublication<Blog>(id);
 
+        /// <summary>
+        /// Retourne une publication de type document.
+        /// </summary>
+        /// <param name="id">L'id de la publication.</param>
+        /// <returns>La publication de type document recherchée.</returns>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type document ou a été filtrée.</response>
         [HttpGet("documents/{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Document>> GetDocument(int id) => await GetPublication<Document>(id);
 
         // POST
+        /// <summary>
+        /// Ajoute une publication de type album.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="album">La publication à ajouter.</param>
+        /// <returns>La nouvelle publication de type album.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">La publication de type album est invalide.</response>
         [HttpPost("albums")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -157,6 +188,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Album>> PostAlbum(Album album) => await PostPublication(album, "GetAlbum");
 
+        /// <summary>
+        /// Ajoute une publication de type article.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="article">La publication à ajouter.</param>
+        /// <returns>La nouvelle publication de type article.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">La publication de type article est invalide.</response>
         [HttpPost("articles")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -164,6 +203,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Article>> PostArticle(Article article) => await PostPublication(article, "GetArticle");
 
+        /// <summary>
+        /// Ajoute une publication de type blog.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="blog">La publication à ajouter.</param>
+        /// <returns>La nouvelle publication de type blog.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">La publication de type blog est invalide.</response>
         [HttpPost("blogs")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -171,6 +218,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Blog>> PostBlog(Blog blog) => await PostPublication(blog, "GetBlog");
 
+        /// <summary>
+        /// Ajoute une publication de type document.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="document">La publication à ajouter.</param>
+        /// <returns>La nouvelle publication de type document.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">La publication de type document est invalide.</response>
         [HttpPost("documents")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -179,6 +234,16 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<Document>> PostDocument(Document document) => await PostPublication(document, "GetDocument");
 
         // PUT
+        /// <summary>
+        /// Modifie une publication de type album.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="id">L'id de la publication.</param>
+        /// <param name="album">Les nouvelles informations de la publication.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type album ou a été filtrée.</response>
+        /// <response code="400">Les nouvelles informations de la publication sont invalides.</response>
         [HttpPut("albums/{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -187,6 +252,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutAlbum(int id, Album album) => await PutPublication(id, album);
 
+        /// <summary>
+        /// Modifie une publication de type article.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="id">L'id de la publication.</param>
+        /// <param name="article">Les nouvelles informations de la publication.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type article ou a été filtrée.</response>
+        /// <response code="400">Les nouvelles informations de la publication sont invalides.</response>
         [HttpPut("articles/{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -195,6 +270,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutArticle(int id, Article article) => await PutPublication(id, article);
 
+        /// <summary>
+        /// Modifie une publication de type blog.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="id">L'id de la publication.</param>
+        /// <param name="blog">Les nouvelles informations de la publication.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type blog ou a été filtrée.</response>
+        /// <response code="400">Les nouvelles informations de la publication sont invalides.</response>
         [HttpPut("blogs/{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -203,6 +288,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutBlog(int id, Blog blog) => await PutPublication(id, blog);
 
+        /// <summary>
+        /// Modifie une publication de type document.
+        /// </summary>
+        /// <typeparam name="T">Le type de publication.</typeparam>
+        /// <param name="id">L'id de la publication.</param>
+        /// <param name="document">Les nouvelles informations de la publication.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La publication recherchée n'existe pas, n'est pas de type document ou a été filtrée.</response>
+        /// <response code="400">Les nouvelles informations de la publication sont invalides.</response>
         [HttpPut("documents/{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

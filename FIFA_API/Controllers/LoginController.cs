@@ -27,6 +27,12 @@ namespace FIFA_API.Controllers
             _login2FAService = login2FAService;
         }
 
+        /// <summary>
+        /// Authentifie un utilisateur.
+        /// </summary>
+        /// <param name="loginInfo">Les informations de connexion.</param>
+        /// <returns>Les jetons d'accès au compte (<see cref="APITokenInfo"/>), ou un jeton d'authentification 2FA (<see cref="string"/>).</returns>
+        /// <response code="401">Identifiants invalides.</response>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,6 +46,12 @@ namespace FIFA_API.Controllers
             return Ok(await LoginUser(user));
         }
 
+        /// <summary>
+        /// Authentifie un utilisateur avec un code de 2FA.
+        /// </summary>
+        /// <param name="loginInfo">Les informations de connexion 2FA.</param>
+        /// <returns>Les jetons d'accès au compte (<see cref="APITokenInfo"/>).</returns>
+        /// <response code="401">Identifiants invalides.</response>
         [HttpPost("login/2fa")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -58,6 +70,12 @@ namespace FIFA_API.Controllers
             return Ok(await LoginUser(user));
         }
 
+        /// <summary>
+        /// Crée un utilisateur.
+        /// </summary>
+        /// <param name="registerInfo">Les informations de création de compte.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="400">Les informations de création de compte sont invalides.</response>
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -80,6 +98,13 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Regénère les jetons de connexion au compte, à partir d'anciens.
+        /// </summary>
+        /// <param name="apiToken">Les jetons de connexion au compte.</param>
+        /// <returns>Les nouveaux jetons de connexion.</returns>
+        /// <response code="404">L'utilisateur n'existe pas ou est désactivé.</response>
+        /// <response code="403">Les jetons sont invalides.</response>
         [HttpPost("login/refresh")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -100,6 +125,12 @@ namespace FIFA_API.Controllers
             return await LoginUser(user);
         }
 
+        /// <summary>
+        /// Retourne l'état de la connexion à l'API.
+        /// </summary>
+        /// <returns>L'état de la connexion actuelle.</returns>
+        /// <response code="401">Non-authentifié.</response>
+        /// <response code="200">Authentifié.</response>
         [HttpGet("checklogin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -110,6 +141,12 @@ namespace FIFA_API.Controllers
             return user is null ? Unauthorized() : Ok();
         }
 
+        /// <summary>
+        /// Retourne l'état de vérification de l'email de l'utilisateur.
+        /// </summary>
+        /// <returns>L'état de vérification de l'email.</returns>
+        /// <response code="401">Non-authentifié ou email non-vérifié.</response>
+        /// <response code="200">Email vérifié.</response>
         [HttpGet("email/checkverified")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -120,6 +157,11 @@ namespace FIFA_API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Envoie un email de vérification à l'utilisateur pour vérifier son adresse mail.
+        /// </summary>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
         [HttpGet("email/sendverify")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -133,6 +175,13 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Vérifie l'adresse email de l'utilisateur avec un code.
+        /// </summary>
+        /// <param name="code">Le code de vérification envoyé.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">Le code est invalide.</response>
         [HttpPost("email/verify")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -147,6 +196,11 @@ namespace FIFA_API.Controllers
             return ok ? NoContent() : BadRequest();
         }
 
+        /// <summary>
+        /// Envoie un mail de réinitialisation de mot de passe.
+        /// </summary>
+        /// <param name="mail">L'adresse mail de l'utilisateur.</param>
+        /// <returns>Réponse HTTP</returns>
         [HttpGet("password/sendreset")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> SendResetPassword([FromQuery] string mail, [FromServices] IPasswordResetService resetService)
@@ -155,6 +209,13 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Réinitialise le mot de passe de l'utilisateur lié à l'adresse mail.
+        /// </summary>
+        /// <param name="code">Le code de réinitialisation de mot de passe.</param>
+        /// <param name="request">L'adresse mail et le nouveau mot de passe.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="400">Le code ou l'adresse mail sont invalides.</response>
         [HttpPost("password/reset")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -164,6 +225,12 @@ namespace FIFA_API.Controllers
             return ok ? NoContent() : BadRequest();
         }
 
+        /// <summary>
+        /// Envoie un SMS de vérification de 2FA à l'utilisateur.
+        /// </summary>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="204">Le numéro de téléphone est déjà vérifié.</response>
         [HttpGet("2fa/resendverify")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
