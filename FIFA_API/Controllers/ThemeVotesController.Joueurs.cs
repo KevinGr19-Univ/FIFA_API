@@ -8,6 +8,14 @@ namespace FIFA_API.Controllers
 {
     public partial class ThemeVotesController
     {
+        /// <summary>
+        /// Associe un joueur à un thème de vote.
+        /// </summary>
+        /// <param name="id">L'id du thème de vote.</param>
+        /// <param name="idjoueur">L'id du joueur.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">Le thème de vote ou le joueur recherché n'existe pas.</response>
         [HttpPost("{id}/joueurs/{idjoueur}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -33,6 +41,14 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Supprime l'association entre un thème de vote et un joueur.
+        /// </summary>
+        /// <param name="id">L'id du thème de vote.</param>
+        /// <param name="idjoueur">L'id du joueur.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">L'association recherchée n'existe pas.</response>
         [HttpDelete("{id}/joueurs/{idjoueur}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -49,6 +65,11 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Retourne la liste des joueurs d'un thème de vote.
+        /// </summary>
+        /// <param name="id">L'id du thème de vote.</param>
+        /// <returns>La liste des joueurs du thème de vote.</returns>
         [HttpGet("{id}/joueurs")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetThemeJoueurs(int id)

@@ -17,6 +17,7 @@ namespace FIFA_API.Controllers
         /// <summary>
         /// Initialise le processus de paiement de commande.
         /// </summary>
+		/// <remarks>NOTE: Cette opération nécessite une adresse mail vérifiée.</remarks>
         /// <param name="panier">Le panier de l'utilisateur.</param>
         /// <returns>Réponse Stripe contenant le lien de paiement.</returns>
         /// <response code="401">Accès refusé.</response>
