@@ -7,6 +7,9 @@ using System.Runtime.CompilerServices;
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Service de réinitialisation de mots de passe.
+    /// </summary>
     public class PasswordResetService : IPasswordResetService
     {
         private readonly FifaDbContext _context;
@@ -14,6 +17,13 @@ namespace FIFA_API.Services
         private readonly IEmailSender _emailSender;
         private readonly IPasswordHasher _passwordHasher;
 
+        /// <summary>
+        /// Crée une instance de <see cref="PasswordResetService"/>.
+        /// </summary>
+        /// <param name="context">Le DbContext à utiliser.</param>
+        /// <param name="config">La configuration contenant les variables liées à la réinitialisation de mots de passe.</param>
+        /// <param name="emailSender">Le service d'envoi de mail à utiliser.</param>
+        /// <param name="passwordHasher">Le hasheur de mot de passe à utiliser.</param>
         public PasswordResetService(FifaDbContext context, IConfiguration config, IEmailSender emailSender, IPasswordHasher passwordHasher)
         {
             _context = context;

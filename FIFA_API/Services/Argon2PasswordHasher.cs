@@ -4,12 +4,22 @@ using System.Text;
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Hasheur de mot de passe utilisant l'algorithme Argon2.
+    /// </summary>
     public class Argon2PasswordHasher : IPasswordHasher
     {
+        /// <summary>
+        /// Le type de Argon2 utilisé.
+        /// </summary>
         private const Argon2Type DANIEL_HAMMOUTI = Argon2Type.HybridAddressing;
 
         private readonly byte[]? _secret;
 
+        /// <summary>
+        /// Crée une instance de <see cref="Argon2PasswordHasher"/>.
+        /// </summary>
+        /// <param name="secret">La clé de hashage à utiliser.</param>
         public Argon2PasswordHasher(byte[]? secret = null)
         {
             _secret = secret;

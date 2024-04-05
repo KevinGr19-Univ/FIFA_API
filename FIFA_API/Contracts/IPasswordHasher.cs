@@ -1,23 +1,23 @@
 ﻿namespace FIFA_API.Contracts
 {
     /// <summary>
-    /// Contract used to hash and verify passwords.
+    /// Interface utilisée pour hasher les mots de passe.
     /// </summary>
     public interface IPasswordHasher
     {
         /// <summary>
-        /// Hashes the password.
+        /// Hashe le mot de passe.
         /// </summary>
-        /// <param name="password">The password to hash.</param>
-        /// <returns>A hash of the password.</returns>
+        /// <param name="password">Le mot de passe à hasher.</param>
+        /// <returns>Un hash du mot de passe.</returns>
         string Hash(string password);
 
         /// <summary>
-        /// Verifies if a given password matches an hash.
+        /// Vérifie si un mot de passe correspond à un hash.
         /// </summary>
-        /// <param name="hash">The hash of the original password.</param>
-        /// <param name="password">The password to test.</param>
-        /// <returns><see langword="true"/> if the password matches the hash, <see langword="false"/> otherwise.</returns>
+        /// <param name="hash">Le hash à vérifier.</param>
+        /// <param name="password">Le mot de passe à tester.</param>
+        /// <returns><see langword="true"/> si le mot de passe correspond au hash, <see langword="false"/> sinon.</returns>
         bool Verify(string hash, string password);
     }
 }

@@ -2,6 +2,9 @@
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Classe de substitution pour débogguer l'envoi de mail.
+    /// </summary>
     public class DebugEmailService : IEmailSender
     {
         private readonly ILogger<IEmailSender> _logger;

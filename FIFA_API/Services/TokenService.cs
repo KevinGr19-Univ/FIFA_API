@@ -11,11 +11,19 @@ using System.Text;
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Service d'authentification par jetons JWT.
+    /// </summary>
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
         private readonly FifaDbContext _dbContext;
 
+        /// <summary>
+        /// Crée une instance de <see cref="TokenService"/>.
+        /// </summary>
+        /// <param name="config">La configuration contenant les variables liées aux JWTs.</param>
+        /// <param name="dbContext">Le DbContext à utiliser.</param>
         public TokenService(IConfiguration config, FifaDbContext dbContext)
         {
             _config = config;

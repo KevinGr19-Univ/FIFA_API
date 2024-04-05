@@ -4,35 +4,35 @@ using System.Security.Claims;
 namespace FIFA_API.Contracts
 {
     /// <summary>
-    /// Contract used to generate access and refresh tokens.
+    /// Interface utilisée pour authentifier des utilisateurs avec des jetons JWT.
     /// </summary>
     public interface ITokenService
     {
         /// <summary>
-        /// Generates an access token to authenticate as a <see cref="Utilisateur"/>.
+        /// Génère un jeton d'accès au compte.
         /// </summary>
-        /// <param name="user">The user to generate a token for.</param>
-        /// <returns>A string access token.</returns>
+        /// <param name="user">L'utilisateur pour qui générer le jeton d'accès.</param>
+        /// <returns>Un jeton d'accès JWT au compte.</returns>
         string GenerateAccessToken(Utilisateur user);
 
         /// <summary>
-        /// Generates a refresh token, used to get another access token without providing credentials.
+        /// Génère un jeton d'actualisation, pour regénérer un jeton d'accès.
         /// </summary>
-        /// <returns>A string refresh token.</returns>
+        /// <returns>Un jeton d'actualisation.</returns>
         string GenerateRefreshToken();
 
         /// <summary>
-        /// Gets the user <see cref="Utilisateur"/> from a <see cref="ClaimsPrincipal"/>.
+        /// Retourne l'utilisateur à partir de son <see cref="ClaimsPrincipal"/>.
         /// </summary>
-        /// <param name="principal">The principal of the request.</param>
-        /// <returns>The principal's user if found, <see langword="null"/> otherwise.</returns>
+        /// <param name="principal">Les claims de l'utilisateur.</param>
+        /// <returns>L'utilisateur trouvé, <see langword="null"/> sinon.</returns>
         Task<Utilisateur?> GetUserFromPrincipalAsync(ClaimsPrincipal principal);
 
         /// <summary>
-        /// Gets the user (<see cref="Utilisateur"/>) from an expired access token.
+        /// Retourne l'utilisateur associé à un jeton d'accès (à jour ou expiré).
         /// </summary>
-        /// <param name="token">The string expired access token.</param>
-        /// <returns>The token's user if found, <see langword="null"/> otherwise.</returns>
+        /// <param name="token">Un jeton d'accès JWT, à jour ou expiré.</param>
+        /// <returns>L'utilisateur trouvé, <see langword="null"/> sinon.</returns>
         Task<Utilisateur?> GetUserFromExpiredAsync(string token);
     }
 }
