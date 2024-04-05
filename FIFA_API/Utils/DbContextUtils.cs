@@ -11,15 +11,15 @@ using System.Text.RegularExpressions;
 namespace FIFA_API.Models.Utils
 {
     /// <summary>
-    /// Provides useful methods to automate Code-First database building.
+    /// Utilitaires pour la création des modèles de <see cref="DbContext"/>.
     /// </summary>
     public static class DbContextUtils
     {
         #region Composed keys
         /// <summary>
-        /// Uses reflection to assign primary keys to each entity having the <see cref="ComposedKeyAttribute"/>.
+        /// Utilise la réflection pour assigner des clés composés aux entités ayant l'attribut <see cref="ComposedKeyAttribute"/>.
         /// </summary>
-        /// <param name="mb">The model builder to use.</param>
+        /// <param name="mb">Le model builder à utiliser.</param>
         public static void AddComposedPrimaryKeys(ModelBuilder mb)
         {
             foreach (var entity in mb.Model.GetEntityTypes())
@@ -32,13 +32,16 @@ namespace FIFA_API.Models.Utils
         #endregion
 
         #region Many to many
+        /// <summary>
+        /// Les flags utilisés lors de la recherche des propriétés ayant l'attribut <see cref="ManyToManyAttribute"/>.
+        /// </summary>
         private const BindingFlags MTM_PROP_FLAGS = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
         /// <summary>
-        /// Uses reflection to add Many-to-Many relationships between two properties linked by one <see cref="ManyToManyAttribute"/>.
+        /// Utilise la réflection pour lier deux propriétés ayant l'attribut <see cref="ManyToManyAttribute"/>.
         /// </summary>
-        /// <remarks>NOTE: This also handles <see cref="OnDeleteAttribute"/>.</remarks>
-        /// <param name="mb">The model builder to use.</param>
+        /// <remarks>NOTE: Gère aussi les attributs <see cref="OnDeleteAttribute"/>.</remarks>
+        /// <param name="mb">Le model builder à utiliser.</param>
         /// <exception cref="ArgumentException"></exception>
         public static void AddManyToManyRelations(ModelBuilder mb)
         {
@@ -136,14 +139,22 @@ namespace FIFA_API.Models.Utils
         #endregion
 
         #region OnDelete
+        /// <summary>
+        /// Le <see cref="DeleteBehavior"/> par défaut.
+        /// </summary>
         public const DeleteBehavior DEFAULT_DELETE = DeleteBehavior.Restrict;
+
+        /// <summary>
+        /// Le <see cref="DeleteBehavior"/> par défaut dans les relations many-to-many.
+        /// </summary>
         public const DeleteBehavior DEFAULT_DELETE_MANY_TO_MANY = DeleteBehavior.Cascade;
 
         /// <summary>
-        /// Uses reflection to configure the <see cref="DeleteBehavior"/> of foreign keys, with properties using the <see cref="OnDeleteAttribute"/>.
+        /// Utilise la réflection pour changer le <see cref="DeleteBehavior"/> des clés étrangères ayant l'attribut <see cref="OnDeleteAttribute"/>.
         /// </summary>
-        /// <remarks>NOTE: This method handles correctly One-to-One and One-to-Many relationships.</remarks>
-        /// <param name="mb">The model builder to use.</param>
+        /// <remarks>NOTE: Cette méthode gère les relations one-to-one et one-to-many. 
+        /// Voir <see cref="AddManyToManyRelations(ModelBuilder)"/> pour les relations many-to-many.</remarks>
+        /// <param name="mb">Le model builder à utiliser.</param>
         public static void AddDeleteBehaviors(ModelBuilder mb)
         {
             foreach (var fk in mb.Model.GetEntityTypes().SelectMany(e => e.GetDeclaredForeignKeys()))
@@ -162,13 +173,17 @@ namespace FIFA_API.Models.Utils
         #endregion
 
         #region Constraint renaming
+        /// <summary>
+        /// Le regex utilisé pour détecter les tables avec la bonne convention de nommage.
+        /// </summary>
         public const string TABLE_CONVENTION_REGEX = "^t_[a-z]_[a-z]+_[a-z]{3}$";
 
         /// <summary>
-        /// Renames every foreign keys and indexes of each entity.
+        /// Renomme chaque clé étrangère et index de chaque entité.
         /// </summary>
-        /// <remarks>NOTE: Only works with table names following the ISO 9075 norm.</remarks>
-        /// <param name="mb">The model builder to use.</param>
+        /// <remarks>NOTE: Ne marche seulement avec les tables suivant la norme ISO 9075.
+        /// Voir <see cref="TABLE_CONVENTION_REGEX"/>.</remarks>
+        /// <param name="mb">Le model builder à utiliser.</param>
         public static void RenameConstraintsAuto(ModelBuilder mb)
         {
             foreach (var entity in mb.Model.GetEntityTypes())

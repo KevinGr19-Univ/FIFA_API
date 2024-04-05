@@ -2,6 +2,9 @@
 
 namespace FIFA_API.Models.Controllers
 {
+    /// <summary>
+    /// Modèle épuré de <see cref="Utilisateur"/>, contenant les informations utiles du compte à l'utilisateur.
+    /// </summary>
     public class UserInfo
     {
         public int Id { get; set; }
@@ -22,6 +25,12 @@ namespace FIFA_API.Models.Controllers
         public int IdPays { get; set; }
         public int? IdPaysFavori { get; set; }
 
+        /// <summary>
+        /// Met à jour les champs d'un utilisateur depuis cette instance.
+        /// </summary>
+        /// <remarks>NOTE: Cette méthode ne crée pas de nouvel utilisateur, et modifie celui passé en paramètre.</remarks>
+        /// <param name="user">L'utilisateur à mettre à jour.</param>
+        /// <returns>L'utilisateur mis à jour.</returns>
         public Utilisateur UpdateUser(Utilisateur user)
         {
             user.Prenom = Prenom;
@@ -36,6 +45,11 @@ namespace FIFA_API.Models.Controllers
             return user;
         }
 
+        /// <summary>
+        /// Crée une instance de <see cref="UserInfo"/> à partir d'un utilisateur.
+        /// </summary>
+        /// <param name="user">L'utilisateur à utiliser.</param>
+        /// <returns>Les informations du compte de l'utilsateur.</returns>
         public static UserInfo FromUser(Utilisateur user)
         {
             return new()

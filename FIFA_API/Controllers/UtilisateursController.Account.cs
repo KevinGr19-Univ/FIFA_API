@@ -10,7 +10,14 @@ namespace FIFA_API.Controllers
 {
     public partial class UtilisateursController
     {
+        /// <summary>
+        /// Retourne une partie des informations de l'utilisateur.
+        /// </summary>
+        /// <returns>Les informations du compte de l'utilisateur.</returns>
+        /// <response code="401">Accès refusé.</response>
         [HttpGet("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<UserInfo>> GetInfo()
         {
@@ -20,7 +27,18 @@ namespace FIFA_API.Controllers
             return UserInfo.FromUser(user);
         }
 
+        /// <summary>
+        /// Met à jour les informations du compte de l'utilisateur.
+        /// </summary>
+        /// <param name="userInfo">Les nouvelles informations du compte de l'utilisateur.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">Les informations du compte sont érronées.</response>
+        /// <response code="200">Réponse contenant des informations sur la mise à jour (verification_email_sent = bool?, verification_2fa_token = string?, 2fa_disabled = bool?)</response>
         [HttpPost("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> UpdateInfo(
             UserInfo userInfo,
@@ -62,7 +80,15 @@ namespace FIFA_API.Controllers
             return Ok(res);
         }
 
+        /// <summary>
+        /// Anonymise et désactive le compte de l'utilisateur.
+        /// </summary>
+        /// <param name="req">Le mot de passe et la raison de l'anonymisation.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé ou identifiants invalides.</response>
         [HttpDelete("me/anonymize")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> AnonymizeAccount([FromBody] AnonymizeRequest req, [FromServices] IPasswordHasher passwordHasher)
         {
@@ -79,7 +105,15 @@ namespace FIFA_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Supprime le compte de l'utilisateur.
+        /// </summary>
+        /// <param name="req">Le mot de passe et la raison de la suppression du compte.</param>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé ou identifiants invalides.</response>
         [HttpDelete("me")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = Policies.User)]
         public async Task<IActionResult> DeleteAccount([FromBody] DeleteRequest req, [FromServices] IPasswordHasher passwordHasher)
         {

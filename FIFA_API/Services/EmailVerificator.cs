@@ -4,12 +4,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Service de vérification des adresses mail des utilisateurs.
+    /// </summary>
     public class EmailVerificator : IEmailVerificator
     {
         private readonly FifaDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _config;
 
+        /// <summary>
+        /// Crée une instance de <see cref="EmailVerificator"/>.
+        /// </summary>
+        /// <param name="context">Le DbContext à utiliser.</param>
+        /// <param name="emailSender">Le service d'envoi de mail à utiliser.</param>
+        /// <param name="config">La configuration contenant les variables liées à la vérification des adresses mail.</param>
         public EmailVerificator(FifaDbContext context, IEmailSender emailSender, IConfiguration config)
         {
             _context = context;

@@ -4,8 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-﻿namespace FIFA_API.Models.EntityFramework
+namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_g_publication_pub")]
     public abstract partial class Publication : IVisible
@@ -44,6 +45,8 @@ using System.ComponentModel.DataAnnotations.Schema;
         public Photo? Photo { get; set; }
 
         private ICollection<Joueur> _joueurs;
+
+        [JsonIgnore]
         public ICollection<Joueur> Joueurs
         {
             get => loader.Load(this, ref _joueurs);

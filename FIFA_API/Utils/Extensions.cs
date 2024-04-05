@@ -7,21 +7,16 @@ namespace FIFA_API.Utils
 {
     public static class Extensions
     {
-        /// <summary>
-        /// Tries to get the current user (<see cref="Models.EntityFramework.Utilisateur"/>) of the request.
-        /// </summary>
-        /// <param name="controller">The controller to get the user from.</param>
-        /// <returns>The user of the request.</returns>
+        /// <inheritdoc cref="UtilisateurAsync(HttpContext)"/>
         public static async Task<Utilisateur?> UtilisateurAsync(this ControllerBase controller)
         {
             return await controller.HttpContext.UtilisateurAsync();
         }
 
         /// <summary>
-        /// Tries to get the current user (<see cref="Models.EntityFramework.Utilisateur"/>) of the request.
+        /// Tente de récupérer l'utilisateur de la requête courrante.
         /// </summary>
-        /// <param name="context">The context of the request.</param>
-        /// <returns>The user of the request.</returns>
+        /// <returns>L'utilisateur de la requête, <see langword="null"/> sinon.</returns>
         public static async Task<Utilisateur?> UtilisateurAsync(this HttpContext context)
         {
             ITokenService tokenService = context.RequestServices.GetService<ITokenService>()!;

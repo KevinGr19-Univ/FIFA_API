@@ -4,12 +4,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Service de 2FA par SMS.
+    /// </summary>
     public class Login2FAService : ILogin2FAService
     {
         private readonly FifaDbContext _context;
         private readonly IConfiguration _config;
         private readonly ISmsService _smsService;
 
+        /// <summary>
+        /// Crée une instance de <see cref="Login2FAService"/>.
+        /// </summary>
+        /// <param name="context">le DbContext à utiliser.</param>
+        /// <param name="config">La configuration contenant les variables liées à la 2FA.</param>
+        /// <param name="smsService">Le service d'envoi de SMS à utiliser.</param>
         public Login2FAService(FifaDbContext context, IConfiguration config, ISmsService smsService)
         {
             _config = config;

@@ -14,8 +14,19 @@ namespace FIFA_API.Controllers
 {
     public partial class CommandesController
     {
-		[HttpPost("checkout")]
-		[Authorize(Policy = Policies.User)]
+        /// <summary>
+        /// Initialise le processus de paiement de commande.
+        /// </summary>
+		/// <remarks>NOTE: Cette opération nécessite une adresse mail vérifiée.</remarks>
+        /// <param name="panier">Le panier de l'utilisateur.</param>
+        /// <returns>Réponse Stripe contenant le lien de paiement.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">Le panier est invalide.</response>
+        [HttpPost("checkout")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = Policies.User)]
 		[VerifiedEmail]
 		public async Task<ActionResult<StartStripeSessionResponse>> StartStripeCommand([FromBody] Panier panier)
 		{

@@ -2,6 +2,9 @@
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Classe de substitution pour débogguer l'envoi de SMS.
+    /// </summary>
     public class DebugSmsService : ISmsService
     {
         private readonly ILogger<ISmsService> _logger;

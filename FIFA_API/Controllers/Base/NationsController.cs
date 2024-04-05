@@ -23,7 +23,13 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Nations
+        /// <summary>
+        /// Retourne la liste des nations.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <returns>La liste des nations.</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Nation>>> GetNations()
         {
             IQueryable<Nation> query = _context.Nations;
@@ -32,7 +38,16 @@ namespace FIFA_API.Controllers
         }
 
         // GET: api/Nations/5
+        /// <summary>
+        /// Retourne une nation.
+        /// </summary>
+        /// <remarks>NOTE: La requête filtre les instances en fonction du niveau de permission.</remarks>
+        /// <param name="id">L'id de la nation.</param>
+        /// <returns>La nation recherchée.</returns>
+        /// <response code="404">La nation recherchée n'existe pas ou a été filtrée.</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Nation>> GetNation(int id)
         {
             var nation = await _context.Nations.FindAsync(id);
@@ -47,7 +62,21 @@ namespace FIFA_API.Controllers
 
         // PUT: api/Nations/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modifie une nation.
+        /// </summary>
+        /// <param name="id">L'id de la nation.</param>
+        /// <param name="nation">Les nouvelles informations de la nation.</param>
+        /// <remarks>NOTE: Requiert les droits d'édition de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La nation recherchée n'existe pas.</response>
+        /// <response code="400">Les nouvelles informations de la nation sont invalides.</response>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutNation(int id, Nation nation)
         {
@@ -77,7 +106,18 @@ namespace FIFA_API.Controllers
 
         // POST: api/Nations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Ajoute une nouvelle nation.
+        /// </summary>
+        /// <param name="nation">La nation à ajouter.</param>
+        /// <remarks>NOTE: Requiert les droits d'ajout de produit.</remarks>
+        /// <returns>La nouvelle nation.</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="400">La nouvelle nation est invalide.</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Nation>> PostNation(Nation nation)
         {
@@ -88,7 +128,18 @@ namespace FIFA_API.Controllers
         }
 
         // DELETE: api/Nations/5
+        /// <summary>
+        /// Supprime une nation.
+        /// </summary>
+        /// <param name="id">L'id de la nation à supprimer.</param>
+        /// <remarks>NOTE: Requiert les droits de suppression de produit.</remarks>
+        /// <returns>Réponse HTTP</returns>
+        /// <response code="401">Accès refusé.</response>
+        /// <response code="404">La nation recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteNation(int id)
         {

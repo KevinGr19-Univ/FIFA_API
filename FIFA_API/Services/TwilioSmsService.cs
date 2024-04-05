@@ -6,12 +6,21 @@ using Twilio.Rest.Api.V2010.Account;
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Service d'envoi de SMS par l'API Twilio.
+    /// </summary>
     public class TwilioSmsService : ISmsService
     {
         private readonly ILogger<ISmsService>? _logger;
         private readonly string _fromPhoneNumber;
         private readonly string? _overrideTo;
 
+        /// <summary>
+        /// Crée une instance de <see cref="TwilioSmsService"/>.
+        /// </summary>
+        /// <param name="fromPhoneNumber">Le numéro de téléphone à utiliser.</param>
+        /// <param name="overrideTo">Le numéro de téléphone par lequel remplacer le destinataire (déboggage).</param>
+        /// <param name="logger">Logger pour les messages d'erreurs.</param>
         public TwilioSmsService(string fromPhoneNumber, string? overrideTo = null, ILogger<ISmsService>? logger = null)
         {
             _fromPhoneNumber = fromPhoneNumber;

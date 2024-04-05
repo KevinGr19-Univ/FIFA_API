@@ -4,10 +4,17 @@ using System.Net.Mail;
 
 namespace FIFA_API.Services
 {
+    /// <summary>
+    /// Service d'envoi de mail avec SMTP.
+    /// </summary>
     public class EmailService : IEmailSender
     {
         private readonly IConfiguration _config;
 
+        /// <summary>
+        /// Crée une instance de <see cref="EmailService"/>.
+        /// </summary>
+        /// <param name="config">La configuration contenant les variables SMTP.</param>
         public EmailService(IConfiguration config)
         {
             _config = config;

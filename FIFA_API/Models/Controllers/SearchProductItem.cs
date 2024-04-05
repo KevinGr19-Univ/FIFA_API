@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FIFA_API.Models.Controllers
 {
+    /// <summary>
+    /// Objet de résultat de recherche de produits.
+    /// </summary>
     public class SearchProductItem
     {
         [Required] public int Id { get; set; }

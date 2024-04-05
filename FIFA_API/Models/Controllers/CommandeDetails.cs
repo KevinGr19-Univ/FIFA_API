@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Models.Controllers
 {
+    /// <summary>
+    /// Modèle épuré de <see cref="EntityFramework.Commande"/>, servant à afficher les détails d'une commande.
+    /// </summary>
     public class CommandeDetails
     {
         public Commande Commande { get; set; }

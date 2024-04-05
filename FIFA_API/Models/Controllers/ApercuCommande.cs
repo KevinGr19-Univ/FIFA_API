@@ -2,6 +2,9 @@
 
 namespace FIFA_API.Models.Controllers
 {
+    /// <summary>
+    /// Modèle épuré de <see cref="Commande"/>, servant à afficher un aperçu d'une commande.
+    /// </summary>
     public class ApercuCommande
     {
         public int Id { get; set; }
@@ -14,6 +17,11 @@ namespace FIFA_API.Models.Controllers
         public DateTime DateCommande { get; set; }
         public IEnumerable<StatusCommande> Status { get; set; }
 
+        /// <summary>
+        /// Retourne l'aperçu d'une commande.
+        /// </summary>
+        /// <param name="commande">La commande à utiliser.</param>
+        /// <returns>L'aperçu de la commande.</returns>
         public static ApercuCommande FromCommande(Commande commande)
         {
             return new()

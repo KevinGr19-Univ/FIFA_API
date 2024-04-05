@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FIFA_API.Authorization
 {
+    /// <summary>
+    /// Filtre autorisant seulement les utilisateurs ayant une adresse email vérifiée.
+    /// </summary>
     public class VerifiedEmailAttribute : AuthorizeAttribute, IAsyncAuthorizationFilter
     {
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
