@@ -5,9 +5,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FIFA_API.Models.Controllers
 {
+    /// <summary>
+    /// Requête de création de compte.
+    /// </summary>
     public class RegisterRequest
     {
-        [Required]
         [EmailAddress(ErrorMessage = "Le mail doit être une adresse valide")]
         public string Mail { get; set; }
 
@@ -28,6 +30,11 @@ namespace FIFA_API.Models.Controllers
         public string? Surnom { get; set; }
         public DateTime? DateNaissance { get; set; }
 
+        /// <summary>
+        /// Construit un utilisateur à partir de la requête.
+        /// </summary>
+        /// <param name="passwordHasher">Le hasheur de mot de passe à utiliser.</param>
+        /// <returns>Le nouvel utilisateur.</returns>
         public Utilisateur BuildUser(IPasswordHasher passwordHasher)
         {
             return new Utilisateur()

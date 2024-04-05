@@ -6,6 +6,9 @@ namespace FIFA_API.Models.EntityFramework
 {
     public partial class Utilisateur
     {
+        /// <summary>
+        /// Anonymise les informations d'un utilisateur.
+        /// </summary>
         public void Anonymize()
         {
             if (Anonyme) return;

@@ -1,7 +1,7 @@
 ﻿namespace FIFA_API.Models.Annotations
 {
     /// <summary>
-    /// Assigns multiple properties as primary key of the table.
+    /// Assigne une clé primaire composée à la classe.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class ComposedKeyAttribute : Attribute

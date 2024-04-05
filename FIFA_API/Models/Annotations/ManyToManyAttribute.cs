@@ -1,7 +1,7 @@
 ﻿namespace FIFA_API.Models.Annotations
 {
     /// <summary>
-    /// Links two properties as a Many-to-Many relationship.
+    /// Relie deux propriétés par une relation many-to-many.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class ManyToManyAttribute : Attribute
