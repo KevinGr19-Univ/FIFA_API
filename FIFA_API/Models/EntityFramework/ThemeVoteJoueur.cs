@@ -7,7 +7,7 @@ namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_j_themevotejoueur_thj")]
     [ComposedKey(nameof(IdTheme), nameof(IdJoueur))]
-    public class ThemeVoteJoueur
+    public partial class ThemeVoteJoueur
     {
         private readonly ILazyLoader _loader;
 

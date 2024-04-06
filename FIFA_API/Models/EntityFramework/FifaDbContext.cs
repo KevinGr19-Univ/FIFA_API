@@ -18,16 +18,22 @@ namespace FIFA_API.Models.EntityFramework
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
-        private readonly string? _schemaName;
+        private string? _schemaName;
 
-        public FifaDbContext(IConfiguration config)
+        public FifaDbContext(IConfiguration? config = null)
         {
-            _schemaName = config["Schema"];
+            setSchema(config?["Schema"]);
         }
 
-        public FifaDbContext(DbContextOptions<FifaDbContext> options, IConfiguration config) : base(options)
+        public FifaDbContext(DbContextOptions<FifaDbContext> options, IConfiguration? config = null) : base(options)
         {
-            _schemaName = config["Schema"];
+            setSchema(config?["Schema"]);
+        }
+
+        private void setSchema(string? schema = null)
+        {
+            if (string.IsNullOrEmpty(schema)) _schemaName = null;
+            else _schemaName = schema;
         }
 
         public virtual DbSet<Album> Albums { get; set; }
@@ -72,7 +78,7 @@ namespace FIFA_API.Models.EntityFramework
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder
-                    .UseNpgsql("Name=ConnectionStrings:FifaDBContext", x => x.MigrationsHistoryTable("_EFMigrationsHistory", _schemaName));
+                    .UseNpgsql("Name=ConnectionStrings:FifaDBContext", x => x.MigrationsHistoryTable("_EFMigrationsHistory", "Name=Schema"));
             }
         }
 

@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_authemailverif_aev")]
-    public class AuthEmailVerif
+    public partial class AuthEmailVerif
     {
         [Key, Column("utl_id")]
         public int IdUtilisateur { get; set; }
