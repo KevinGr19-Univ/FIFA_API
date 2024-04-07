@@ -1,13 +1,14 @@
-﻿using FIFA_API.Repositories.Contracts;
+﻿using FIFA_API.Models.EntityFramework;
+using FIFA_API.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        protected DbContext context;
+        protected FifaDbContext context;
 
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(FifaDbContext context)
         {
             this.context = context;
         }

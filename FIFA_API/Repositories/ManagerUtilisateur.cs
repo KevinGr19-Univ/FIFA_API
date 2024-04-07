@@ -7,7 +7,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerUtilisateur : BaseManager<Utilisateur>, IManagerUtilisateur
     {
-        public ManagerUtilisateur(DbContext context) : base(context) { }
+        public ManagerUtilisateur(FifaDbContext context) : base(context) { }
 
         public async Task<Utilisateur?> GetById(int key)
         {
@@ -16,7 +16,7 @@ namespace FIFA_API.Repositories
 
         public async Task<Utilisateur?> GetByEmail(string mail)
         {
-            return await GetByEmail(mail);
+            return await DbSet.SingleOrDefaultAsync(e => e.Mail == mail);
         }
 
         public async Task<bool> Exists(int key)

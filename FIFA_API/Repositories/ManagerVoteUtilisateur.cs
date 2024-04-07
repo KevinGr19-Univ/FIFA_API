@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerVoteUtilisateur : BaseManager<VoteUtilisateur>, IManagerVoteUtilisateur
     {
-        public ManagerVoteUtilisateur(DbContext context) : base(context) { }
+        public ManagerVoteUtilisateur(FifaDbContext context) : base(context) { }
 
         public async Task<VoteUtilisateur?> GetById(int idtheme, int iduser)
         {

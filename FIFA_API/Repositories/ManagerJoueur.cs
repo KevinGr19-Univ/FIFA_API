@@ -6,11 +6,12 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerJoueur : BaseManager<Joueur>, IManagerJoueur
     {
-        public ManagerJoueur(DbContext context) : base(context) { }
+        public ManagerJoueur(FifaDbContext context) : base(context) { }
 
         public async Task<Joueur?> GetById(int key)
         {
-            return await DbSet.SingleOrDefaultAsync(e => e.Id == key);
+            return await DbSet.Include(j => j.Stats)
+                .SingleOrDefaultAsync(e => e.Id == key);
         }
 
         public async Task<bool> Exists(int key)
@@ -21,7 +22,7 @@ namespace FIFA_API.Repositories
         public async Task<Joueur?> GetByIdWithData(int id)
         {
             return await DbSet.Include(j => j.Trophees).Include(j => j.FaqJoueurs)
-                .Include(j => j.Club)
+                .Include(j => j.Club).Include(j => j.Stats)
                 .SingleOrDefaultAsync(j => j.Id == id);
         }
 

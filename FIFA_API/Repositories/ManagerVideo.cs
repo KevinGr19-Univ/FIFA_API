@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerVideo : BaseManager<Video>, IManagerVideo
     {
-        public ManagerVideo(DbContext context) : base(context) { }
+        public ManagerVideo(FifaDbContext context) : base(context) { }
 
         public async Task<Video?> GetById(int key)
         {

@@ -4,7 +4,8 @@ namespace FIFA_API.Repositories.Contracts
 {
     public interface IManagerVarianteCouleurProduit : IVisibleRepository<VarianteCouleurProduit>
     {
-        Task<VarianteCouleurProduit?> GetByIdWithAll(int id);
+        Task<VarianteCouleurProduit?> GetByIdWithData(int id, bool onlyVisible = true);
+        Task<VarianteCouleurProduit?> GetByIdWithStocks(int id, bool onlyVisible = true);
         Task<bool> CombinationExists(int idproduit, int idcouleur);
     }
 }

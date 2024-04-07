@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerTypeLivraison : BaseManager<TypeLivraison>, IManagerTypeLivraison
     {
-        public ManagerTypeLivraison(DbContext context) : base(context) { }
+        public ManagerTypeLivraison(FifaDbContext context) : base(context) { }
 
         public async Task<TypeLivraison?> GetById(int key)
         {

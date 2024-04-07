@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerTrophee : BaseManager<Trophee>, IManagerTrophee
     {
-        public ManagerTrophee(DbContext context) : base(context) { }
+        public ManagerTrophee(FifaDbContext context) : base(context) { }
 
         public async Task<Trophee?> GetById(int key)
         {

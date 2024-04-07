@@ -22,11 +22,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly IManagerVoteUtilisateur _manager;
+        private readonly IUnitOfWorkVote _uow;
 
-        public VotesController(IManagerVoteUtilisateur manager)
+        public VotesController(IUnitOfWorkVote uow)
         {
-            _manager = manager;
+            _uow = uow;
         }
 
         // GET: api/Votes
@@ -41,7 +41,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<VoteUtilisateur>>> GetVoteUtilisateurs()
         {
-            return Ok(await _manager.GetAll());
+            return Ok(await _uow.Votes.GetAll());
         }
 
         // GET: api/Votes/5
@@ -59,7 +59,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<VoteUtilisateur>> GetVoteUtilisateur(int idtheme, int iduser)
         {
-            var voteUtilisateur = await _manager.GetById(iduser, idtheme);
+            var voteUtilisateur = await _uow.Votes.GetById(iduser, idtheme);
 
             if (voteUtilisateur == null)
             {
@@ -97,12 +97,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _manager.Update(vote);
-                await _manager.Save();
+                await _uow.Votes.Update(vote);
+                await _uow.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _manager.Exists(idtheme, iduser))
+                if (!await _uow.Votes.Exists(idtheme, iduser))
                 {
                     return NotFound();
                 }
@@ -134,17 +134,17 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<VoteUtilisateur>> PostVoteUtilisateur(VoteUtilisateur vote)
         {
-            if(!await IsVoteValid(vote))
+            if(!await _uow.IsVoteValid(vote))
                 return BadRequest();
 
-            await _manager.Add(vote);
+            await _uow.Votes.Add(vote);
             try
             {
-                await _manager.Save();
+                await _uow.SaveChanges();
             }
             catch (DbUpdateException)
             {
-                if (await _manager.Exists(vote.IdTheme, vote.IdUtilisateur))
+                if (await _uow.Votes.Exists(vote.IdTheme, vote.IdUtilisateur))
                 {
                     return Conflict();
                 }
@@ -173,25 +173,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteVoteUtilisateur(int idtheme, int iduser)
         {
-            var voteUtilisateur = await _manager.GetById(iduser, idtheme);
+            var voteUtilisateur = await _uow.Votes.GetById(iduser, idtheme);
             if (voteUtilisateur == null)
             {
                 return NotFound();
             }
 
-            await _manager.Delete(voteUtilisateur);
-            await _manager.Save();
+            await _uow.Votes.Delete(voteUtilisateur);
+            await _uow.SaveChanges();
 
             return NoContent();
-        }
-
-        private async Task<bool> IsVoteValid(VoteUtilisateur vote)
-        {
-            return await _manager.ThemeVoteJoueurs.Where(t => t.IdTheme == vote.IdTheme 
-                && (t.IdJoueur == vote.IdJoueur1 
-                    || t.IdJoueur == vote.IdJoueur2 
-                    || t.IdJoueur == vote.IdJoueur3))
-                .CountAsync() == 3;
         }
     }
 }

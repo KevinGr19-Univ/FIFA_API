@@ -9,7 +9,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerCommande : BaseManager<Commande>, IManagerCommande
     {
-        public ManagerCommande(DbContext context) : base(context) { }
+        public ManagerCommande(FifaDbContext context) : base(context) { }
 
         public async Task<Commande?> GetById(int id)
         {

@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerAuthPasswordReset : BaseManager<AuthPasswordReset>, IManagerAuthPasswordReset
     {
-        public ManagerAuthPasswordReset(DbContext context) : base(context) { }
+        public ManagerAuthPasswordReset(FifaDbContext context) : base(context) { }
 
         public async Task<AuthPasswordReset?> GetById(string key)
         {

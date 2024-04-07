@@ -21,7 +21,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = Policies.User)]
         public async Task<ActionResult<StatusCommande>> PostStatus([FromBody] StatusCommande status)
         {
-            var commande = await _manager.GetByIdWithStatus(status.IdCommande);
+            var commande = await _uow.Commandes.GetByIdWithStatus(status.IdCommande);
             if (commande is null) return NotFound();
 
             var lastStatus = commande.Status.MaxBy(s => s.Date);
@@ -41,7 +41,7 @@ namespace FIFA_API.Controllers
 
             status.Date = DateTime.Now;
             commande.Status.Add(status);
-            await _manager.Save();
+            await _uow.SaveChanges();
 
             return status;
         }

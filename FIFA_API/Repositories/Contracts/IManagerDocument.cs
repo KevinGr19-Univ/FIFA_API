@@ -4,5 +4,6 @@ namespace FIFA_API.Repositories.Contracts
 {
     public interface IManagerDocument : IVisibleRepository<Document>
     {
+        Task<Document?> GetByIdWithAll(int id, bool onlyVisible = true);
     }
 }

@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerThemeVote : BaseVisibleManager<ThemeVote>, IManagerThemeVote
     {
-        public ManagerThemeVote(DbContext context) : base(context) { }
+        public ManagerThemeVote(FifaDbContext context) : base(context) { }
 
         public async Task<ThemeVote?> GetByIdWithAssocJoueurs(int id)
         {

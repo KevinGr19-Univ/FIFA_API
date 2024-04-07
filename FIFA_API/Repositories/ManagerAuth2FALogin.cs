@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerAuth2FALogin : BaseManager<Auth2FALogin>, IManagerAuth2FALogin
     {
-        public ManagerAuth2FALogin(DbContext context) : base(context) { }
+        public ManagerAuth2FALogin(FifaDbContext context) : base(context) { }
 
         public async Task<Auth2FALogin?> GetById(int key)
         {

@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerFaqJoueur : BaseManager<FaqJoueur>, IManagerFaqJoueur
     {
-        public ManagerFaqJoueur(DbContext context) : base(context) { }
+        public ManagerFaqJoueur(FifaDbContext context) : base(context) { }
 
         public async Task<FaqJoueur?> GetById(int key)
         {

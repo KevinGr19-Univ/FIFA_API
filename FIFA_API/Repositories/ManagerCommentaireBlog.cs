@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerCommentaireBlog : BaseManager<CommentaireBlog>, IManagerCommentaireBlog
     {
-        public ManagerCommentaireBlog(DbContext context) : base(context) { }
+        public ManagerCommentaireBlog(FifaDbContext context) : base(context) { }
 
 
         public async Task<CommentaireBlog?> GetById(int key)

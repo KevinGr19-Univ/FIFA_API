@@ -6,6 +6,6 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerGenre : BaseVisibleManager<Genre>, IManagerGenre
     {
-        public ManagerGenre(DbContext context) : base(context) { }
+        public ManagerGenre(FifaDbContext context) : base(context) { }
     }
 }

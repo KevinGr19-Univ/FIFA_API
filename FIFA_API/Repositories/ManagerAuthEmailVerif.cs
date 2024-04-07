@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerAuthEmailVerif : BaseManager<AuthEmailVerif>, IManagerAuthEmailVerif
     {
-        public ManagerAuthEmailVerif(DbContext context) : base(context) { }
+        public ManagerAuthEmailVerif(FifaDbContext context) : base(context) { }
 
         public async Task<AuthEmailVerif?> GetById(int key)
         {

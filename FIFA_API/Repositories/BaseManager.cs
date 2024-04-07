@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FIFA_API.Models.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Repositories
 {
     public abstract class BaseManager<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        private DbContext _context;
+        private FifaDbContext _context;
         public DbSet<TEntity> DbSet => _context.Set<TEntity>();
 
-        public BaseManager(DbContext context)
+        public BaseManager(FifaDbContext context)
         {
             _context = context;
         }

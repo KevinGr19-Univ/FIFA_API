@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -21,11 +22,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly FifaDbContext _context;
+        private readonly IUnitOfWorkJoueur _uow;
 
-        public JoueursController(FifaDbContext context)
+        public JoueursController(IUnitOfWorkJoueur uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Joueurs
@@ -37,7 +38,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetJoueurs()
         {
-            return await _context.Joueurs.ToListAsync();
+            return Ok(await _uow.Joueurs.GetAll());
         }
 
         // GET: api/Joueurs/5
@@ -52,7 +53,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Joueur>> GetJoueur(int id)
         {
-            var joueur = await _context.Joueurs.GetByIdAsync(id);
+            var joueur = await _uow.Joueurs.GetByIdWithData(id);
 
             if (joueur == null)
             {
@@ -88,11 +89,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(joueur);
+                await _uow.Joueurs.Update(joueur);
+                await _uow.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!JoueurExists(id))
+                if (!await _uow.Joueurs.Exists(id))
                 {
                     return NotFound();
                 }
@@ -121,8 +123,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Joueur>> PostJoueur(Joueur joueur)
         {
-            await _context.Joueurs.AddAsync(joueur);
-            await _context.SaveChangesAsync();
+            await _uow.Joueurs.Add(joueur);
+            await _uow.SaveChanges();
 
             return CreatedAtAction("GetJoueur", new { id = joueur.Id }, joueur);
         }
@@ -142,24 +144,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteJoueur(int id)
         {
-            var joueur = await _context.Joueurs.FindAsync(id);
+            var joueur = await _uow.Joueurs.GetById(id);
             if (joueur == null)
             {
                 return NotFound();
             }
 
-            _context.Joueurs.Remove(joueur);
-            if(joueur.Stats is not null)
-                _context.Statistiques.Remove(joueur.Stats);
-
-            await _context.SaveChangesAsync();
+            await _uow.Joueurs.Delete(joueur);
+            await _uow.SaveChanges();
 
             return NoContent();
-        }
-
-        private bool JoueurExists(int id)
-        {
-            return (_context.Joueurs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

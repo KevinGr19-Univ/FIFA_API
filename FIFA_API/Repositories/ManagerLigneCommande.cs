@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerLigneCommande : BaseManager<LigneCommande>, IManagerLigneCommande
     {
-        public ManagerLigneCommande(DbContext context) : base(context) { }
+        public ManagerLigneCommande(FifaDbContext context) : base(context) { }
 
         public async Task<LigneCommande?> GetById(int key)
         {

@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerPays : BaseManager<Pays>, IManagerPays
     {
-        public ManagerPays(DbContext context) : base(context) { }
+        public ManagerPays(FifaDbContext context) : base(context) { }
 
         public async Task<Pays?> GetById(int key)
         {

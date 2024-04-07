@@ -24,12 +24,12 @@ namespace FIFA_API.Controllers
         public const string MANAGER_POLICY = Policies.Admin;
 
         private readonly IConfiguration _config;
-        private readonly IManagerCommande _manager;
+        private readonly IUnitOfWorkCommande _uow;
 
-        public CommandesController(IManagerCommande manager, IConfiguration config)
+        public CommandesController(IUnitOfWorkCommande uow, IConfiguration config)
         {
             _config = config;
-            _manager = manager;
+            _uow = uow;
         }
 
         // GET: api/Commandes
@@ -44,7 +44,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Commande>>> GetCommandes()
         {
-            return Ok(await _manager.GetAll());
+            return Ok(await _uow.Commandes.GetAll());
         }
 
         // GET: api/Commandes/5
@@ -52,7 +52,6 @@ namespace FIFA_API.Controllers
         /// Retourne une commande.
         /// </summary>
         /// <param name="id">L'id de la commande.</param>
-        /// <param name="authService">Le service d'authorisation à utiliser.</param>
         /// <returns>La commande recherchée.</returns>
         /// <response code="401">Accès refusé.</response>
         /// <response code="404">La commande n'existe pas ou n'appartient pas à l'utilisateur.</response>
@@ -61,21 +60,21 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
-        public async Task<ActionResult<CommandeDetails>> GetCommande(int id, [FromServices] IAuthorizationService authService)
+        public async Task<ActionResult<CommandeDetails>> GetCommande(int id)
         {
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            var commande = await _manager.GetByIdWithAll(id);
+            var commande = await _uow.Commandes.GetByIdWithAll(id);
 
             if (commande is null) return NotFound();
             if (commande.IdUtilisateur != user.Id)
             {
-                var authRes = await authService.AuthorizeAsync(User, MANAGER_POLICY);
-                if(!authRes.Succeeded) return NotFound();
+                var authRes = await this.MatchPolicyAsync(MANAGER_POLICY);
+                if(!authRes) return NotFound();
             }
 
-            return await CommandeDetails.FromCommande(commande, _manager);
+            return await _uow.GetDetails(commande);
         }
 
         // PUT: api/Commandes/5
@@ -104,12 +103,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _manager.Update(commande);
-                await _manager.Save();
+                await _uow.Commandes.Update(commande);
+                await _uow.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _manager.Exists(id))
+                if (!await _uow.Commandes.Exists(id))
                 {
                     return NotFound();
                 }
@@ -139,8 +138,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Commande>> PostCommande(Commande commande)
         {
-            await _manager.Add(commande);
-            await _manager.Save();
+            await _uow.Commandes.Add(commande);
+            await _uow.SaveChanges();
 
             return CreatedAtAction("GetCommande", new { id = commande.Id }, commande);
         }
@@ -160,14 +159,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteCommande(int id)
         {
-            var commande = await _manager.GetById(id);
+            var commande = await _uow.Commandes.GetById(id);
             if (commande == null)
             {
                 return NotFound();
             }
 
-            await _manager.Delete(commande);
-            await _manager.Save();
+            await _uow.Commandes.Delete(commande);
+            await _uow.SaveChanges();
 
             return NoContent();
         }

@@ -21,7 +21,7 @@ namespace FIFA_API.Controllers
         [ActionName("GetFaq")]
         public async Task<ActionResult<FaqJoueur>> GetFaq([FromRoute] int id)
         {
-            var faq = await _context.FaqJoueurs.FindAsync(id);
+            var faq = await _uow.Faqs.GetById(id);
             return faq is null ? NotFound() : Ok(faq);
         }
 
@@ -41,11 +41,11 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<FaqJoueur>> PostFaq([FromBody] FaqJoueur faq)
         {
-            var joueur = await _context.Joueurs.GetByIdAsync(faq.IdJoueur);
+            var joueur = await _uow.Joueurs.GetByIdWithData(faq.IdJoueur);
             if (joueur is null) return NotFound();
 
             joueur.FaqJoueurs.Add(faq);
-            await _context.SaveChangesAsync();
+            await _uow.SaveChanges();
 
             return CreatedAtAction("GetFaq", new { id = faq.Id }, faq);
         }
@@ -71,11 +71,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(faq);
+                await _uow.Faqs.Update(faq);
+                await _uow.SaveChanges();
             }
             catch (DBConcurrencyException)
             {
-                if (!await _context.FaqJoueurs.AnyAsync(f => f.Id == faq.Id)) return NotFound();
+                if (!await _uow.Faqs.Exists(id)) return NotFound();
                 throw;
             }
             return NoContent();
@@ -95,11 +96,11 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteFaq([FromRoute] int id)
         {
-            var faq = await _context.FaqJoueurs.FindAsync(id);
+            var faq = await _uow.Faqs.GetById(id);
             if (faq is null) return NotFound();
 
-            _context.FaqJoueurs.Remove(faq);
-            await _context.SaveChangesAsync();
+            await _uow.Faqs.Delete(faq);
+            await _uow.SaveChanges();
 
             return NoContent();
         }

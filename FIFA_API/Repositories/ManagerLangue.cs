@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerLangue : BaseManager<Langue>, IManagerLangue
     {
-        public ManagerLangue(DbContext context) : base(context) { }
+        public ManagerLangue(FifaDbContext context) : base(context) { }
 
         public async Task<Langue?> GetById(int key)
         {

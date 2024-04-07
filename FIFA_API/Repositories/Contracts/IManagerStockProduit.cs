@@ -6,5 +6,6 @@ namespace FIFA_API.Repositories.Contracts
     {
         Task<StockProduit?> GetById(int idvariante, int idtaille);
         Task<bool> Exists(int idvariante, int idtaille);
+        Task<bool> Exists(int[] idsvariante, int idtaille);
     }
 }

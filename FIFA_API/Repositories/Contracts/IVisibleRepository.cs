@@ -7,5 +7,7 @@ namespace FIFA_API.Repositories.Contracts
         Task<IEnumerable<TEntity>> GetAll(bool onlyVisible = true);
         Task<TEntity?> GetById(int id, bool onlyVisible = true);
         Task<bool> Exists(int id);
+
+        Task<int[]> FilterVisibleIds(int[] ids);
     }
 }

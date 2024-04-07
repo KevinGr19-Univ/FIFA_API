@@ -6,6 +6,6 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerCompetition : BaseVisibleManager<Competition>, IManagerCompetition
     {
-        public ManagerCompetition(DbContext context) : base(context) { }
+        public ManagerCompetition(FifaDbContext context) : base(context) { }
     }
 }

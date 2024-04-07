@@ -51,7 +51,7 @@ namespace FIFA_API.Controllers.Base
         public async Task<ActionResult<VarianteCouleurProduit>> GetVariante(int id)
         {
             bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
-            var variante = await _manager.GetById(id, !seeAll);
+            var variante = await _manager.GetByIdWithData(id, !seeAll);
 
             if (variante is null) return NotFound();
             return variante;
@@ -140,11 +140,10 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteVariante(int id)
         {
-            var variante = await _manager.GetById(id, false);
+            var variante = await _manager.GetByIdWithStocks(id, false);
             if (variante is null) return NotFound();
 
-            bool stocksExists = await _manager.StockProduits.AnyAsync(s => s.IdVCProduit == id);
-            if (stocksExists) return Forbid();
+            if (variante.Stocks.Count > 0) return Forbid();
 
             await _manager.Delete(variante);
             await _manager.Save();

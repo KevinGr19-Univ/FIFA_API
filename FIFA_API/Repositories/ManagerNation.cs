@@ -6,6 +6,6 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerNation : BaseVisibleManager<Nation>, IManagerNation
     {
-        public ManagerNation(DbContext context) : base(context) { }
+        public ManagerNation(FifaDbContext context) : base(context) { }
     }
 }

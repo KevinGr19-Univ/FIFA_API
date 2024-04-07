@@ -9,6 +9,27 @@ namespace FIFA_API.Controllers
 {
     public partial class PublicationsController
     {
+        private async Task<ICollection<Photo>?> GetPhotosAsync(int idpub)
+        {
+            var publication = await _uow.Publications.GetById(idpub);
+            if (publication is null) return null;
+
+            switch (publication.Type)
+            {
+                case "album":
+                    return (await _uow.Albums.GetByIdWithPhotos(idpub))?.Photos;
+
+                case "article":
+                    return (await _uow.Articles.GetByIdWithPhotos(idpub))?.Photos;
+
+                case "blog":
+                    return (await _uow.Blogs.GetByIdWithPhotos(idpub))?.Photos;
+
+                default:
+                    return null;
+            }
+        }
+
         /// <summary>
         /// Ajoute une photo à une publication, en créeant la photo.
         /// </summary>
@@ -24,10 +45,11 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Photo>> PostPhoto(int id, Photo photo)
         {
-            var publication = await _context.Publications.GetByIdAsync(id);
-            if (publication is null) return NotFound();
+            var photos = await GetPhotosAsync(id);
+            if(photos is null) return NotFound();
 
-            return await PostPhoto(publication, photo);
+            await _uow.SaveChanges();
+            return Ok(photo);
         }
 
         /// <summary>
@@ -45,27 +67,10 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Photo>> PostPhoto(int id, int idphoto)
         {
-            var publication = await _context.Publications.GetByIdAsync(id);
-            if (publication is null) return NotFound();
-
-            var photo = await _context.Photos.FindAsync(idphoto);
+            var photo = await _uow.Photos.GetById(idphoto);
             if (photo is null) return NotFound();
 
-            return await PostPhoto(publication, photo);
-        }
-
-        private async Task<ActionResult<Photo>> PostPhoto(Publication publication, Photo photo)
-        {
-            if (publication is Album album) album.Photos.Add(photo);
-            else if (publication is Article article) article.Photos.Add(photo);
-            else if (publication is Blog blog) blog.Photos.Add(photo);
-            else
-            {
-                return NotFound();
-            }
-
-            await _context.SaveChangesAsync();
-            return Ok(photo);
+            return await PostPhoto(id, photo);
         }
 
         /// <summary>
@@ -83,23 +88,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeletePhoto(int id, int idphoto)
         {
-            var publication = await _context.Publications.GetByIdAsync(id);
-            if (publication is null) return NotFound();
-
-            ICollection<Photo> photos;
-            if (publication is Album album) photos = album.Photos;
-            else if (publication is Article article) photos = article.Photos;
-            else if (publication is Blog blog) photos = blog.Photos;
-            else
-            {
-                return NotFound();
-            }
+            var photos = await GetPhotosAsync(id);
+            if (photos is null) return NotFound();
 
             var photo = photos.FirstOrDefault(p => p.Id == idphoto);
             if (photo is null) return NotFound();
 
             photos.Remove(photo);
-            await _context.SaveChangesAsync();
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -119,10 +115,12 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Video>> PostVideo(int id, Video video)
         {
-            var article = await _context.Articles.GetByIdAsync(id);
+            var article = await _uow.Articles.GetByIdWithVideos(id);
             if (article is null) return NotFound();
 
-            return await PostVideo(article, video);
+            article.Videos.Add(video);
+            await _uow.SaveChanges();
+            return Ok(video);
         }
 
         /// <summary>
@@ -140,20 +138,10 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Video>> PostVideo(int id, int idvideo)
         {
-            var article = await _context.Articles.GetByIdAsync(id);
-            if (article is null) return NotFound();
-
-            var video = await _context.Videos.FindAsync(idvideo);
+            var video = await _uow.Videos.GetById(idvideo);
             if (video is null) return NotFound();
 
-            return await PostVideo(article, video);
-        }
-
-        private async Task<ActionResult<Video>> PostVideo(Article article, Video video)
-        {
-            article.Videos.Add(video);
-            await _context.SaveChangesAsync();
-            return Ok(video);
+            return await PostVideo(id, video);
         }
 
         /// <summary>
@@ -171,14 +159,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteVideo(int id, int idvideo)
         {
-            var article = await _context.Articles.GetByIdAsync(id);
+            var article = await _uow.Articles.GetById(id);
             if (article is null) return NotFound();
 
             var video = article.Videos.FirstOrDefault(v => v.Id == idvideo);
             if (video is null) return NotFound();
 
             article.Videos.Remove(video);
-            await _context.SaveChangesAsync();
+            await _uow.SaveChanges();
             return NoContent();
         }
 
@@ -193,7 +181,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Photo>>> GetPhotos()
         {
-            return await _context.Photos.ToListAsync();
+            return Ok(await _uow.Photos.GetAll());
         }
 
         /// <summary>
@@ -210,7 +198,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Photo>> GetPhoto(int id)
         {
-            var photo = await _context.Photos.FindAsync(id);
+            var photo = await _uow.Photos.GetById(id);
             return photo is null ? NotFound() : Ok(photo);
         }
 
@@ -228,11 +216,11 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeletePhoto(int id)
         {
-            var photo = await _context.Photos.FindAsync(id);
+            var photo = await _uow.Photos.GetById(id);
             if (photo is null) return NotFound();
 
-            _context.Photos.Remove(photo);
-            await _context.SaveChangesAsync();
+            await _uow.Photos.Delete(photo);
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -248,7 +236,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Video>>> GetVideos()
         {
-            return await _context.Videos.ToListAsync();
+            return Ok(await _uow.Videos.GetAll());
         }
 
         /// <summary>
@@ -265,7 +253,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Photo>> GetVideo(int id)
         {
-            var video = await _context.Videos.FindAsync(id);
+            var video = await _uow.Videos.GetById(id);
             return video is null ? NotFound() : Ok(video);
         }
 
@@ -283,11 +271,11 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteVideo(int id)
         {
-            var video = await _context.Videos.FindAsync(id);
+            var video = await _uow.Videos.GetById(id);
             if (video is null) return NotFound();
 
-            _context.Videos.Remove(video);
-            await _context.SaveChangesAsync();
+            await _uow.Videos.Delete(video);
+            await _uow.SaveChanges();
 
             return NoContent();
         }

@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerPhoto : BaseManager<Photo>, IManagerPhoto
     {
-        public ManagerPhoto(DbContext context) : base(context) { }
+        public ManagerPhoto(FifaDbContext context) : base(context) { }
 
         public async Task<Photo?> GetById(int key)
         {

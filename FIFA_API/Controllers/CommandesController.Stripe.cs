@@ -95,15 +95,15 @@ namespace FIFA_API.Controllers
 
 			foreach (var item in panier.Items)
 			{
-				var variante = await _manager.VarianteCouleurProduits.GetByIdAsync(item.IdVCProduit);
+				var variante = await _uow.Variantes.GetByIdWithData(item.IdVCProduit);
 				if (variante is null)
 					throw new CommandeException(CommandeExceptionCause.NoVariante, $"Variante inconnue (ID: {item.IdVCProduit})");
 
-				var taille = await _manager.TailleProduits.FindAsync(item.IdTaille);
+				var taille = await _uow.Tailles.GetById(item.IdTaille);
 				if (taille is null)
 					throw new CommandeException(CommandeExceptionCause.NoTaille, $"Taille inconnue (ID: {item.IdTaille})");
 
-				var stocks = await _manager.StockProduits.FindAsync(item.IdVCProduit, item.IdTaille);
+				var stocks = await _uow.Stocks.GetById(item.IdVCProduit, item.IdTaille);
 				if (stocks is null)
 					throw new CommandeException(CommandeExceptionCause.NoStocks, $"Stock inconnu (ID_VCP: {item.IdVCProduit}, ID_TPR: {item.IdTaille})");
 
@@ -137,7 +137,7 @@ namespace FIFA_API.Controllers
 		[NonAction]
 		public async Task<List<SessionShippingOptionOptions>> GetShippingOptions()
 		{
-			var types = await _manager.TypeLivraisons.Take(5).ToListAsync();
+			var types = (await _uow.TypeLivraisons.GetAll()).Take(5);
 			return types.Select(type => new SessionShippingOptionOptions()
 			{
 				ShippingRateData = new()
@@ -213,7 +213,7 @@ namespace FIFA_API.Controllers
 			});
 
 			int iduser = int.Parse(session.ClientReferenceId);
-			Utilisateur? user = await _manager.Utilisateurs.FindAsync(iduser);
+			Utilisateur? user = await _uow.Utilisateurs.GetById(iduser);
 			if (user is null) return Unauthorized();
 
 			Commande commande;
@@ -257,7 +257,7 @@ namespace FIFA_API.Controllers
 				int idVCProduit = int.Parse(item.Price.Product.Metadata["IdVCProduit"]);
 				int idTaille = int.Parse(item.Price.Product.Metadata["IdTaille"]);
 
-				var stocks = await _manager.StockProduits.FindAsync(idVCProduit, idTaille);
+				var stocks = await _uow.Stocks.GetById(idVCProduit, idTaille);
 				if (stocks is null)
 					throw new CommandeException(CommandeExceptionCause.NoStocks, $"Stock inconnu (ID_VCP: {idVCProduit}, ID_TPR: {idTaille})");
 
@@ -282,13 +282,13 @@ namespace FIFA_API.Controllers
 				Code = CodeStatusCommande.Preparation
 			});
 
-			await _manager.Commandes.AddAsync(commande);
+			await _uow.Commandes.Add(commande);
 
 			// Remove from stocks later and all at once to prevent unwanted updates (if an exception occurs early)
 			foreach (var stocksQuantity in quantityToRemove)
 				stocksQuantity.Item1.Stocks -= stocksQuantity.Item2;
 
-			await _manager.SaveChangesAsync();
+			await _uow.SaveChanges();
 
 			return commande;
 		}

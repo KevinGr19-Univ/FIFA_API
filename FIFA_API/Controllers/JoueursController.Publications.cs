@@ -20,7 +20,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Dictionary<string, List<int>>>> GetJoueurPublications(int id)
         {
-            var joueur = await _context.Joueurs.GetByIdWithPublications(id);
+            var joueur = await _uow.Joueurs.GetByIdWithPublications(id);
             if (joueur is null) return NotFound();
 
             return Publication.SortPublicationsIds(joueur.Publications);
@@ -42,14 +42,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<IActionResult> AddPublicationToJoueur(int id, int idpub)
         {
-            var joueur = await _context.Joueurs.GetByIdWithPublications(id);
+            var joueur = await _uow.Joueurs.GetByIdWithPublications(id);
             if (joueur is null) return NotFound();
 
-            var pub = await _context.Publications.FindAsync(idpub);
+            var pub = await _uow.Publications.GetById(idpub);
             if (pub is null) return NotFound();
 
             joueur.Publications.Add(pub);
-            await _context.SaveChangesAsync();
+            await _uow.SaveChanges();
             return NoContent();
         }
 
@@ -68,14 +68,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<IActionResult> RemovePublicationToJoueur(int id, int idpub)
         {
-            var joueur = await _context.Joueurs.GetByIdWithPublications(id);
+            var joueur = await _uow.Joueurs.GetByIdWithPublications(id);
             if (joueur is null) return NotFound();
 
             var pub = joueur.Publications.FirstOrDefault(p => p.Id == idpub);
             if (pub is null) return NotFound();
 
             joueur.Publications.Remove(pub);
-            await _context.SaveChangesAsync();
+            await _uow.SaveChanges();
             return NoContent();
         }
     }

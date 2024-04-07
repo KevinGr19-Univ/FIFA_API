@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerClub : BaseManager<Club>, IManagerClub
     {
-        public ManagerClub(DbContext context) : base(context) { }
+        public ManagerClub(FifaDbContext context) : base(context) { }
 
         public async Task<Club?> GetById(int key)
         {

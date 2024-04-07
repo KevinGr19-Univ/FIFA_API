@@ -6,7 +6,7 @@ namespace FIFA_API.Repositories
 {
     public sealed class ManagerStatistiques : BaseManager<Statistiques>, IManagerStatistiques
     {
-        public ManagerStatistiques(DbContext context) : base(context) { }
+        public ManagerStatistiques(FifaDbContext context) : base(context) { }
 
         public async Task<Statistiques?> GetById(int key)
         {
