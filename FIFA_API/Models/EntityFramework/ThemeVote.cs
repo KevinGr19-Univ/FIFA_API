@@ -8,7 +8,7 @@ namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_themevote_thv")]
     [Index(nameof(NomTheme), IsUnique = true)]
-    public class ThemeVote : IVisible
+    public partial class ThemeVote : IVisible
     {
         public const int MAX_NOMTHEME_LENGTH = 60;
 

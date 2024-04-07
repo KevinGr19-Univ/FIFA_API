@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers.Base
 {
@@ -15,11 +16,11 @@ namespace FIFA_API.Controllers.Base
     [ApiController]
     public partial class VariantesController : ControllerBase
     {
-        private readonly FifaDbContext _context;
+        private readonly IManagerVarianteCouleurProduit _manager;
 
-        public VariantesController(FifaDbContext context)
+        public VariantesController(IManagerVarianteCouleurProduit manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Variantes
@@ -32,9 +33,8 @@ namespace FIFA_API.Controllers.Base
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<VarianteCouleurProduit>>> GetVariantes()
         {
-            IQueryable<VarianteCouleurProduit> query = _context.VarianteCouleurProduits;
-            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            return Ok(await _manager.GetAll(!seeAll));
         }
 
         // GET: api/Variantes/5
@@ -50,12 +50,10 @@ namespace FIFA_API.Controllers.Base
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<VarianteCouleurProduit>> GetVariante(int id)
         {
-            var variante = await _context.VarianteCouleurProduits.GetByIdAsync(id);
-            if (variante is null) return NotFound();
-            if (!variante.Visible
-                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
-                return NotFound();
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            var variante = await _manager.GetByIdWithData(id, !seeAll);
 
+            if (variante is null) return NotFound();
             return variante;
         }
 
@@ -81,13 +79,14 @@ namespace FIFA_API.Controllers.Base
         {
             if (id != variante.Id) return BadRequest();
 
-            var oldVariante = await _context.VarianteCouleurProduits.FindAsync(id);
+            var oldVariante = await _manager.GetById(id, false);
             if (oldVariante is null) return NotFound();
 
             if (oldVariante.IdCouleur != variante.IdCouleur || oldVariante.IdProduit != variante.IdProduit)
                 return BadRequest();
 
-            await _context.UpdateEntity(variante);
+            await _manager.Update(variante);
+            await _manager.Save();
             return NoContent();
         }
 
@@ -112,13 +111,13 @@ namespace FIFA_API.Controllers.Base
         {
             try
             {
-                await _context.VarianteCouleurProduits.AddAsync(variante);
-                await _context.SaveChangesAsync();
+                await _manager.Add(variante);
+                await _manager.Save();
             }
             catch (DbUpdateException)
             {
-                bool combinationExists = await _context.VarianteCouleurProduits.AnyAsync(v => v.IdCouleur == variante.IdCouleur && v.IdProduit == variante.IdProduit);
-                if (combinationExists) return Conflict();
+                if (await _manager.CombinationExists(variante.IdProduit, variante.IdCouleur))
+                    return Conflict();
                 throw;
             }
 
@@ -141,14 +140,13 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteVariante(int id)
         {
-            var variante = await _context.VarianteCouleurProduits.FindAsync(id);
+            var variante = await _manager.GetByIdWithStocks(id, false);
             if (variante is null) return NotFound();
 
-            bool stocksExists = await _context.StockProduits.AnyAsync(s => s.IdVCProduit == id);
-            if (stocksExists) return Forbid();
+            if (variante.Stocks.Count > 0) return Forbid();
 
-            _context.VarianteCouleurProduits.Remove(variante);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(variante);
+            await _manager.Save();
 
             return NoContent();
         }

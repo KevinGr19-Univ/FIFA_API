@@ -23,10 +23,10 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> AddJoueurToTheme(int id, int idjoueur)
         {
-            bool okTheme = await _context.ThemeVotes.AnyAsync(j => j.Id == id);
+            bool okTheme = await _uow.Themes.Exists(id);
             if (!okTheme) return NotFound();
 
-            bool okJoueur = await _context.Joueurs.AnyAsync(j => j.Id == idjoueur);
+            bool okJoueur = await _uow.Joueurs.Exists(idjoueur);
             if(!okJoueur) return NotFound();
 
             var themevotejoueur = new ThemeVoteJoueur()
@@ -35,8 +35,8 @@ namespace FIFA_API.Controllers
                 IdTheme = id
             };
 
-            await _context.ThemeVoteJoueurs.AddAsync(themevotejoueur);
-            await _context.SaveChangesAsync();
+            await _uow.ThemeJoueurs.Add(themevotejoueur);
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -56,11 +56,11 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteJoueurFromTheme(int id, int idjoueur)
         {
-            var themevotejoueur = await _context.ThemeVoteJoueurs.FindAsync(id, idjoueur);
+            var themevotejoueur = await _uow.ThemeJoueurs.GetById(id, idjoueur);
             if (themevotejoueur is null) return NotFound();
 
-            _context.ThemeVoteJoueurs.Remove(themevotejoueur);
-            await _context.SaveChangesAsync();
+            await _uow.ThemeJoueurs.Delete(themevotejoueur);
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -74,7 +74,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetThemeJoueurs(int id)
         {
-            var theme = await _context.ThemeVotes.GetByIdAsync(id);
+            var theme = await _uow.Themes.GetByIdWithJoueurs(id);
             if(theme is null) return NotFound();
 
             return Ok(theme.Joueurs);

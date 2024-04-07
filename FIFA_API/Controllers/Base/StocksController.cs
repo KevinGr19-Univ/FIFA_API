@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
 using FIFA_API.Models;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers.Base
 {
@@ -26,11 +27,11 @@ namespace FIFA_API.Controllers.Base
         /// </summary>
         public const string DELETE_POLICY = Policies.Admin;
 
-        private readonly FifaDbContext _context;
+        private readonly IManagerStockProduit _manager;
 
-        public StocksController(FifaDbContext context)
+        public StocksController(IManagerStockProduit manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Stocks
@@ -46,7 +47,7 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<IEnumerable<StockProduit>>> GetStockProduits()
         {
-            return await _context.StockProduits.ToListAsync();
+            return Ok(await _manager.GetAll());
         }
 
         // GET: api/Stocks/5
@@ -62,7 +63,7 @@ namespace FIFA_API.Controllers.Base
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<StockProduit>> GetStockProduit(int idvariante, int idtaille)
         {
-            var stockProduit = await _context.StockProduits.FindAsync(idvariante, idtaille);
+            var stockProduit = await _manager.GetById(idvariante, idtaille);
 
             if (stockProduit == null)
             {
@@ -100,11 +101,12 @@ namespace FIFA_API.Controllers.Base
 
             try
             {
-                await _context.UpdateEntity(stockProduit);
+                await _manager.Update(stockProduit);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StockProduitExists(idvariante, idtaille))
+                if (!await _manager.Exists(idvariante, idtaille))
                 {
                     return NotFound();
                 }
@@ -136,14 +138,14 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<StockProduit>> PostStockProduit(StockProduit stockProduit)
         {
-            await _context.StockProduits.AddAsync(stockProduit);
+            await _manager.Add(stockProduit);
             try
             {
-                await _context.SaveChangesAsync();
+                await _manager.Save();
             }
             catch (DbUpdateException)
             {
-                if (StockProduitExists(stockProduit.IdVCProduit, stockProduit.IdTaille))
+                if (await _manager.Exists(stockProduit.IdVCProduit, stockProduit.IdTaille))
                 {
                     return Conflict();
                 }
@@ -173,25 +175,16 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = DELETE_POLICY)]
         public async Task<IActionResult> DeleteStockProduit(int idvariante, int idtaille)
         {
-            if (_context.StockProduits == null)
-            {
-                return NotFound();
-            }
-            var stockProduit = await _context.StockProduits.FindAsync(idvariante, idtaille);
+            var stockProduit = await _manager.GetById(idvariante, idtaille);
             if (stockProduit == null)
             {
                 return NotFound();
             }
 
-            _context.StockProduits.Remove(stockProduit);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(stockProduit);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool StockProduitExists(int idvariante, int idtaille)
-        {
-            return (_context.StockProduits?.Any(e => e.IdVCProduit == idvariante && e.IdTaille == idtaille)).GetValueOrDefault();
         }
     }
 }

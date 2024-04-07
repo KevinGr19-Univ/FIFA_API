@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -21,11 +22,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly FifaDbContext _context;
+        private readonly IManagerLangue _manager;
 
-        public LanguesController(FifaDbContext context)
+        public LanguesController(IManagerLangue manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Langues
@@ -37,7 +38,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Langue>>> GetLangues()
         {
-            return await _context.Langues.ToListAsync();
+            return Ok(await _manager.GetAll());
         }
 
         // GET: api/Langues/5
@@ -52,7 +53,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Langue>> GetLangue(int id)
         {
-            var langue = await _context.Langues.FindAsync(id);
+            var langue = await _manager.GetById(id);
             return langue is null ? NotFound() : langue;
         }
 
@@ -82,11 +83,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(langue);
+                await _manager.Update(langue);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LangueExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -115,8 +117,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Langue>> PostLangue(Langue langue)
         {
-            await _context.Langues.AddAsync(langue);
-            await _context.SaveChangesAsync();
+            await _manager.Add(langue);
+            await _manager.Save();
             return CreatedAtAction("GetLangue", new { id = langue.Id }, langue);
         }
 
@@ -135,21 +137,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteLangue(int id)
         {
-            var langue = await _context.Langues.FindAsync(id);
+            var langue = await _manager.GetById(id);
             if (langue is null)
             {
                 return NotFound();
             }
 
-            _context.Langues.Remove(langue);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(langue);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool LangueExists(int id)
-        {
-            return (_context.Langues?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -1,6 +1,8 @@
 using FIFA_API.Contracts;
 using FIFA_API.Models;
 using FIFA_API.Models.EntityFramework;
+using FIFA_API.Repositories.Contracts;
+using FIFA_API.Repositories;
 using FIFA_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging.AzureAppServices;
@@ -8,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using Twilio;
-using Twilio.Rest.Api.V2010.Account;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -121,6 +122,52 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+
+#region Repository
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWorkCommande, UnitOfWorkCommande>();
+builder.Services.AddScoped<IUnitOfWorkJoueur, UnitOfWorkJoueur>();
+builder.Services.AddScoped<IUnitOfWorkProduit, UnitOfWorkProduit>();
+builder.Services.AddScoped<IUnitOfWorkPublication, UnitOfWorkPublication>();
+builder.Services.AddScoped<IUnitOfWorkVote, UnitOfWorkVote>();
+builder.Services.AddScoped<IUnitOfWorkUserServices, UnitOfWorkUserServices>();
+
+builder.Services.AddScoped<IManagerAlbum, ManagerAlbum>();
+builder.Services.AddScoped<IManagerArticle, ManagerArticle>();
+builder.Services.AddScoped<IManagerAuth2FALogin, ManagerAuth2FALogin>();
+builder.Services.AddScoped<IManagerAuthEmailVerif, ManagerAuthEmailVerif>();
+builder.Services.AddScoped<IManagerAuthPasswordReset, ManagerAuthPasswordReset>();
+builder.Services.AddScoped<IManagerBlog, ManagerBlog>();
+builder.Services.AddScoped<IManagerCategorieProduit, ManagerCategorieProduit>();
+builder.Services.AddScoped<IManagerClub, ManagerClub>();
+builder.Services.AddScoped<IManagerCommande, ManagerCommande>();
+builder.Services.AddScoped<IManagerCommentaireBlog, ManagerCommentaireBlog>();
+builder.Services.AddScoped<IManagerCompetition, ManagerCompetition>();
+builder.Services.AddScoped<IManagerCouleur, ManagerCouleur>();
+builder.Services.AddScoped<IManagerDocument, ManagerDocument>();
+builder.Services.AddScoped<IManagerFaqJoueur, ManagerFaqJoueur>();
+builder.Services.AddScoped<IManagerGenre, ManagerGenre>();
+builder.Services.AddScoped<IManagerJoueur, ManagerJoueur>();
+builder.Services.AddScoped<IManagerLangue, ManagerLangue>();
+builder.Services.AddScoped<IManagerLigneCommande, ManagerLigneCommande>();
+builder.Services.AddScoped<IManagerNation, ManagerNation>();
+builder.Services.AddScoped<IManagerPays, ManagerPays>();
+builder.Services.AddScoped<IManagerPhoto, ManagerPhoto>();
+builder.Services.AddScoped<IManagerProduit, ManagerProduit>();
+builder.Services.AddScoped<IManagerPublication, ManagerPublication>();
+builder.Services.AddScoped<IManagerStatistiques, ManagerStatistiques>();
+builder.Services.AddScoped<IManagerStatusCommande, ManagerStatusCommande>();
+builder.Services.AddScoped<IManagerStockProduit, ManagerStockProduit>();
+builder.Services.AddScoped<IManagerTailleProduit, ManagerTailleProduit>();
+builder.Services.AddScoped<IManagerThemeVote, ManagerThemeVote>();
+builder.Services.AddScoped<IManagerThemeVoteJoueur, ManagerThemeVoteJoueur>();
+builder.Services.AddScoped<IManagerTrophee, ManagerTrophee>();
+builder.Services.AddScoped<IManagerTypeLivraison, ManagerTypeLivraison>();
+builder.Services.AddScoped<IManagerUtilisateur, ManagerUtilisateur>();
+builder.Services.AddScoped<IManagerVarianteCouleurProduit, ManagerVarianteCouleurProduit>();
+builder.Services.AddScoped<IManagerVideo, ManagerVideo>();
+builder.Services.AddScoped<IManagerVoteUtilisateur, ManagerVoteUtilisateur>();
+#endregion
 
 var app = builder.Build();
 app.UseCors(policyName);

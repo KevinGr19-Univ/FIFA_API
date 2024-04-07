@@ -22,16 +22,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PostJoueurTrophee([FromRoute] int idjoueur, [FromRoute] int idtrophee)
         {
-            var joueur = await _context.Joueurs.FindAsync(idjoueur);
+            var joueur = await _uow.Joueurs.GetByIdWithData(idjoueur);
             if (joueur is null) return NotFound();
 
-            var trophee = await _context.Trophees.FindAsync(idtrophee);
+            var trophee = await _uow.Trophees.GetById(idtrophee);
             if (trophee is null) return NotFound();
 
             if (!joueur.Trophees.Contains(trophee))
             {
                 joueur.Trophees.Add(trophee);
-                await _context.SaveChangesAsync();
+                await _uow.SaveChanges();
             }
 
             return NoContent();
@@ -52,14 +52,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteJoueurTrophee([FromRoute] int idjoueur, [FromRoute] int idtrophee)
         {
-            var joueur = await _context.Joueurs.GetByIdAsync(idjoueur);
+            var joueur = await _uow.Joueurs.GetByIdWithData(idjoueur);
             if (joueur is null) return NotFound();
 
             var trophee = joueur.Trophees.FirstOrDefault(t => t.Id == idjoueur);
             if (trophee is null) return NotFound();
 
-            if (!joueur.Trophees.Remove(trophee)) return Conflict();
-            await _context.SaveChangesAsync();
+            joueur.Trophees.Remove(trophee);
+            await _uow.SaveChanges();
 
             return NoContent();
         }

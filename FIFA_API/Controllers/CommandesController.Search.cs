@@ -30,18 +30,12 @@ namespace FIFA_API.Controllers
             [FromQuery] bool? desc,
             [FromQuery] int? page)
         {
-            var query = _context.Commandes as IQueryable<Commande>;
-
-            if (idUser is not null)
-                query = query.Where(c => c.IdUtilisateur == idUser);
-
-            if (typesLivraison.Length > 0)
-                query = query.Where(c => typesLivraison.Contains(c.IdTypeLivraison));
-
-            return Ok(await query
-                .Sort(desc == true)
-                .Paginate(Math.Max(page ?? 1, 1), COMMANDES_PER_PAGE)
-                .ToApercus());
+            return Ok(await _uow.Commandes.SearchCommandes(
+                idUser,
+                typesLivraison,
+                desc,
+                page ?? 1,
+                COMMANDES_PER_PAGE));
         }
 
         /// <summary>

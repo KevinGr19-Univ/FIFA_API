@@ -12,14 +12,6 @@ namespace FIFA_API.Models.EntityFramework
     {
         public const int MAX_TEXTE_LENGTH = 500;
 
-        private readonly ILazyLoader _loader;
-
-        public CommentaireBlog() { }
-        public CommentaireBlog(ILazyLoader loader)
-        {
-            _loader = loader;
-        }
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("cbl_id")]
         public int Id { get; set; }
@@ -43,19 +35,13 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(MAX_TEXTE_LENGTH, ErrorMessage = "Le texte d'un commentaire ne doit pas dépasser 500 caractères.")]
         public string Texte { get; set; }
 
-        private Utilisateur? _utilisateur;
-
         [ForeignKey(nameof(IdBlog)), JsonIgnore]
         [OnDelete(DeleteBehavior.Cascade)]
         public Blog Blog { get; set; }
 
         [ForeignKey(nameof(IdUtilisateur)), JsonIgnore]
         [OnDelete(DeleteBehavior.SetNull)]
-        public Utilisateur? Utilisateur
-        {
-            get => _loader.Load(this, ref _utilisateur);
-            set => _utilisateur = value;
-        }
+        public Utilisateur? Utilisateur { get; set; }
 
         [ForeignKey(nameof(IdOriginal)), JsonIgnore]
         [OnDelete(DeleteBehavior.SetNull)]

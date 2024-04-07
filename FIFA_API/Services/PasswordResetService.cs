@@ -1,6 +1,7 @@
 ﻿using FIFA_API.Contracts;
 using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
+using FIFA_API.Repositories.Contracts;
 using FIFA_API.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
@@ -12,7 +13,7 @@ namespace FIFA_API.Services
     /// </summary>
     public class PasswordResetService : IPasswordResetService
     {
-        private readonly FifaDbContext _context;
+        private readonly IUnitOfWorkUserServices _uow;
         private readonly IConfiguration _config;
         private readonly IEmailSender _emailSender;
         private readonly IPasswordHasher _passwordHasher;
@@ -20,13 +21,13 @@ namespace FIFA_API.Services
         /// <summary>
         /// Crée une instance de <see cref="PasswordResetService"/>.
         /// </summary>
-        /// <param name="context">Le DbContext à utiliser.</param>
+        /// <param name="uow">Le UoW à utiliser.</param>
         /// <param name="config">La configuration contenant les variables liées à la réinitialisation de mots de passe.</param>
         /// <param name="emailSender">Le service d'envoi de mail à utiliser.</param>
         /// <param name="passwordHasher">Le hasheur de mot de passe à utiliser.</param>
-        public PasswordResetService(FifaDbContext context, IConfiguration config, IEmailSender emailSender, IPasswordHasher passwordHasher)
+        public PasswordResetService(IUnitOfWorkUserServices uow, IConfiguration config, IEmailSender emailSender, IPasswordHasher passwordHasher)
         {
-            _context = context;
+            _uow = uow;
             _config = config;
             _emailSender = emailSender;
             _passwordHasher = passwordHasher;
@@ -34,12 +35,12 @@ namespace FIFA_API.Services
 
         public async Task SendPasswordResetCodeAsync(string mail)
         {
-            var reset = await _context.PasswordResets.FindAsync(mail);
+            var reset = await _uow.PasswordResets.GetById(mail);
 
             bool add = reset is null;
             if (add)
             {
-                bool exists = await _context.Utilisateurs.IsEmailTaken(mail);
+                bool exists = await _uow.Utilisateurs.IsEmailTaken(mail);
                 if (!exists) return;
 
                 reset = new() { Mail = mail };
@@ -48,10 +49,10 @@ namespace FIFA_API.Services
             reset.Code = GenerateCode();
             reset.Date = DateTime.Now;
 
-            if (add) await _context.PasswordResets.AddAsync(reset);
-            else _context.PasswordResets.Update(reset);
+            if (add) await _uow.PasswordResets.Add(reset);
+            else await _uow.PasswordResets.Update(reset);
 
-            await _context.SaveChangesAsync();
+            await _uow.SaveChanges();
             await _emailSender.SendAsync(
                 to: mail,
                 subject: "FIFA - Reset your password",
@@ -61,22 +62,22 @@ namespace FIFA_API.Services
 
         public async Task<bool> ChangePasswordAsync(ChangePasswordRequest request, string code)
         {
-            var reset = await _context.PasswordResets.SingleOrDefaultAsync(r => r.Code == code);
+            var reset = await _uow.PasswordResets.GetByCode(code);
             if (reset is null || reset.Code != code) return false;
 
-            _context.PasswordResets.Remove(reset);
-            await _context.SaveChangesAsync();
+            await _uow.PasswordResets.Delete(reset);
+            await _uow.SaveChanges();
 
             var expireMinutes = int.Parse(_config["PasswordReset:ExpireMinutes"]);
             if (reset.Date.AddMinutes(expireMinutes) < DateTime.Now) return false;
 
-            var user = await _context.Utilisateurs.FirstOrDefaultAsync(u => u.Mail == request.Mail);
+            var user = await _uow.Utilisateurs.GetByEmail(request.Mail);
             if (user is null) return false;
 
             try
             {
                 user.HashMotDePasse = _passwordHasher.Hash(request.NewPassword);
-                await _context.SaveChangesAsync();
+                await _uow.SaveChanges();
             }
             catch
             {

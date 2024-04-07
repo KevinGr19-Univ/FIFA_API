@@ -14,14 +14,6 @@ namespace FIFA_API.Models.EntityFramework
         public const int MAX_TITRE_LENGTH = 200;
         public const int MAX_RESUME_LENGTH = 600;
 
-        protected readonly ILazyLoader loader;
-
-        public Publication() { }
-        public Publication(ILazyLoader loader)
-        {
-            this.loader = loader;
-        }
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("pub_id")]
         public int Id { get; set; }
@@ -44,14 +36,8 @@ namespace FIFA_API.Models.EntityFramework
         [OnDelete(DeleteBehavior.SetNull)]
         public Photo? Photo { get; set; }
 
-        private ICollection<Joueur> _joueurs;
-
         [JsonIgnore]
-        public ICollection<Joueur> Joueurs
-        {
-            get => loader.Load(this, ref _joueurs);
-            set => _joueurs = value;
-        }
+        public ICollection<Joueur> Joueurs { get; set; }
 
         [Column("pub_visible")]
         public bool Visible { get; set; } = true;

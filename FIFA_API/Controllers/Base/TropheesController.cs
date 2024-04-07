@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -21,11 +22,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly FifaDbContext _context;
+        private readonly IManagerTrophee _manager;
 
-        public TropheesController(FifaDbContext context)
+        public TropheesController(IManagerTrophee manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Trophees
@@ -40,11 +41,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Trophee>>> GetTrophees()
         {
-          if (_context.Trophees == null)
-          {
-              return NotFound();
-          }
-            return await _context.Trophees.ToListAsync();
+            return Ok(await _manager.GetAll());
         }
 
         // GET: api/Trophees/5
@@ -59,13 +56,9 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Trophee>> GetTrophee(int id)
         {
-            var trophee = await _context.Trophees.FindAsync(id);
+            var trophee = await _manager.GetById(id);
 
-            if (trophee == null)
-            {
-                return NotFound();
-            }
-
+            if (trophee == null) return NotFound();
             return trophee;
         }
 
@@ -80,10 +73,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Joueur>>> GetTropheeJoueurs(int id)
         {
-            var tropheeRes = await GetTrophee(id);
-            if (tropheeRes.Value is null) return NotFound();
+            var trophee = await _manager.GetByIdWithJoueurs(id);
 
-            return Ok(tropheeRes.Value.Joueurs);
+            if (trophee == null) return NotFound();
+            return Ok(trophee.Joueurs);
         }
 
         // PUT: api/Trophees/5
@@ -112,11 +105,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(trophee);
+                await _manager.Update(trophee);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TropheeExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -145,8 +139,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Trophee>> PostTrophee(Trophee trophee)
         {
-            await _context.Trophees.AddAsync(trophee);
-            await _context.SaveChangesAsync();
+            await _manager.Add(trophee);
+            await _manager.Save();
 
             return CreatedAtAction("GetTrophee", new { id = trophee.Id }, trophee);
         }
@@ -166,21 +160,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteTrophee(int id)
         {
-            var trophee = await _context.Trophees.FindAsync(id);
+            var trophee = await _manager.GetById(id);
             if (trophee == null)
             {
                 return NotFound();
             }
 
-            _context.Trophees.Remove(trophee);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(trophee);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool TropheeExists(int id)
-        {
-            return (_context.Trophees?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

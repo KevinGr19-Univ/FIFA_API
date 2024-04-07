@@ -17,7 +17,5 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Column("clb_nom"), Required]
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom du club ne doit pas dépasser les 100 caractères")]
         public string Nom { get; set; }
-
-
     }
 }

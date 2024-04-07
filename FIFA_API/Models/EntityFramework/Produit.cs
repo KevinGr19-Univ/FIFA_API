@@ -8,12 +8,6 @@ namespace FIFA_API.Models.EntityFramework
     [Table("t_e_produit_prd")]
     public partial class Produit : IVisible
     {
-        public Produit()
-        {
-            Variantes = new HashSet<VarianteCouleurProduit>();
-            Tailles = new HashSet<TailleProduit>();
-        }
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("prd_id")]
         public int Id { get; set; }
@@ -50,10 +44,10 @@ namespace FIFA_API.Models.EntityFramework
         public CategorieProduit Categorie { get; set; }
 
         [InverseProperty(nameof(VarianteCouleurProduit.Produit))]
-        public ICollection<VarianteCouleurProduit> Variantes { get; set; }
+        public ICollection<VarianteCouleurProduit> Variantes { get; set; } = new HashSet<VarianteCouleurProduit>();
 
         [ManyToMany(nameof(TailleProduit.Produits))]
-        public ICollection<TailleProduit> Tailles { get; set; }
+        public ICollection<TailleProduit> Tailles { get; set; } = new HashSet<TailleProduit>();
 
         [Column("prd_visible")]
         public bool Visible { get; set; } = true;

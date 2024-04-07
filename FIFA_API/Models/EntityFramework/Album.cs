@@ -8,16 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 	[Table("t_h_album_alb")]
     public partial class Album : Publication
     {
-        public Album() { }
-        public Album(ILazyLoader loader) : base(loader) { }
-
-        private ICollection<Photo> _photos = new HashSet<Photo>();
-
         [ManyToMany("_albums")]
-        public ICollection<Photo> Photos
-        {
-            get => loader.Load(this, ref _photos);
-            set => _photos = value;
-        }
+        public ICollection<Photo> Photos { get; set; } = new HashSet<Photo>();
     }
 }

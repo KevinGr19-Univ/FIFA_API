@@ -6,7 +6,7 @@ namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_authpasswordreset_apr")]
     [Index(nameof(Code), IsUnique = true)]
-    public class AuthPasswordReset
+    public partial class AuthPasswordReset
     {
         [Key, Column("utl_mail")]
         public string Mail { get; set; }

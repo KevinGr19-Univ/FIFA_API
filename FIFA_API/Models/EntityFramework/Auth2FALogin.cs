@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace FIFA_API.Models.EntityFramework
 {
     [Table("t_e_auth2falogin_a2f")]
-    public class Auth2FALogin
+    public partial class Auth2FALogin
     {
         [Key, Column("utl_id")]
         public int IdUtilisateur { get; set; }

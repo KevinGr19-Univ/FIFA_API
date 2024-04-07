@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -15,11 +16,11 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class TaillesController : ControllerBase
     {
-        private readonly FifaDbContext _context;
+        private readonly IManagerTailleProduit _manager;
 
-        public TaillesController(FifaDbContext context)
+        public TaillesController(IManagerTailleProduit manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/TailleProduits
@@ -32,9 +33,8 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TailleProduit>>> GetTailleProduits()
         {
-            IQueryable<TailleProduit> query = _context.TailleProduits;
-            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            return Ok(await _manager.GetAll(!seeAll));
         }
 
         // GET: api/TailleProduits/5
@@ -50,13 +50,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<TailleProduit>> GetTailleProduit(int id)
         {
-            var tailleProduit = await _context.TailleProduits.FindAsync(id);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            var tailleProduit = await _manager.GetById(id, !seeAll);
 
             if (tailleProduit == null) return NotFound();
-            if (!tailleProduit.Visible
-                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
-                return NotFound();
-
             return tailleProduit;
         }
 
@@ -87,11 +84,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(tailleProduit);
+                await _manager.Update(tailleProduit);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TailleProduitExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -121,8 +119,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<TailleProduit>> PostTailleProduit(TailleProduit tailleProduit)
         {
-            await _context.TailleProduits.AddAsync(tailleProduit);
-            await _context.SaveChangesAsync();
+            await _manager.Add(tailleProduit);
+            await _manager.Save();
 
             return CreatedAtAction("GetTailleProduit", new { id = tailleProduit.Id }, tailleProduit);
         }
@@ -143,21 +141,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteTailleProduit(int id)
         {
-            var tailleProduit = await _context.TailleProduits.FindAsync(id);
+            var tailleProduit = await _manager.GetById(id, false);
             if (tailleProduit == null)
             {
                 return NotFound();
             }
 
-            _context.TailleProduits.Remove(tailleProduit);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(tailleProduit);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool TailleProduitExists(int id)
-        {
-            return (_context.TailleProduits?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

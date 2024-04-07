@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -15,11 +16,11 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class NationsController : ControllerBase
     {
-        private readonly FifaDbContext _context;
+        private readonly IManagerNation _manager;
 
-        public NationsController(FifaDbContext context)
+        public NationsController(IManagerNation manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Nations
@@ -32,9 +33,8 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Nation>>> GetNations()
         {
-            IQueryable<Nation> query = _context.Nations;
-            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            return Ok(await _manager.GetAll(!seeAll));
         }
 
         // GET: api/Nations/5
@@ -50,13 +50,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Nation>> GetNation(int id)
         {
-            var nation = await _context.Nations.FindAsync(id);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            var nation = await _manager.GetById(id, !seeAll);
 
             if (nation == null) return NotFound();
-            if (!nation.Visible
-                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
-                return NotFound();
-
             return nation;
         }
 
@@ -87,11 +84,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(nation);
+                await _manager.Update(nation);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!NationExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -121,8 +119,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Nation>> PostNation(Nation nation)
         {
-            await _context.Nations.AddAsync(nation);
-            await _context.SaveChangesAsync();
+            await _manager.Add(nation);
+            await _manager.Save();
 
             return CreatedAtAction("GetNation", new { id = nation.Id }, nation);
         }
@@ -143,21 +141,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteNation(int id)
         {
-            var nation = await _context.Nations.FindAsync(id);
+            var nation = await _manager.GetById(id, false);
             if (nation == null)
             {
                 return NotFound();
             }
 
-            _context.Nations.Remove(nation);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(nation);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool NationExists(int id)
-        {
-            return (_context.Nations?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

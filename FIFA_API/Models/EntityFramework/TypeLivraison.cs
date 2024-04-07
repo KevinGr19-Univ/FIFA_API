@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace FIFA_API.Models.EntityFramework
 {
 	[Table("t_e_typelivraison_tli")]
-    public class TypeLivraison
+    public partial class TypeLivraison
     {
         public TypeLivraison()
         {

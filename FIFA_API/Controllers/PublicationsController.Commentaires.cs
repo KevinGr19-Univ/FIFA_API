@@ -21,7 +21,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<CommentaireBlog>>> GetCommentaires()
         {
-            return await _context.Commentaires.ToListAsync();
+            return Ok(await _uow.Commentaires.GetAll());
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentaireBlog>> GetCommentaire(int id)
         {
-            var commentaire = await _context.Commentaires.FindAsync(id);
+            var commentaire = await _uow.Commentaires.GetById(id);
             return commentaire is null ? NotFound() : Ok(commentaire);
         }
 
@@ -59,8 +59,7 @@ namespace FIFA_API.Controllers
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            var blog = await _context.Blogs.FindAsync(idblog);
-            if (blog is null) return NotFound();
+            if (!await _uow.Blogs.Exists(idblog)) return NotFound();
 
             commentaire.Id = 0;
             commentaire.IdUtilisateur = user.Id;
@@ -68,8 +67,8 @@ namespace FIFA_API.Controllers
             commentaire.EstReponse = commentaire.IdOriginal is not null;
             commentaire.Date = DateTime.Now;
 
-            await _context.Commentaires.AddAsync(commentaire);
-            await _context.SaveChangesAsync();
+            await _uow.Commentaires.Add(commentaire);
+            await _uow.SaveChanges();
             return CreatedAtAction("GetCommentaire", new { id = commentaire.Id }, commentaire);
         }
 
@@ -91,7 +90,7 @@ namespace FIFA_API.Controllers
         {
             Utilisateur? user = await this.UtilisateurAsync();
 
-            var commentaire = await _context.Commentaires.FindAsync(id);
+            var commentaire = await _uow.Commentaires.GetById(id);
             if (commentaire is null) return NotFound();
 
             if(user is null || commentaire.Id != user.Id)
@@ -100,15 +99,10 @@ namespace FIFA_API.Controllers
                 if (!authRes) return Unauthorized();
             }
 
-            _context.Commentaires.Remove(commentaire);
-            await _context.SaveChangesAsync();
+            await _uow.Commentaires.Delete(commentaire);
+            await _uow.SaveChanges();
             
             return NoContent();
-        }
-
-        private bool CommentaireExists(int id)
-        {
-            return _context.Commentaires.Any(c => c.Id == id);
         }
     }
 }

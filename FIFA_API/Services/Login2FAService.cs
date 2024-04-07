@@ -1,5 +1,6 @@
 ﻿using FIFA_API.Contracts;
 using FIFA_API.Models.EntityFramework;
+using FIFA_API.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace FIFA_API.Services
@@ -9,30 +10,30 @@ namespace FIFA_API.Services
     /// </summary>
     public class Login2FAService : ILogin2FAService
     {
-        private readonly FifaDbContext _context;
+        private readonly IUnitOfWorkUserServices _uow;
         private readonly IConfiguration _config;
         private readonly ISmsService _smsService;
 
         /// <summary>
         /// Crée une instance de <see cref="Login2FAService"/>.
         /// </summary>
-        /// <param name="context">le DbContext à utiliser.</param>
+        /// <param name="uow">Le UoW à utiliser.</param>
         /// <param name="config">La configuration contenant les variables liées à la 2FA.</param>
         /// <param name="smsService">Le service d'envoi de SMS à utiliser.</param>
-        public Login2FAService(FifaDbContext context, IConfiguration config, ISmsService smsService)
+        public Login2FAService(IUnitOfWorkUserServices uow, IConfiguration config, ISmsService smsService)
         {
             _config = config;
-            _context = context;
+            _uow = uow;
             _smsService = smsService;
         }
 
         public async Task<bool> Remove2FACode(Utilisateur user)
         {
-            var auth2fa = await _context.Login2FAs.FindAsync(user.Id);
+            var auth2fa = await _uow.Login2FAs.GetById(user.Id);
             if (auth2fa is null) return false;
 
-            _context.Login2FAs.Remove(auth2fa);
-            await _context.SaveChangesAsync();
+            await _uow.Login2FAs.Delete(auth2fa);
+            await _uow.SaveChanges();
             return true;
         }
 
@@ -41,7 +42,7 @@ namespace FIFA_API.Services
             if (user.Telephone is null)
                 throw new ArgumentException("User has no phone");
 
-            var auth2fa = await _context.Login2FAs.FindAsync(user.Id);
+            var auth2fa = await _uow.Login2FAs.GetById(user.Id);
 
             bool add = auth2fa is null;
             if (add) auth2fa = new() { IdUtilisateur = user.Id };
@@ -50,8 +51,8 @@ namespace FIFA_API.Services
             auth2fa.Code = GenerateCode();
             auth2fa.Date = DateTime.Now;
 
-            if (add) await _context.Login2FAs.AddAsync(auth2fa);
-            await _context.SaveChangesAsync();
+            if (add) await _uow.Login2FAs.Add(auth2fa);
+            await _uow.SaveChanges();
 
             await _smsService.SendSMSAsync(user.Telephone, GenerateMessage(user, auth2fa));
             return user.Token2FA;
@@ -59,15 +60,15 @@ namespace FIFA_API.Services
 
         public async Task<Utilisateur?> AuthenticateAsync(string token, string code)
         {
-            var user = await _context.Utilisateurs.SingleOrDefaultAsync(u => u.Token2FA == token);
+            var user = await _uow.Utilisateurs.GetBy2FAToken(token);
             if (user is null) return null;
 
-            var auth2fa = await _context.Login2FAs.FindAsync(user.Id);
+            var auth2fa = await _uow.Login2FAs.GetById(user.Id);
             if (auth2fa is null || auth2fa.Code != code) return null;
 
             user.Token2FA = null;
-            _context.Login2FAs.Remove(auth2fa);
-            await _context.SaveChangesAsync();
+            await _uow.Login2FAs.Delete(auth2fa);
+            await _uow.SaveChanges();
 
             var expireMinutes = int.Parse(_config["2FA:ExpireMinutes"]);
             if (auth2fa.Date.AddMinutes(expireMinutes) < DateTime.Now) return null;

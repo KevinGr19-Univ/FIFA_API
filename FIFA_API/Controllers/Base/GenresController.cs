@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -15,11 +16,11 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class GenresController : ControllerBase
     {
-        private readonly FifaDbContext _context;
+        private readonly IManagerGenre _manager;
 
-        public GenresController(FifaDbContext context)
+        public GenresController(IManagerGenre manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Genres
@@ -32,9 +33,8 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
         {
-            IQueryable<Genre> query = _context.Genres;
-            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            return Ok(await _manager.GetAll(seeAll));
         }
 
         // GET: api/Genres/5
@@ -50,13 +50,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Genre>> GetGenre(int id)
         {
-            var genre = await _context.Genres.FindAsync(id);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            var genre = await _manager.GetById(id, !seeAll);
 
             if (genre == null) return NotFound();
-            if (!genre.Visible
-                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
-                return NotFound();
-
             return genre;
         }
 
@@ -87,11 +84,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(genre);
+                await _manager.Update(genre);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GenreExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -121,8 +119,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Genre>> PostGenre(Genre genre)
         {
-            await _context.Genres.AddAsync(genre);
-            await _context.SaveChangesAsync();
+            await _manager.Add(genre);
+            await _manager.Save();
 
             return CreatedAtAction("GetGenre", new { id = genre.Id }, genre);
         }
@@ -143,21 +141,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteGenre(int id)
         {
-            var genre = await _context.Genres.FindAsync(id);
+            var genre = await _manager.GetById(id, false);
             if (genre == null)
             {
                 return NotFound();
             }
 
-            _context.Genres.Remove(genre);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(genre);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool GenreExists(int id)
-        {
-            return (_context.Genres?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

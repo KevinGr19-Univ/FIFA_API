@@ -14,14 +14,6 @@ namespace FIFA_API.Models.EntityFramework
         public const int MAX_VILLE_LENGTH = 150;
         public const int MAX_RUE_LENGTH = 200;
 
-        private readonly ILazyLoader _loader;
-
-        public Commande() { }
-        public Commande(ILazyLoader loader)
-        {
-            _loader = loader;
-        }
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("cmd_id")]
         public int Id { get; set; }
@@ -81,21 +73,10 @@ namespace FIFA_API.Models.EntityFramework
         [Column("cmd_urlfacture", TypeName = "text"), Required]
         public string UrlFacture { get; set; }
 
-        private ICollection<LigneCommande> _lignes = new HashSet<LigneCommande>();
-        private ICollection<StatusCommande> _status = new HashSet<StatusCommande>();
-
         [InverseProperty(nameof(LigneCommande.Commande))]
-        public ICollection<LigneCommande> Lignes
-        {
-            get => _loader.Load(this, ref _lignes);
-            set => _lignes = value;
-        }
+        public ICollection<LigneCommande> Lignes { get; set; } = new HashSet<LigneCommande>();
 
         [InverseProperty(nameof(StatusCommande.Commande))]
-        public ICollection<StatusCommande> Status
-        {
-            get => _loader.Load(this, ref _status);
-            set => _status = value;
-        }
+        public ICollection<StatusCommande> Status { get; set; } = new HashSet<StatusCommande>();
     }
 }
