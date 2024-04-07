@@ -49,10 +49,20 @@ namespace FIFA_API.Repositories
             if (typesLivraison.Length > 0)
                 query = query.Where(c => typesLivraison.Contains(c.IdTypeLivraison));
 
-            return await query
-                .Sort(desc == true)
-                .Paginate(page, amount)
-                .ToApercus();
+            query = Sort(query, desc == true)
+                .Paginate(page, amount);
+
+            return await ToApercus(query);
+        }
+
+        private static IQueryable<Commande> Sort(IQueryable<Commande> query, bool desc)
+        {
+            return desc ? query.OrderByDescending(c => c.DateCommande) : query.OrderBy(c => c.DateCommande);
+        }
+
+        private static async Task<IEnumerable<ApercuCommande>> ToApercus(IQueryable<Commande> query)
+        {
+            return (await query.ToListAsync()).Select(c => ApercuCommande.FromCommande(c));
         }
     }
 }
