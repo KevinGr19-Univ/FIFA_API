@@ -103,12 +103,12 @@ namespace FIFA_API.Repositories
 
             foreach (var ligne in commande.Lignes)
             {
-                var variante = await Variantes.GetByIdWithData(ligne.IdVCProduit);
-                details.Produits.Add(variante.IdProduit, variante.Produit.Titre);
-                details.Couleurs.Add(variante.IdCouleur, variante.Couleur.Nom);
+                var variante = await Variantes.GetByIdWithData(ligne.IdVCProduit, false);
+                details.Produits.TryAdd(variante.IdProduit, variante.Produit.Titre);
+                details.Couleurs.TryAdd(variante.IdCouleur, variante.Couleur.Nom);
 
-                var taille = await Tailles.GetById(ligne.IdTaille);
-                details.Tailles.Add(taille.Id, taille.Nom);
+                var taille = await Tailles.GetById(ligne.IdTaille, false);
+                details.Tailles.TryAdd(taille.Id, taille.Nom);
             }
 
             return details;

@@ -19,6 +19,11 @@ namespace FIFA_API.Repositories
             return await DbSet.SingleOrDefaultAsync(e => e.Mail == mail);
         }
 
+        public async Task<Utilisateur?> GetBy2FAToken(string token2fa)
+        {
+            return await DbSet.SingleOrDefaultAsync(e => e.Token2FA == token2fa);
+        }
+
         public async Task<bool> Exists(int key)
         {
             return await DbSet.AnyAsync(e => e.Id == key);

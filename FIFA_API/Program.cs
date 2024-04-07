@@ -130,6 +130,7 @@ builder.Services.AddScoped<IUnitOfWorkJoueur, UnitOfWorkJoueur>();
 builder.Services.AddScoped<IUnitOfWorkProduit, UnitOfWorkProduit>();
 builder.Services.AddScoped<IUnitOfWorkPublication, UnitOfWorkPublication>();
 builder.Services.AddScoped<IUnitOfWorkVote, UnitOfWorkVote>();
+builder.Services.AddScoped<IUnitOfWorkUserServices, UnitOfWorkUserServices>();
 
 builder.Services.AddScoped<IManagerAlbum, ManagerAlbum>();
 builder.Services.AddScoped<IManagerArticle, ManagerArticle>();

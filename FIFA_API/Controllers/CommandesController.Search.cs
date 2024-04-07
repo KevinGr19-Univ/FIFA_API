@@ -30,7 +30,7 @@ namespace FIFA_API.Controllers
             [FromQuery] bool? desc,
             [FromQuery] int? page)
         {
-            return Ok(_uow.Commandes.SearchCommandes(
+            return Ok(await _uow.Commandes.SearchCommandes(
                 idUser,
                 typesLivraison,
                 desc,
