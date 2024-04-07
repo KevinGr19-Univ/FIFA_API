@@ -12,15 +12,6 @@ namespace FIFA_API.Models.EntityFramework
     {
         public const int MAX_NOM_LENGTH = 60;
 
-        private readonly ILazyLoader _loader;
-
-        public Trophee() { }
-
-        public Trophee(ILazyLoader loader)
-        {
-            _loader = loader;
-        }
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("tph_id")]
         public int Id { get; set; }
@@ -29,13 +20,7 @@ namespace FIFA_API.Models.EntityFramework
         [StringLength(MAX_NOM_LENGTH, ErrorMessage = "Le nom ne doit pas dépasser 60 caractères.")]
         public string Nom { get; set; }
 
-        private ICollection<Joueur> _joueurs = new HashSet<Joueur>();
-
         [JsonIgnore]
-        public virtual ICollection<Joueur> Joueurs
-        {
-            get => _loader.Load(this, ref _joueurs);
-            set => _joueurs = value;
-        }
+        public virtual ICollection<Joueur> Joueurs { get; set; } = new HashSet<Joueur>();
     }
 }

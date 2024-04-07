@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -15,11 +16,11 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class CompetitionsController : ControllerBase
     {
-        private readonly FifaDbContext _context;
+        private readonly IManagerCompetition _manager;
 
-        public CompetitionsController(FifaDbContext context)
+        public CompetitionsController(IManagerCompetition manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Competitions
@@ -32,9 +33,8 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Competition>>> GetCompetitions()
         {
-            IQueryable<Competition> query = _context.Competitions;
-            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            bool seeAll = !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            return Ok(await _manager.GetAll(!seeAll));
         }
 
         // GET: api/Competitions/5
@@ -50,13 +50,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Competition>> GetCompetition(int id)
         {
-            var competition = await _context.Competitions.FindAsync(id);
+            bool seeAll = !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            var competition = await _manager.GetById(id, !seeAll);
 
             if (competition == null) return NotFound();
-            if (!competition.Visible
-                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
-                return NotFound();
-
             return competition;
         }
 
@@ -87,11 +84,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(competition);
+                await _manager.Update(competition);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CompetitionExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -121,8 +119,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Competition>> PostCompetition(Competition competition)
         {
-            await _context.Competitions.AddAsync(competition);
-            await _context.SaveChangesAsync();
+            await _manager.Add(competition);
+            await _manager.Save();
 
             return CreatedAtAction("GetCompetition", new { id = competition.Id }, competition);
         }
@@ -143,21 +141,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteCompetition(int id)
         {
-            var competition = await _context.Competitions.FindAsync(id);
+            var competition = await _manager.GetById(id, false);
             if (competition == null)
             {
                 return NotFound();
             }
 
-            _context.Competitions.Remove(competition);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(competition);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool CompetitionExists(int id)
-        {
-            return (_context.Competitions?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

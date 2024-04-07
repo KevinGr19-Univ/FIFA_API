@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -15,11 +16,11 @@ namespace FIFA_API.Controllers
     [ApiController]
     public class CouleursController : ControllerBase
     {
-        private readonly FifaDbContext _context;
+        private readonly IManagerCouleur _manager;
 
-        public CouleursController(FifaDbContext context)
+        public CouleursController(IManagerCouleur manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Couleurs
@@ -32,9 +33,8 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Couleur>>> GetCouleurs()
         {
-            IQueryable<Couleur> query = _context.Couleurs;
-            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            return Ok(await _manager.GetAll(!seeAll));
         }
 
         // GET: api/Couleurs/5
@@ -50,13 +50,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Couleur>> GetCouleur(int id)
         {
-            var couleur = await _context.Couleurs.FindAsync(id);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            var couleur = await _manager.GetById(id, !seeAll);
 
             if (couleur == null) return NotFound();
-            if (!couleur.Visible
-                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
-                return NotFound();
-
             return couleur;
         }
 
@@ -87,11 +84,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(couleur);
+                await _manager.Update(couleur);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CouleurExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -121,8 +119,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Couleur>> PostCouleur(Couleur couleur)
         {
-            await _context.Couleurs.AddAsync(couleur);
-            await _context.SaveChangesAsync();
+            await _manager.Add(couleur);
+            await _manager.Save();
 
             return CreatedAtAction("GetCouleur", new { id = couleur.Id }, couleur);
         }
@@ -143,21 +141,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteCouleur(int id)
         {
-            var couleur = await _context.Couleurs.FindAsync(id);
+            var couleur = await _manager.GetById(id, false);
             if (couleur == null)
             {
                 return NotFound();
             }
 
-            _context.Couleurs.Remove(couleur);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(couleur);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool CouleurExists(int id)
-        {
-            return (_context.Couleurs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

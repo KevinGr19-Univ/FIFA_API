@@ -10,6 +10,7 @@ using FIFA_API.Utils;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Models.Controllers;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -23,12 +24,12 @@ namespace FIFA_API.Controllers
         public const string MANAGER_POLICY = Policies.Admin;
 
         private readonly IConfiguration _config;
-        private readonly FifaDbContext _context;
+        private readonly IManagerCommande _manager;
 
-        public CommandesController(FifaDbContext context, IConfiguration config)
+        public CommandesController(IManagerCommande manager, IConfiguration config)
         {
             _config = config;
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Commandes
@@ -43,7 +44,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Commande>>> GetCommandes()
         {
-            return await _context.Commandes.ToListAsync();
+            return Ok(await _manager.GetAll());
         }
 
         // GET: api/Commandes/5
@@ -65,7 +66,7 @@ namespace FIFA_API.Controllers
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            var commande = await _context.Commandes.GetByIdAsync(id);
+            var commande = await _manager.GetByIdWithAll(id);
 
             if (commande is null) return NotFound();
             if (commande.IdUtilisateur != user.Id)
@@ -74,7 +75,7 @@ namespace FIFA_API.Controllers
                 if(!authRes.Succeeded) return NotFound();
             }
 
-            return await CommandeDetails.FromCommande(commande, _context);
+            return await CommandeDetails.FromCommande(commande, _manager);
         }
 
         // PUT: api/Commandes/5
@@ -103,11 +104,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(commande);
+                await _manager.Update(commande);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CommandeExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -137,8 +139,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Commande>> PostCommande(Commande commande)
         {
-            await _context.Commandes.AddAsync(commande);
-            await _context.SaveChangesAsync();
+            await _manager.Add(commande);
+            await _manager.Save();
 
             return CreatedAtAction("GetCommande", new { id = commande.Id }, commande);
         }
@@ -158,21 +160,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteCommande(int id)
         {
-            var commande = await _context.Commandes.FindAsync(id);
+            var commande = await _manager.GetById(id);
             if (commande == null)
             {
                 return NotFound();
             }
 
-            _context.Commandes.Remove(commande);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(commande);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool CommandeExists(int id)
-        {
-            return (_context.Commandes?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

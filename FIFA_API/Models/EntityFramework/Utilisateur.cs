@@ -17,14 +17,6 @@ namespace FIFA_API.Models.EntityFramework
     [Index(nameof(Token2FA), IsUnique = true)]
     public partial class Utilisateur
     {
-        private readonly ILazyLoader _loader;
-
-        public Utilisateur() { }
-        public Utilisateur(ILazyLoader loader)
-        {
-            _loader = loader;
-        }
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("utl_id")]
         public int Id { get; set; }
@@ -111,21 +103,10 @@ namespace FIFA_API.Models.EntityFramework
         [OnDelete(DeleteBehavior.SetNull)]
         public virtual Pays? PaysFavori { get; set; }
 
-        private ICollection<Commande> _commandes = new HashSet<Commande>();
-        private ICollection<VoteUtilisateur> _votes = new HashSet<VoteUtilisateur>();
-
         [InverseProperty(nameof(Commande.Utilisateur))]
-        public virtual ICollection<Commande> Commandes
-        {
-            get => _loader.Load(this, ref _commandes);
-            set => _commandes = value;
-        }
+        public virtual ICollection<Commande> Commandes { get; set; } = new HashSet<Commande>();
 
         [InverseProperty(nameof(VoteUtilisateur.Utilisateur))]
-        public virtual ICollection<VoteUtilisateur> Votes
-        {
-            get => _loader.Load(this, ref _votes);
-            set => _votes = value;
-        }
+        public virtual ICollection<VoteUtilisateur> Votes { get; set; } = new HashSet<VoteUtilisateur>();
     }
 }

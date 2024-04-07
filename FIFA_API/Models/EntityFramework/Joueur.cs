@@ -27,12 +27,6 @@ namespace FIFA_API.Models.EntityFramework
         public const int MAX_NOM_LENGTH = 100;
         public const int MAX_BIO_LENGTH = 500;
 
-        public Joueur()
-        {
-            FaqJoueurs = new HashSet<FaqJoueur>();
-            Trophees = new HashSet<Trophee>();
-        }
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("jou_id")]
         public int Id { get; set; }
@@ -94,12 +88,12 @@ namespace FIFA_API.Models.EntityFramework
         public PosteJoueur Poste { get; set; }
 
         [InverseProperty(nameof(FaqJoueur.Joueur))]
-        public ICollection<FaqJoueur> FaqJoueurs { get; set; }
+        public ICollection<FaqJoueur> FaqJoueurs { get; set; } = new HashSet<FaqJoueur>();
 
         [ManyToMany(nameof(Trophee.Joueurs))]
-        public ICollection<Trophee> Trophees { get; set; }
+        public ICollection<Trophee> Trophees { get; set; } = new HashSet<Trophee>();
 
         [ManyToMany(nameof(Publication.Joueurs)), JsonIgnore]
-        public ICollection<Publication> Publications { get; set; }
+        public ICollection<Publication> Publications { get; set; } = new HashSet<Publication>();
     }
 }

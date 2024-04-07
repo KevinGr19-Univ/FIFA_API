@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -20,11 +21,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         public const string MANAGER_POLICY = JoueursController.MANAGER_POLICY;
 
-        private readonly FifaDbContext _context;
+        private readonly IManagerClub _manager;
 
-        public ClubsController(FifaDbContext context)
+        public ClubsController(IManagerClub manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Clubs
@@ -39,7 +40,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Club>>> GetClubs()
         {
-            return await _context.Clubs.ToListAsync();
+            return Ok(await _manager.GetAll());
         }
 
         // GET: api/Clubs/5
@@ -54,7 +55,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Club>> GetClub(int id)
         {
-            var club = await _context.Clubs.FindAsync(id);
+            var club = await _manager.GetById(id);
 
             if (club == null)
             {
@@ -90,11 +91,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(club);
+                await _manager.Update(club);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ClubExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -123,8 +125,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Club>> PostClub(Club club)
         {
-            await _context.Clubs.AddAsync(club);
-            await _context.SaveChangesAsync();
+            await _manager.Add(club);
+            await _manager.Save();
 
             return CreatedAtAction("GetClub", new { id = club.Id }, club);
         }
@@ -144,21 +146,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteClub(int id)
         {
-            var club = await _context.Clubs.FindAsync(id);
+            var club = await _manager.GetById(id);
             if (club == null)
             {
                 return NotFound();
             }
 
-            _context.Clubs.Remove(club);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(club);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool ClubExists(int id)
-        {
-            return (_context.Clubs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -54,7 +54,8 @@ namespace FIFA_API.Controllers
             bool was2fa = user.Login2FA;
 
             userInfo.UpdateUser(user);
-            await _context.UpdateEntity(user);
+            await _manager.Update(user);
+            await _manager.Save();
 
             if (emailChanged)
             {
@@ -65,7 +66,7 @@ namespace FIFA_API.Controllers
             if (phoneChanged)
             {
                 user.DateVerif2FA = null;
-                await _context.SaveChangesAsync();
+                await _manager.Save();
                 await login2FAService.Remove2FACode(user);
 
                 if (user.Telephone is not null && user.DoubleAuthentification)
@@ -100,7 +101,7 @@ namespace FIFA_API.Controllers
                 return Unauthorized();
 
             user.Anonymize();
-            await _context.SaveChangesAsync();
+            await _manager.Save();
 
             return NoContent();
         }
@@ -124,8 +125,8 @@ namespace FIFA_API.Controllers
             if (!passwordHasher.Verify(user.HashMotDePasse, req.Password))
                 return Unauthorized();
 
-            _context.Utilisateurs.Remove(user);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(user);
+            await _manager.Save();
 
             return NoContent();
         }

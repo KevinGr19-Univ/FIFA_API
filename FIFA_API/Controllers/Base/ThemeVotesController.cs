@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -21,11 +22,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly FifaDbContext _context;
+        private readonly IManagerThemeVote _manager;
 
-        public ThemeVotesController(FifaDbContext context)
+        public ThemeVotesController(IManagerThemeVote manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/ThemeVotes
@@ -38,9 +39,8 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ThemeVote>>> GetThemeVotes()
         {
-            IQueryable<ThemeVote> query = _context.ThemeVotes;
-            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            return Ok(await _manager.GetAll(!seeAll));
         }
 
         // GET: api/ThemeVotes/5
@@ -56,13 +56,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ThemeVote>> GetThemeVote(int id)
         {
-            var themeVote = await _context.ThemeVotes.FindAsync(id);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            var themeVote = await _manager.GetById(id, !seeAll);
 
             if (themeVote == null) return NotFound();
-            if (!themeVote.Visible
-                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
-                return NotFound();
-
             return themeVote;
         }
 
@@ -93,11 +90,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(themeVote);
+                await _manager.Update(themeVote);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ThemeVoteExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -127,8 +125,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<ThemeVote>> PostThemeVote(ThemeVote themeVote)
         {
-            await _context.ThemeVotes.AddAsync(themeVote);
-            await _context.SaveChangesAsync();
+            await _manager.Add(themeVote);
+            await _manager.Save();
 
             return CreatedAtAction("GetThemeVote", new { id = themeVote.Id }, themeVote);
         }
@@ -149,21 +147,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteThemeVote(int id)
         {
-            var themeVote = await _context.ThemeVotes.FindAsync(id);
+            var themeVote = await _manager.GetById(id);
             if (themeVote == null)
             {
                 return NotFound();
             }
 
-            _context.ThemeVotes.Remove(themeVote);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(themeVote);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool ThemeVoteExists(int id)
-        {
-            return (_context.ThemeVotes?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

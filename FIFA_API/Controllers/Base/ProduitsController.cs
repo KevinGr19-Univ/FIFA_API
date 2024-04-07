@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -36,11 +37,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         public const string DELETE_POLICY = Policies.Admin;
 
-        private readonly FifaDbContext _context;
+        private readonly IUnitOfWorkProduit _uow;
 
-        public ProduitsController(FifaDbContext context)
+        public ProduitsController(IUnitOfWorkProduit uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Produits
@@ -55,7 +56,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = SEE_POLICY)]
         public async Task<ActionResult<IEnumerable<Produit>>> GetProduits()
         {
-            return await _context.Produits .ToListAsync();
+            return Ok(await _uow.Produits.GetAll(false));
         }
 
         // GET: api/Produits/5
@@ -71,13 +72,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Produit>> GetProduit(int id)
         {
-            var produit = await _context.Produits.GetByIdAsync(id);
+            bool seeAll = await this.MatchPolicyAsync(SEE_POLICY);
+            var produit = await _uow.Produits.GetById(id, !seeAll);
 
             if (produit is null)  return NotFound();
-            if (!produit.Visible
-                && !await this.MatchPolicyAsync(SEE_POLICY))
-                return NotFound();
-
             return produit;
         }
 
@@ -108,11 +106,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(produit);
+                await _uow.Produits.Update(produit);
+                await _uow.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProduitExists(id))
+                if (!await _uow.Produits.Exists(id))
                 {
                     return NotFound();
                 }
@@ -142,8 +141,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ADD_POLICY)]
         public async Task<ActionResult<Produit>> PostProduit(Produit produit)
         {
-            await _context.Produits.AddAsync(produit);
-            await _context.SaveChangesAsync();
+            await _uow.Produits.Add(produit);
+            await _uow.SaveChanges();
 
             return CreatedAtAction("GetProduit", new { id = produit.Id }, produit);
         }
@@ -164,21 +163,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = DELETE_POLICY)]
         public async Task<IActionResult> DeleteProduit(int id)
         {
-            var produit = await _context.Produits.FindAsync(id);
+            var produit = await _uow.Produits.GetById(id, false);
             if (produit == null)
             {
                 return NotFound();
             }
 
-            _context.Produits.Remove(produit);
-            await _context.SaveChangesAsync();
+            await _uow.Produits.Delete(produit);
+            await _uow.SaveChanges();
 
             return NoContent();
-        }
-
-        private bool ProduitExists(int id)
-        {
-            return (_context.Produits?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

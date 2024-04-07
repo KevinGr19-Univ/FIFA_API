@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -10,11 +11,11 @@ namespace FIFA_API.Controllers
     [ApiController]
     public partial class CategoriesController : ControllerBase
     {
-        private readonly FifaDbContext _context;
+        private readonly IManagerCategorieProduit _manager;
 
-        public CategoriesController(FifaDbContext context)
+        public CategoriesController(IManagerCategorieProduit manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Categories
@@ -26,9 +27,8 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<CategorieProduit>>> GetCategorieProduits()
         {
-            IQueryable<CategorieProduit> query = _context.CategorieProduits;
-            if (!await this.MatchPolicyAsync(ProduitsController.SEE_POLICY)) query = query.FilterVisibles();
-            return await query.ToListAsync();
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            return Ok(await _manager.GetAll(!seeAll));
         }
 
         // GET: api/Categories/5
@@ -43,13 +43,10 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CategorieProduit>> GetCategorieProduit(int id)
         {
-            var categorieProduit = await _context.CategorieProduits.FindAsync(id);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            var categorieProduit = await _manager.GetById(id, !seeAll);
 
             if (categorieProduit == null) return NotFound();
-            if (!categorieProduit.Visible
-                && !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY))
-                return NotFound();
-
             return categorieProduit;
         }
 
@@ -80,11 +77,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(categorieProduit);
+                await _manager.Update(categorieProduit);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CategorieProduitExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -114,8 +112,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<CategorieProduit>> PostCategorieProduit(CategorieProduit categorieProduit)
         {
-            await _context.CategorieProduits.AddAsync(categorieProduit);
-            await _context.SaveChangesAsync();
+            await _manager.Add(categorieProduit);
+            await _manager.Save();
 
             return CreatedAtAction("GetCategorieProduit", new { id = categorieProduit.Id }, categorieProduit);
         }
@@ -136,21 +134,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]
         public async Task<IActionResult> DeleteCategorieProduit(int id)
         {
-            var categorieProduit = await _context.CategorieProduits.FindAsync(id);
+            var categorieProduit = await _manager.GetById(id, false);
             if (categorieProduit == null)
             {
                 return NotFound();
             }
 
-            _context.CategorieProduits.Remove(categorieProduit);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(categorieProduit);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool CategorieProduitExists(int id)
-        {
-            return (_context.CategorieProduits?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

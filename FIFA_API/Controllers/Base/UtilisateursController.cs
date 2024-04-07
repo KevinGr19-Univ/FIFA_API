@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using FIFA_API.Utils;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -18,11 +19,11 @@ namespace FIFA_API.Controllers
     {
         public const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly FifaDbContext _context;
+        private readonly IManagerUtilisateur _manager;
 
-        public UtilisateursController(FifaDbContext context)
+        public UtilisateursController(IManagerUtilisateur manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/Utilisateurs
@@ -37,7 +38,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
         {
-            return await _context.Utilisateurs.ToListAsync();
+            return Ok(await _manager.GetAll());
         }
 
         // GET: api/Utilisateurs/5
@@ -55,7 +56,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateur(int id)
         {
-            var utilisateur = await _context.Utilisateurs.GetByIdAsync(id);
+            var utilisateur = await _manager.GetById(id);
 
             if (utilisateur is null)
             {
@@ -92,11 +93,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(utilisateur);
+                await _manager.Update(utilisateur);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UtilisateurExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -126,8 +128,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Utilisateur>> PostUtilisateur(Utilisateur utilisateur)
         {
-            await _context.Utilisateurs.AddAsync(utilisateur);
-            await _context.SaveChangesAsync();
+            await _manager.Add(utilisateur);
+            await _manager.Save();
 
             return CreatedAtAction("GetUtilisateur", new { id = utilisateur.Id }, utilisateur);
         }
@@ -148,21 +150,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {
-            var utilisateur = await _context.Utilisateurs.FindAsync(id);
+            var utilisateur = await _manager.GetById(id);
             if (utilisateur is null)
             {
                 return NotFound();
             }
 
-            _context.Utilisateurs.Remove(utilisateur);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(utilisateur);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool UtilisateurExists(int id)
-        {
-            return (_context.Utilisateurs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

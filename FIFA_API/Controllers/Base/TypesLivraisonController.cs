@@ -9,6 +9,7 @@ using FIFA_API.Models.EntityFramework;
 using FIFA_API.Utils;
 using FIFA_API.Models;
 using Microsoft.AspNetCore.Authorization;
+using FIFA_API.Repositories.Contracts;
 
 namespace FIFA_API.Controllers
 {
@@ -21,11 +22,11 @@ namespace FIFA_API.Controllers
         /// </summary>
         public const string MANAGER_POLICY = Policies.Admin;
 
-        private readonly FifaDbContext _context;
+        private readonly IManagerTypeLivraison _manager;
 
-        public TypesLivraisonController(FifaDbContext context)
+        public TypesLivraisonController(IManagerTypeLivraison manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         // GET: api/TypesLivraison
@@ -37,7 +38,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TypeLivraison>>> GetTypeLivraisons()
         {
-            return await _context.TypeLivraisons.ToListAsync();
+            return Ok(await _manager.GetAll());
         }
 
         // GET: api/TypesLivraison/5
@@ -52,7 +53,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<TypeLivraison>> GetTypeLivraison(int id)
         {
-            var typeLivraison = await _context.TypeLivraisons.FindAsync(id);
+            var typeLivraison = await _manager.GetById(id);
 
             if (typeLivraison is null)
             {
@@ -88,11 +89,12 @@ namespace FIFA_API.Controllers
 
             try
             {
-                await _context.UpdateEntity(typeLivraison);
+                await _manager.Update(typeLivraison);
+                await _manager.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TypeLivraisonExists(id))
+                if (!await _manager.Exists(id))
                 {
                     return NotFound();
                 }
@@ -121,8 +123,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<TypeLivraison>> PostTypeLivraison(TypeLivraison typeLivraison)
         {
-            await _context.TypeLivraisons.AddAsync(typeLivraison);
-            await _context.SaveChangesAsync();
+            await _manager.Add(typeLivraison);
+            await _manager.Save();
 
             return CreatedAtAction("GetTypeLivraison", new { id = typeLivraison.Id }, typeLivraison);
         }
@@ -142,21 +144,16 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeleteTypeLivraison(int id)
         {
-            var typeLivraison = await _context.TypeLivraisons.FindAsync(id);
+            var typeLivraison = await _manager.GetById(id);
             if (typeLivraison == null)
             {
                 return NotFound();
             }
 
-            _context.TypeLivraisons.Remove(typeLivraison);
-            await _context.SaveChangesAsync();
+            await _manager.Delete(typeLivraison);
+            await _manager.Save();
 
             return NoContent();
-        }
-
-        private bool TypeLivraisonExists(int id)
-        {
-            return (_context.TypeLivraisons?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -39,7 +39,7 @@ namespace FIFA_API.Controllers
             [FromQuery] bool? desc,
             [FromQuery] int? page)
         {
-            var query = _context.Produits
+            var query = _uow.Produits
                 .Where(p => p.Visible)
                 .Include(p => p.Variantes)
                 .ThenInclude(v => v.Couleur)
@@ -52,12 +52,12 @@ namespace FIFA_API.Controllers
                 })
                 .Where(p => p.Variantes.Count() > 0 && p.Tailles.Count() > 0);
 
-            categories = await FilterVisibles(categories, _context.CategorieProduits);
-            competitions = await FilterVisibles(competitions, _context.Competitions);
-            genres = await FilterVisibles(genres, _context.Genres);
-            nations = await FilterVisibles(nations, _context.Nations);
-            couleurs = await FilterVisibles(couleurs, _context.Couleurs);
-            tailles = await FilterVisibles(tailles, _context.TailleProduits);
+            categories = await FilterVisibles(categories, _uow.CategorieProduits);
+            competitions = await FilterVisibles(competitions, _uow.Competitions);
+            genres = await FilterVisibles(genres, _uow.Genres);
+            nations = await FilterVisibles(nations, _uow.Nations);
+            couleurs = await FilterVisibles(couleurs, _uow.Couleurs);
+            tailles = await FilterVisibles(tailles, _uow.TailleProduits);
 
             if (categories.Length > 0)
                 query = query.Where(p => categories.Contains(p.Produit.IdCategorieProduit));

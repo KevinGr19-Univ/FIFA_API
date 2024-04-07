@@ -26,14 +26,14 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> PostProduitTaille(int id, int idtaille)
         {
-            var produit = await _context.Produits.GetByIdAsync(id);
+            var produit = await _uow.Produits.GetByIdAsync(id);
             if (produit is null) return NotFound();
 
-            var taille = await _context.TailleProduits.FindAsync(idtaille);
+            var taille = await _uow.TailleProduits.FindAsync(idtaille);
             if (taille is null) return NotFound();
 
             produit.Tailles.Add(taille);
-            await _context.SaveChangesAsync();
+            await _uow.SaveChangesAsync();
 
             return NoContent();
         }
@@ -55,19 +55,19 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> DeleteProduitTaille(int id, int idtaille)
         {
-            var produit = await _context.Produits.GetByIdAsync(id);
+            var produit = await _uow.Produits.GetByIdAsync(id);
             if (produit is null) return NotFound();
 
             var taille = produit.Tailles.FirstOrDefault(t => t.Id == idtaille);
             if (taille is null) return NotFound();
 
-            bool stocksExists = await _context.StockProduits.Include(s => s.VCProduit)
+            bool stocksExists = await _uow.StockProduits.Include(s => s.VCProduit)
                 .AnyAsync(s => s.IdTaille == idtaille && s.VCProduit.IdProduit == id);
 
             if (stocksExists) return Forbid();
 
             produit.Tailles.Remove(taille);
-            await _context.SaveChangesAsync();
+            await _uow.SaveChangesAsync();
 
             return NoContent();
         }
