@@ -62,7 +62,7 @@ namespace FIFA_API.Controllers
                 return NotFound();
             }
 
-            return club;
+            return Ok(club);
         }
 
         // PUT: api/Clubs/5
@@ -89,22 +89,13 @@ namespace FIFA_API.Controllers
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(club);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(club);
+            await _manager.Save();
 
             return NoContent();
         }
