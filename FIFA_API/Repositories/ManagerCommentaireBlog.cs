@@ -8,10 +8,16 @@ namespace FIFA_API.Repositories
     {
         public ManagerCommentaireBlog(FifaDbContext context) : base(context) { }
 
+        public override async Task<IEnumerable<CommentaireBlog>> GetAll()
+        {
+            return await DbSet.Include(c => c.Utilisateur)
+                .ToListAsync();
+        }
 
         public async Task<CommentaireBlog?> GetById(int key)
         {
-            return await DbSet.SingleOrDefaultAsync(e => e.Id == key);
+            return await DbSet.Include(c => c.Utilisateur)
+                .SingleOrDefaultAsync(e => e.Id == key);
         }
 
         public async Task<bool> Exists(int key)

@@ -12,7 +12,7 @@ namespace FIFA_API.Repositories
         {
             return await Visibility(DbSet, onlyVisible).Include(p => p.Photo)
                 .Include(p => p.Photos)
-                .Include(p => p.Commentaires)
+                .Include(p => p.Commentaires).ThenInclude(c => c.Utilisateur)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
