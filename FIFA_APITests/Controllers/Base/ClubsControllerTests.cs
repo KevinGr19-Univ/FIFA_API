@@ -19,6 +19,26 @@ namespace FIFA_API.Controllers.Tests
     [TestClass()]
     public class ClubsControllerTests
     {
+        private IActionResult PutTest(Club? club, Club newClub)
+        {
+            var mockRepo = new Mock<IManagerClub>();
+            if (club is not null)
+            {
+                mockRepo.Setup(m => m.Exists(club.Id)).ReturnsAsync(true);
+                mockRepo.Setup(m => m.GetById(club.Id)).ReturnsAsync(club);
+                mockRepo.Setup(m => m.Update(newClub)).Returns(() =>
+                    Task.Run(() =>
+                    {
+                        club.Id = newClub.Id;
+                        club.Nom = newClub.Nom;
+                    })
+                );
+            }
+
+            var controller = new ClubsController(mockRepo.Object);
+            return controller.PutClub(club?.Id ?? 0, newClub).Result;
+        }
+
         [TestMethod()]
         public void ClubsControllerTest_Moq_NoException()
         {
@@ -80,72 +100,66 @@ namespace FIFA_API.Controllers.Tests
             Club club = new() { Id = 1, Nom = "Club1" };
             Club newClub = new() { Id = 1, Nom = "Club2" };
 
-            var mockRepo = new Mock<IManagerClub>();
-            mockRepo.Setup(m => m.Exists(1)).ReturnsAsync(true);
-            mockRepo.Setup(m => m.GetById(1)).ReturnsAsync(club);
-            mockRepo.Setup(m => m.Update(newClub)).Returns(() =>
-                Task.Run(() =>
-                {
-                    club.Id = newClub.Id;
-                    club.Nom = newClub.Nom;
-                })
-            );
-            var controller = new ClubsController(mockRepo.Object);
-
-            var result = controller.PutClub(1, newClub).Result;
+            var result = PutTest(club, newClub);
 
             result.Should().BeOfType<NoContentResult>();
             club.Should().Be(newClub);
         }
 
         [TestMethod()]
-        public void PutClubTest_Moq_BadRequest()
+        public void PutClubTest_Moq_InvalidModelState_BadRequest()
         {
-            Club club = new() { Id = 1, Nom = "Club1" };
-            Club newClub = new() { Id = 1 };
-
-            var mockRepo = new Mock<IManagerClub>();
-            mockRepo.Setup(m => m.Exists(1)).ReturnsAsync(true);
-            mockRepo.Setup(m => m.GetById(1)).ReturnsAsync(club);
-            mockRepo.Setup(m => m.Update(newClub)).Returns(() =>
-                Task.Run(() =>
-                {
-                    club.Id = newClub.Id;
-                    club.Nom = newClub.Nom;
-                })
-            );
-            var controller = new ClubsController(mockRepo.Object);
-
-            var result = controller.PutClub(1, newClub).Result;
+            var result = PutTest(
+                new() { Id = 1, Nom = "Club1" },
+                new() { Id = 1 });
 
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [TestMethod()]
-        public void PutClubTest_Moq_NotFound()
+        public void PutClubTest_Moq_InvalidId_BadRequest()
         {
-            Club newClub = new() { Id = 1, Nom = "Club2" };
+            var result = PutTest(
+                new() { Id = 1, Nom = "Club1" },
+                new() { Id = 2, Nom = "Club1" });
 
-            var mockRepo = new Mock<IManagerClub>();
-            var controller = new ClubsController(mockRepo.Object);
+            result.Should().BeOfType<BadRequestResult>();
+        }
 
-            var result = controller.PutClub(1, newClub).Result;
+        [TestMethod()]
+        public void PutClubTest_Moq_UnknownId_NotFound()
+        {
+            var result = PutTest(
+                null,
+                new() { Id = 1, Nom = "Club2" });
 
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [TestMethod()]
-        public void PostClubTest_Moq_BadRequest()
+        public void PostClubTest_Moq_InvalidModelState_BadRequest()
         {
             Club club = new() { Id = 1, Nom = new string('a', Club.MAX_NOM_LENGTH + 2) };
 
             var mockRepo = new Mock<IManagerClub>();
             var controller = new ClubsController(mockRepo.Object);
 
-            controller.TryValidateModel(club);
             var result = controller.PostClub(club).Result;
 
             result.Result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod()]
+        public void PostClubTest_Moq_NoContent()
+        {
+            Club club = new() { Id = 1, Nom = "Club1" };
+
+            var mockRepo = new Mock<IManagerClub>();
+            var controller = new ClubsController(mockRepo.Object);
+
+            var result = controller.PostClub(club).Result;
+
+            result.Result.Should().BeOfType<NoContentResult>();
         }
 
         [TestMethod()]
@@ -163,7 +177,7 @@ namespace FIFA_API.Controllers.Tests
         }
 
         [TestMethod()]
-        public void DeleteClubTest_Moq_NotFound()
+        public void DeleteClubTest_Moq_UnknownId_NotFound()
         {
             var mockRepo = new Mock<IManagerClub>();
             var controller = new ClubsController(mockRepo.Object);

@@ -67,7 +67,7 @@ namespace FIFA_API.Controllers.Tests
             result.Value.Should().BeOfType<CommandeDetails>().And.Be(commandeDetails);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetCommandeTest()
         {
             Assert.Fail();
