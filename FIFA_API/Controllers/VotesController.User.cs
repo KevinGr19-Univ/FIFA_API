@@ -24,7 +24,7 @@ namespace FIFA_API.Controllers
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            return Ok(_uow.Votes.GetUserVotes(user.Id));
+            return Ok(await _uow.Votes.GetUserVotes(user.Id));
         }
 
         /// <summary>
