@@ -32,7 +32,8 @@ namespace FIFA_API.Controllers.Tests
             mockUoW.Setup(m => m.Commandes.GetByIdWithAll(1)).ReturnsAsync(commande);
             mockUoW.Setup(m => m.GetDetails(commande)).ReturnsAsync(commandeDetails);
 
-            var controller = new CommandesController(mockUoW.Object, null) { ControllerContext = TestUtils.MockAuthenticationCTX(user) };
+            var mockHttpCtx = new MockHttpContext().MockAuthentication(user);
+            var controller = new CommandesController(mockUoW.Object, null) { ControllerContext = mockHttpCtx.ToControllerContext() };
 
             var result = controller.GetCommande(1).Result;
 

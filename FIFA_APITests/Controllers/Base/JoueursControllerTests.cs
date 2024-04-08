@@ -11,6 +11,27 @@ namespace FIFA_API.Controllers.Tests
     [TestClass]
     public class JoueursControllerTests
     {
+        private Joueur Generate(int id)
+        {
+            Random r = new();
+            return new()
+            {
+                Id = id,
+                Prenom = $"Prenom{id}",
+                Nom = $"Joueur{id}",
+                Biographie = $"Biographie{id}\nLigne1\nLigne2",
+                DateNaissance = new DateTime(1982, 07, 13),
+                LieuNaissance = $"Lieu{id}",
+                Poids = r.Next(20) + 65,
+                Taille = r.Next(30) + 160,
+                ImageUrl = $"URL{id}",
+                Pied = (PiedJoueur)r.Next(3),
+                Poste = (PosteJoueur)r.Next(4),
+                IdClub = id,
+                IdPays = id
+            };
+        }
+
         private IActionResult PutTest(int id, Joueur? joueur, Joueur newJoueur)
         {
             var mockUoW = new Mock<IUnitOfWorkJoueur>();
@@ -22,7 +43,24 @@ namespace FIFA_API.Controllers.Tests
                     Task.Run(() =>
                     {
                         joueur.Id = newJoueur.Id;
+                        joueur.Prenom = newJoueur.Prenom;
                         joueur.Nom = newJoueur.Nom;
+                        joueur.Biographie = newJoueur.Biographie;
+                        joueur.DateNaissance = newJoueur.DateNaissance;
+                        joueur.LieuNaissance = newJoueur.LieuNaissance;
+                        joueur.Poids = newJoueur.Poids;
+                        joueur.Taille = newJoueur.Taille;
+                        joueur.ImageUrl = newJoueur.ImageUrl;
+                        joueur.Pied = newJoueur.Pied;
+                        joueur.Poste = newJoueur.Poste;
+                        joueur.IdClub = newJoueur.IdClub;
+                        joueur.IdPays = newJoueur.IdPays;
+
+                        joueur.Pays = newJoueur.Pays;
+                        joueur.Club = newJoueur.Club;
+                        joueur.Stats = newJoueur.Stats;
+                        joueur.FaqJoueurs = newJoueur.FaqJoueurs;
+                        joueur.Trophees = newJoueur.Trophees;
                     })
                 );
             }
@@ -49,9 +87,9 @@ namespace FIFA_API.Controllers.Tests
         {
             List<Joueur> joueurs = new()
             {
-                new() { Id = 1, Nom = "Joueur1" },
-                new() { Id = 2, Nom = "Joueur2" },
-                new() { Id = 3, Nom = "Joueur3" },
+                Generate(1),
+                Generate(2),
+                Generate(3),
             };
 
             var mockUoW = new Mock<IUnitOfWorkJoueur>();
@@ -66,7 +104,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void GetJoueurTest_Moq_RightItem()
         {
-            Joueur joueur = new() { Id = 1, Nom = "Joueur1" };
+            Joueur joueur = Generate(1);
 
             var mockUoW = new Mock<IUnitOfWorkJoueur>();
             mockUoW.Setup(m => m.Joueurs.GetByIdWithData(joueur.Id)).ReturnsAsync(() => joueur);
@@ -92,8 +130,8 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutJoueurTest_Moq_NoContent()
         {
-            Joueur joueur = new() { Id = 1, Nom = "Joueur1" };
-            Joueur newJoueur = new() { Id = 1, Nom = "Joueur2" };
+            Joueur joueur = Generate(1);
+            Joueur newJoueur = Generate(1);
 
             var result = PutTest(joueur.Id, joueur, newJoueur);
 
@@ -104,7 +142,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutJoueurTest_Moq_InvalidModelState_BadRequest()
         {
-            Joueur joueur = new() { Id = 1, Nom = "Joueur1" };
+            Joueur joueur = Generate(1);
             Joueur newJoueur = new() { Id = 1 };
 
             var result = PutTest(joueur.Id, joueur, newJoueur);
@@ -115,8 +153,8 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutJoueurTest_Moq_InvalidId_BadRequest()
         {
-            Joueur joueur = new() { Id = 1, Nom = "Joueur1" };
-            Joueur newJoueur = new() { Id = 2, Nom = "Joueur2" };
+            Joueur joueur = Generate(1);
+            Joueur newJoueur = Generate(2);
 
             var result = PutTest(joueur.Id, joueur, newJoueur);
 
@@ -126,7 +164,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutJoueurTest_Moq_UnknownId_NotFound()
         {
-            Joueur newJoueur = new() { Id = 1, Nom = "Joueur2" };
+            Joueur newJoueur = Generate(1);
 
             var result = PutTest(newJoueur.Id, null, newJoueur);
 
@@ -150,7 +188,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PostJoueurTest_Moq_CreatedAt()
         {
-            Joueur joueur = new() { Id = 1, Nom = "Joueur1" };
+            Joueur joueur = Generate(1);
 
             var mockUoW = new Mock<IUnitOfWorkJoueur>();
             mockUoW.Setup(m => m.Joueurs.Add(joueur));
@@ -164,7 +202,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void DeleteJoueurTest_Moq_NoContent()
         {
-            Joueur joueur = new() { Id = 1, Nom = "Joueur1" };
+            Joueur joueur = Generate(1);
 
             var mockUoW = new Mock<IUnitOfWorkJoueur>();
             mockUoW.Setup(m => m.Joueurs.GetById(joueur.Id)).ReturnsAsync(() => joueur);

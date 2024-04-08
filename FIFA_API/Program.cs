@@ -81,6 +81,8 @@ builder.Services.AddAuthorization(config =>
     config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
 });
 
+builder.Services.AddScoped<ICustomAuthorizationService, CustomAuthorizationService>();
+
 // Services
 Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 

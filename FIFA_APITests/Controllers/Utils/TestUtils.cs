@@ -1,6 +1,7 @@
 ﻿using FIFA_API.Contracts;
 using FIFA_API.Models.EntityFramework;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,24 +21,6 @@ namespace FIFA_APITests.Controllers.Utils
                 .ReplaceService<IModelCustomizer, InMemoryModelCustomizer>();
 
             return new FifaDbContext(options.Options, config);
-        }
-
-        public static ControllerContext MockAuthenticationCTX(Utilisateur? userToReturn)
-        {
-            ClaimsPrincipal claims = new();
-
-            var mockTokenService = new Mock<ITokenService>();
-
-            var mockContext = new Mock<HttpContext>();
-            mockContext.Setup(c => c.User).Returns(claims);
-
-            mockTokenService.Setup(t => t.GetUserFromPrincipalAsync(claims)).ReturnsAsync(userToReturn);
-            mockContext.Setup(c => c.RequestServices.GetService(typeof(ITokenService))).Returns(mockTokenService.Object);
-
-            return new ControllerContext()
-            {
-                HttpContext = mockContext.Object,
-            };
         }
 
         public static void ActionResultShouldGive<T>(ActionResult<T> result, T target)

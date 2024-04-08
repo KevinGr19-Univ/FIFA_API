@@ -17,7 +17,19 @@
 
     public partial class CategorieProduit
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is CategorieProduit produit &&
+                   Id == produit.Id &&
+                   Nom == produit.Nom &&
+                   IdCategorieProduitParent == produit.IdCategorieProduitParent &&
+                   Visible == produit.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom, IdCategorieProduitParent, Visible);
+        }
     }
 
     public partial class Club

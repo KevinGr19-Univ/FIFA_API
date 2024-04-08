@@ -28,8 +28,8 @@ namespace FIFA_API.Utils
 
         public static async Task<bool> MatchPolicyAsync(this ControllerBase controller, string policy)
         {
-            IAuthorizationService authService = controller.HttpContext.RequestServices.GetService<IAuthorizationService>()!;
-            return (await authService.AuthorizeAsync(controller.User, policy)).Succeeded;
+            ICustomAuthorizationService authService = controller.HttpContext.RequestServices.GetService<ICustomAuthorizationService>()!;
+            return await authService.MatchPolicyAsync(controller.User, policy);
         }
     }
 }
