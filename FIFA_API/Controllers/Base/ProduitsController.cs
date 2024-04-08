@@ -73,7 +73,7 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<Produit>> GetProduit(int id)
         {
             bool seeAll = await this.MatchPolicyAsync(SEE_POLICY);
-            var produit = await _uow.Produits.GetById(id, !seeAll);
+            var produit = await _uow.Produits.GetByIdWithAll(id, !seeAll);
 
             if (produit is null)  return NotFound();
             return produit;

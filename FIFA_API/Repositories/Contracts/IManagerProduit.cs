@@ -5,10 +5,10 @@ namespace FIFA_API.Repositories.Contracts
 {
     public interface IManagerProduit : IVisibleRepository<Produit>
     {
-        Task<Produit?> GetByIdWithTailles(int id);
-        Task<Produit?> GetByIdWithVariantes(int id);
-        Task<Produit?> GetByIdWithVariantesAndTailles(int id);
-        Task<Produit?> GetByIdWithAll(int id);
+        Task<Produit?> GetByIdWithTailles(int id, bool onlyVisible = true);
+        Task<Produit?> GetByIdWithVariantes(int id, bool onlyVisible = true);
+        Task<Produit?> GetByIdWithVariantesAndTailles(int id, bool onlyVisible = true);
+        Task<Produit?> GetByIdWithAll(int id, bool onlyVisible = true);
         Task<IEnumerable<SearchProductItem>> SearchProduits(Func<IQueryable<Produit>, Task<IQueryable<SearchProductItem>>> query);
     }
 }

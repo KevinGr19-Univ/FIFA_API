@@ -9,28 +9,28 @@ namespace FIFA_API.Repositories
     {
         public ManagerProduit(FifaDbContext context) : base(context) { }
 
-        public async Task<Produit?> GetByIdWithTailles(int id)
+        public async Task<Produit?> GetByIdWithTailles(int id, bool onlyVisible = true)
         {
-            return await DbSet.Include(p => p.Variantes)
+            return await Visibility(DbSet, onlyVisible).Include(p => p.Variantes)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<Produit?> GetByIdWithVariantes(int id)
+        public async Task<Produit?> GetByIdWithVariantes(int id, bool onlyVisible = true)
         {
-            return await DbSet.Include(p => p.Tailles)
+            return await Visibility(DbSet, onlyVisible).Include(p => p.Tailles)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<Produit?> GetByIdWithVariantesAndTailles(int id)
+        public async Task<Produit?> GetByIdWithVariantesAndTailles(int id, bool onlyVisible = true)
         {
-            return await DbSet.Include(p => p.Variantes)
+            return await Visibility(DbSet, onlyVisible).Include(p => p.Variantes)
                 .Include(p => p.Tailles)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<Produit?> GetByIdWithAll(int id)
+        public async Task<Produit?> GetByIdWithAll(int id, bool onlyVisible = true)
         {
-            return await DbSet.Include(p => p.Variantes).ThenInclude(v => v.Stocks)
+            return await Visibility(DbSet, onlyVisible).Include(p => p.Variantes).ThenInclude(v => v.Stocks)
                 .Include(p => p.Variantes).ThenInclude(v => v.Couleur)
                 .Include(p => p.Tailles)
                 .SingleOrDefaultAsync(p => p.Id == id);
@@ -38,7 +38,7 @@ namespace FIFA_API.Repositories
 
         public async Task<IEnumerable<SearchProductItem>> SearchProduits(Func<IQueryable<Produit>, Task<IQueryable<SearchProductItem>>> query)
         {
-            var finalQuery = await query(DbSet);
+            var finalQuery = await query(Visibility(DbSet, true));
             return await finalQuery.ToListAsync();
         }
        
