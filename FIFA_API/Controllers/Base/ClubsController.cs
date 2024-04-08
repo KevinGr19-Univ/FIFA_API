@@ -84,6 +84,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutClub(int id, Club club)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != club.Id)
             {
                 return BadRequest();
@@ -116,6 +118,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Club>> PostClub(Club club)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(club);
             await _manager.Save();
 
