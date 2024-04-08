@@ -173,7 +173,6 @@ namespace FIFA_API.Controllers
 				var webhookEndpointSecret = _config["Stripe:WebhookSecret"];
 
 				var stripeEvent = EventUtility.ConstructEvent(json, signatureHeader, webhookEndpointSecret);
-				Console.WriteLine(stripeEvent.Data.Object);
 
 				switch (stripeEvent.Type)
 				{
@@ -191,7 +190,7 @@ namespace FIFA_API.Controllers
 			}
 			catch (Exception e)
 			{
-				return BadRequest();
+				return BadRequest(new { e.Message });
 			}
 
 			return Ok();
