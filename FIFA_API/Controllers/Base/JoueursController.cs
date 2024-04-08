@@ -54,13 +54,7 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<Joueur>> GetJoueur(int id)
         {
             var joueur = await _uow.Joueurs.GetByIdWithData(id);
-
-            if (joueur == null)
-            {
-                return NotFound();
-            }
-
-            return joueur;
+            return joueur == null ? NotFound() : Ok(joueur);
         }
 
         // PUT: api/Joueurs/5
@@ -82,27 +76,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutJoueur(int id, Joueur joueur)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != joueur.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _uow.Joueurs.Exists(id))
             {
-                await _uow.Joueurs.Update(joueur);
-                await _uow.SaveChanges();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _uow.Joueurs.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _uow.Joueurs.Update(joueur);
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -123,6 +110,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Joueur>> PostJoueur(Joueur joueur)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _uow.Joueurs.Add(joueur);
             await _uow.SaveChanges();
 

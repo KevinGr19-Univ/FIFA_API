@@ -1,43 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FIFA_API.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
-using Moq;
 using FIFA_API.Repositories.Contracts;
+using FIFA_APITests.Controllers.Utils;
 using FluentAssertions;
-using FIFA_API.Models.Controllers;
-using Microsoft.AspNetCore.Http;
-using FIFA_API.Contracts;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace FIFA_API.Controllers.Tests
 {
     [TestClass()]
     public class CommandesControllerTests
     {
-        private ControllerContext MockAuthenticationCTX(Utilisateur? userToReturn)
-        {
-            ClaimsPrincipal claims = new();
-
-            var mockTokenService = new Mock<ITokenService>();
-
-            var mockContext = new Mock<HttpContext>();
-            mockContext.Setup(c => c.User).Returns(claims);
-
-            mockTokenService.Setup(t => t.GetUserFromPrincipalAsync(claims)).ReturnsAsync(userToReturn);
-            mockContext.Setup(c => c.RequestServices.GetService(typeof(ITokenService))).Returns(mockTokenService.Object);
-
-            return new ControllerContext()
-            {
-                HttpContext = mockContext.Object,
-            };
-        }
-
         [TestMethod()]
         public void CommandesControllerTest()
         {
@@ -59,7 +32,7 @@ namespace FIFA_API.Controllers.Tests
             mockUoW.Setup(m => m.Commandes.GetByIdWithAll(1)).ReturnsAsync(commande);
             mockUoW.Setup(m => m.GetDetails(commande)).ReturnsAsync(commandeDetails);
 
-            var controller = new CommandesController(mockUoW.Object, null) { ControllerContext = MockAuthenticationCTX(user) };
+            var controller = new CommandesController(mockUoW.Object, null) { ControllerContext = TestUtils.MockAuthenticationCTX(user) };
 
             var result = controller.GetCommande(1).Result;
 

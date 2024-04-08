@@ -117,12 +117,63 @@
 
     public partial class Joueur
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Joueur joueur &&
+                   Id == joueur.Id &&
+                   Nom == joueur.Nom &&
+                   Prenom == joueur.Prenom &&
+                   DateNaissance == joueur.DateNaissance &&
+                   LieuNaissance == joueur.LieuNaissance &&
+                   Poids == joueur.Poids &&
+                   Taille == joueur.Taille &&
+                   Biographie == joueur.Biographie &&
+                   ImageUrl == joueur.ImageUrl &&
+                   EqualityComparer<Statistiques?>.Default.Equals(Stats, joueur.Stats) &&
+                   IdClub == joueur.IdClub &&
+                   EqualityComparer<Club>.Default.Equals(Club, joueur.Club) &&
+                   IdPays == joueur.IdPays &&
+                   EqualityComparer<Pays>.Default.Equals(Pays, joueur.Pays) &&
+                   Pied == joueur.Pied &&
+                   Poste == joueur.Poste;
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Nom);
+            hash.Add(Prenom);
+            hash.Add(DateNaissance);
+            hash.Add(LieuNaissance);
+            hash.Add(Poids);
+            hash.Add(Taille);
+            hash.Add(Biographie);
+            hash.Add(ImageUrl);
+            hash.Add(Stats);
+            hash.Add(IdClub);
+            hash.Add(Club);
+            hash.Add(IdPays);
+            hash.Add(Pays);
+            hash.Add(Pied);
+            hash.Add(Poste);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class Langue
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Langue langue &&
+                   Id == langue.Id &&
+                   Nom == langue.Nom;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom);
+        }
     }
 
     public partial class LigneCommande
@@ -137,7 +188,17 @@
 
     public partial class Pays
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Pays pays &&
+                   Id == pays.Id &&
+                   Nom == pays.Nom;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom);
+        }
     }
 
     public partial class Photo
@@ -187,12 +248,34 @@
 
     public partial class Trophee
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Trophee trophee &&
+                   Id == trophee.Id &&
+                   Nom == trophee.Nom;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom);
+        }
     }
 
     public partial class TypeLivraison
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is TypeLivraison livraison &&
+                   Id == livraison.Id &&
+                   Nom == livraison.Nom &&
+                   MaxBusinessDays == livraison.MaxBusinessDays &&
+                   Prix == livraison.Prix;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom, MaxBusinessDays, Prix);
+        }
     }
 
     public partial class Utilisateur

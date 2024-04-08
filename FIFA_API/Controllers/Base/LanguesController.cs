@@ -54,7 +54,7 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<Langue>> GetLangue(int id)
         {
             var langue = await _manager.GetById(id);
-            return langue is null ? NotFound() : langue;
+            return langue is null ? NotFound() : Ok(langue);
         }
 
         // PUT: api/Langues/5
@@ -76,27 +76,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutLangue(int id, Langue langue)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != langue.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(langue);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(langue);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -117,6 +110,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Langue>> PostLangue(Langue langue)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(langue);
             await _manager.Save();
             return CreatedAtAction("GetLangue", new { id = langue.Id }, langue);
