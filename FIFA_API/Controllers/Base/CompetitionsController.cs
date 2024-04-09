@@ -33,7 +33,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Competition>>> GetCompetitions()
         {
-            bool seeAll = !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
             return Ok(await _manager.GetAll(!seeAll));
         }
 
@@ -50,11 +50,11 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Competition>> GetCompetition(int id)
         {
-            bool seeAll = !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
             var competition = await _manager.GetById(id, !seeAll);
 
             if (competition == null) return NotFound();
-            return competition;
+            return Ok(competition);
         }
 
         // PUT: api/Competitions/5
@@ -77,27 +77,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutCompetition(int id, Competition competition)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != competition.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(competition);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(competition);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -119,6 +112,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Competition>> PostCompetition(Competition competition)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(competition);
             await _manager.Save();
 

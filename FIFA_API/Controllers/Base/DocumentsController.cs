@@ -52,6 +52,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<ActionResult<Document>> PostDocument(Document document)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _uow.Documents.Add(document);
             await _uow.SaveChanges();
             return CreatedAtAction("GetDocument", new { id = document.Id }, document);
@@ -75,18 +77,13 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<IActionResult> PutDocument(int id, Document document)
         {
-            if (id != document.Id) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            try
-            {
-                await _uow.Documents.Update(document);
-                await _uow.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (!await _uow.Documents.Exists(id)) return NotFound();
-                throw;
-            }
+            if (id != document.Id) return BadRequest();
+            if (!await _uow.Documents.Exists(id)) return NotFound();
+
+            await _uow.Documents.Update(document);
+            await _uow.SaveChanges();
 
             return NoContent();
         }

@@ -55,12 +55,7 @@ namespace FIFA_API.Controllers
         {
             var typeLivraison = await _manager.GetById(id);
 
-            if (typeLivraison is null)
-            {
-                return NotFound();
-            }
-
-            return typeLivraison;
+            return typeLivraison is null ? NotFound() : Ok(typeLivraison);
         }
 
         // PUT: api/TypesLivraison/5
@@ -82,27 +77,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutTypeLivraison(int id, TypeLivraison typeLivraison)
         {
+            if (!ModelState.IsValid) return BadRequest(typeLivraison);
+
             if (id != typeLivraison.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(typeLivraison);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(typeLivraison);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -123,6 +111,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<TypeLivraison>> PostTypeLivraison(TypeLivraison typeLivraison)
         {
+            if (!ModelState.IsValid) return BadRequest(typeLivraison);
+
             await _manager.Add(typeLivraison);
             await _manager.Save();
 

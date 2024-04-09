@@ -74,7 +74,7 @@ namespace FIFA_API.Controllers
                 if(!authRes) return NotFound();
             }
 
-            return await _uow.GetDetails(commande);
+            return Ok(await _uow.GetDetails(commande));
         }
 
         // PUT: api/Commandes/5
@@ -96,27 +96,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutCommande(int id, Commande commande)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != commande.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _uow.Commandes.Exists(id))
             {
-                await _uow.Commandes.Update(commande);
-                await _uow.SaveChanges();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _uow.Commandes.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _uow.Commandes.Update(commande);
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -138,6 +131,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Commande>> PostCommande(Commande commande)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _uow.Commandes.Add(commande);
             await _uow.SaveChanges();
 

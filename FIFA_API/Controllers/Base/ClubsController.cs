@@ -62,7 +62,7 @@ namespace FIFA_API.Controllers
                 return NotFound();
             }
 
-            return club;
+            return Ok(club);
         }
 
         // PUT: api/Clubs/5
@@ -84,27 +84,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutClub(int id, Club club)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != club.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(club);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(club);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -125,6 +118,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Club>> PostClub(Club club)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(club);
             await _manager.Save();
 

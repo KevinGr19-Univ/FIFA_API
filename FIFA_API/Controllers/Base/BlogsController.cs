@@ -52,6 +52,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<ActionResult<Blog>> PostBlog(Blog blog)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _uow.Blogs.Add(blog);
             await _uow.SaveChanges();
             return CreatedAtAction("GetBlog", new { id = blog.Id }, blog);
@@ -75,18 +77,13 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<IActionResult> PutBlog(int id, Blog blog)
         {
-            if (id != blog.Id) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            try
-            {
-                await _uow.Blogs.Update(blog);
-                await _uow.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (!await _uow.Blogs.Exists(id)) return NotFound();
-                throw;
-            }
+            if (id != blog.Id) return BadRequest();
+            if (!await _uow.Blogs.Exists(id)) return NotFound();
+
+            await _uow.Blogs.Update(blog);
+            await _uow.SaveChanges();
 
             return NoContent();
         }

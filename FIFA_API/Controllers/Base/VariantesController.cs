@@ -54,7 +54,7 @@ namespace FIFA_API.Controllers.Base
             var variante = await _manager.GetByIdWithData(id, !seeAll);
 
             if (variante is null) return NotFound();
-            return variante;
+            return Ok(variante);
         }
 
         // PUT: api/Variantes/5
@@ -77,6 +77,8 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutVariante(int id, VarianteCouleurProduit variante)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != variante.Id) return BadRequest();
 
             var oldVariante = await _manager.GetById(id, false);
@@ -109,17 +111,13 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = ProduitsController.EDIT_POLICY)] // Adding color = Editing product
         public async Task<ActionResult<VarianteCouleurProduit>> PostVariante(VarianteCouleurProduit variante)
         {
-            try
-            {
-                await _manager.Add(variante);
-                await _manager.Save();
-            }
-            catch (DbUpdateException)
-            {
-                if (await _manager.CombinationExists(variante.IdProduit, variante.IdCouleur))
-                    return Conflict();
-                throw;
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            if (await _manager.CombinationExists(variante.IdProduit, variante.IdCouleur))
+                return Conflict();
+
+            await _manager.Add(variante);
+            await _manager.Save();
 
             return CreatedAtAction("GetVariante", new { id = variante.Id }, variante);
         }
@@ -132,9 +130,11 @@ namespace FIFA_API.Controllers.Base
         /// <remarks>NOTE: Requiert les droits de suppression de produit.</remarks>
         /// <returns>Réponse HTTP</returns>
         /// <response code="401">Accès refusé</response>
+        /// <response code="403">La variante recherchée est utilisée dans des stocks.</response>
         /// <response code="404">La variante recherchée n'existe pas.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize(Policy = ProduitsController.DELETE_POLICY)]

@@ -59,7 +59,7 @@ namespace FIFA_API.Controllers
             var trophee = await _manager.GetById(id);
 
             if (trophee == null) return NotFound();
-            return trophee;
+            return Ok(trophee);
         }
 
         /// <summary>
@@ -98,27 +98,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutTrophee(int id, Trophee trophee)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != trophee.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(trophee);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(trophee);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -139,6 +132,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Trophee>> PostTrophee(Trophee trophee)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(trophee);
             await _manager.Save();
 

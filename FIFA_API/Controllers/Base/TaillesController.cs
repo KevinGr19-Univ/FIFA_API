@@ -54,7 +54,7 @@ namespace FIFA_API.Controllers
             var tailleProduit = await _manager.GetById(id, !seeAll);
 
             if (tailleProduit == null) return NotFound();
-            return tailleProduit;
+            return Ok(tailleProduit);
         }
 
         // PUT: api/TailleProduits/5
@@ -77,27 +77,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutTailleProduit(int id, TailleProduit tailleProduit)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != tailleProduit.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(tailleProduit);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(tailleProduit);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -119,6 +112,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<TailleProduit>> PostTailleProduit(TailleProduit tailleProduit)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(tailleProduit);
             await _manager.Save();
 

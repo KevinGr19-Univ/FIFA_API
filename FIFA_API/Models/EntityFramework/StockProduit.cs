@@ -22,6 +22,7 @@ namespace FIFA_API.Models.EntityFramework
         public TailleProduit Taille { get; set; }
 
 		[Column("spr_stocks")]
+        [Range(0, int.MaxValue, ErrorMessage = "Les stocks ne peuvent pas être négatifs")]
         public int Stocks { get; set; }
 
     }

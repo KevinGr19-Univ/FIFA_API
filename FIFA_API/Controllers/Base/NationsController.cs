@@ -54,7 +54,7 @@ namespace FIFA_API.Controllers
             var nation = await _manager.GetById(id, !seeAll);
 
             if (nation == null) return NotFound();
-            return nation;
+            return Ok(nation);
         }
 
         // PUT: api/Nations/5
@@ -77,27 +77,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutNation(int id, Nation nation)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != nation.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(nation);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(nation);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -119,6 +112,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Nation>> PostNation(Nation nation)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(nation);
             await _manager.Save();
 
