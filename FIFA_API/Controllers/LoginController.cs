@@ -59,7 +59,7 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<APITokenInfo>> Login2FA([FromBody] Login2FAInfo loginInfo)
         {
             var user = await _login2FAService.AuthenticateAsync(loginInfo.Token, loginInfo.Code);
-            if (user is null || !user.DoubleAuthentification) return Unauthorized();
+            if (user is null || user.Anonyme || !user.DoubleAuthentification) return Unauthorized();
 
             // Verify phone number
             if (user.DateVerif2FA is null)
@@ -123,7 +123,7 @@ namespace FIFA_API.Controllers
                 return Forbid();
             }
 
-            return await LoginUser(user);
+            return Ok(await LoginUser(user));
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace FIFA_API.Controllers
             if (user.Login2FA) return NoContent();
             if (user.Telephone is null || !user.DoubleAuthentification) return BadRequest();
 
-            return await Send2FACodeAsync(user);
+            return Ok(await Send2FACodeAsync(user));
         }
 
         private async Task<Utilisateur?> Authenticate(string email, string password)

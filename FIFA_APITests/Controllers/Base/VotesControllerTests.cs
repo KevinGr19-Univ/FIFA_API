@@ -11,7 +11,7 @@ using FluentAssertions;
 namespace FIFA_API.Controllers.Tests
 {
     [TestClass]
-    public class VotesControllerTests
+    public partial class VotesControllerTests
     {
         private VoteUtilisateur Generate(int idtheme, int iduser)
         {
@@ -119,7 +119,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void GetVoteUtilisateurTest_Moq_RightItem()
         {
-            VoteUtilisateur vote = Generate(1, 1);
+            VoteUtilisateur vote = Generate(1, 3);
 
             var mockRepo = new Mock<IUnitOfWorkVote>();
             mockRepo.Setup(m => m.Votes.GetById(vote.IdTheme, vote.IdUtilisateur)).ReturnsAsync(vote);
@@ -133,8 +133,8 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutVoteUtilisateurTest_Moq_VoteIsNotValid_BadRequest()
         {
-            VoteUtilisateur vote = Generate(1, 1);
-            VoteUtilisateur newVote = Generate(1, 1);
+            VoteUtilisateur vote = Generate(1, 3);
+            VoteUtilisateur newVote = Generate(1, 3);
 
             var result = PutTest(vote.IdTheme, vote.IdUtilisateur, vote, newVote, isValid: false);
 
@@ -144,7 +144,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutVoteUtilisateurTest_Moq_InvalidId_BadRequest()
         {
-            VoteUtilisateur vote = Generate(1, 1);
+            VoteUtilisateur vote = Generate(1, 3);
             VoteUtilisateur newVote = Generate(1, 2);
 
             var result = PutTest(vote.IdTheme, vote.IdUtilisateur, vote, newVote);
@@ -155,7 +155,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutVoteUtilisateurTest_Moq_UnknownId_NotFound()
         {
-            VoteUtilisateur newVote = Generate(1, 1);
+            VoteUtilisateur newVote = Generate(1, 3);
 
             var result = PutTest(newVote.IdTheme, newVote.IdUtilisateur, null, newVote);
 
@@ -165,8 +165,8 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutVoteUtilisateurTest_Moq_NoContent()
         {
-            VoteUtilisateur vote = Generate(1, 1);
-            VoteUtilisateur newVote = Generate(1, 1);
+            VoteUtilisateur vote = Generate(1, 3);
+            VoteUtilisateur newVote = Generate(1, 3);
 
             var result = PutTest(vote.IdTheme, vote.IdUtilisateur, vote, newVote);
 
@@ -177,7 +177,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PostVoteUtilisateurTest_Moq_VoteIsNotValid_BadRequest()
         {
-            VoteUtilisateur vote = Generate(1, 1);
+            VoteUtilisateur vote = Generate(1, 3);
 
             var result = PostTest(vote, isValid: false);
 
@@ -187,7 +187,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PostVoteUtilisateurTest_Moq_ExistingId_Conflict()
         {
-            VoteUtilisateur vote = Generate(1, 1);
+            VoteUtilisateur vote = Generate(1, 3);
 
             var result = PostTest(vote, exists: true);
 
@@ -197,7 +197,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PostVoteUtilisateurTest_Moq_CreatedAt()
         {
-            VoteUtilisateur vote = Generate(1, 1);
+            VoteUtilisateur vote = Generate(1, 3);
 
             var result = PostTest(vote);
 
@@ -208,10 +208,10 @@ namespace FIFA_API.Controllers.Tests
         public void DeleteVoteUtilisateurTest_Moq_UnknownId_NotFound()
         {
             var mockRepo = new Mock<IUnitOfWorkVote>();
-            mockRepo.Setup(m => m.Votes.GetById(1, 1));
+            mockRepo.Setup(m => m.Votes.GetById(1, 3));
             var controller = new VotesController(mockRepo.Object);
 
-            var result = controller.DeleteVoteUtilisateur(1, 1).Result;
+            var result = controller.DeleteVoteUtilisateur(1, 3).Result;
 
             result.Should().BeOfType<NotFoundResult>();
         }
@@ -219,7 +219,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void DeleteVoteUtilisateurTest_Moq_NoContent()
         {
-            VoteUtilisateur vote = Generate(1, 1);
+            VoteUtilisateur vote = Generate(1, 3);
 
             var mockRepo = new Mock<IUnitOfWorkVote>();
             mockRepo.Setup(m => m.Votes.GetById(vote.IdTheme, vote.IdUtilisateur)).ReturnsAsync(vote);

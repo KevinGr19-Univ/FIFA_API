@@ -88,7 +88,7 @@ namespace FIFA_API.Controllers.Tests
             var mockRepo = new Mock<IManagerStockProduit>();
             var controller = new StocksController(mockRepo.Object);
 
-            var result = controller.GetStockProduit(1, 1).Result;
+            var result = controller.GetStockProduit(1, 3).Result;
 
             result.Result.Should().BeOfType<NotFoundResult>();
         }
@@ -99,7 +99,7 @@ namespace FIFA_API.Controllers.Tests
             StockProduit stock = new()
             {
                 IdVCProduit = 1,
-                IdTaille = 1,
+                IdTaille = 3,
                 Stocks = 3
             };
 
@@ -115,8 +115,8 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutStockProduitTest_Moq_InvalidModelState_BadRequest()
         {
-            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = 1 };
-            StockProduit newStock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = -1 };
+            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = 1 };
+            StockProduit newStock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = -1 };
 
             var result = PutTest(stock.IdVCProduit, stock.IdTaille, stock, newStock);
 
@@ -126,7 +126,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutStockProduitTest_Moq_InvalidId_BadRequest()
         {
-            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = 1 };
+            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = 1 };
             StockProduit newStock = new() { IdVCProduit = 1, IdTaille = 2, Stocks = 2 };
 
             var result = PutTest(stock.IdVCProduit, stock.IdTaille, stock, newStock);
@@ -137,7 +137,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutStockProduitTest_Moq_UnknownId_NotFound()
         {
-            StockProduit newStock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = 2 };
+            StockProduit newStock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = 2 };
 
             var result = PutTest(newStock.IdVCProduit, newStock.IdTaille, null, newStock);
 
@@ -147,8 +147,8 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PutStockProduitTest_Moq_NoContent()
         {
-            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = 1 };
-            StockProduit newStock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = 2 };
+            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = 1 };
+            StockProduit newStock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = 2 };
 
             var result = PutTest(stock.IdVCProduit, stock.IdTaille, stock, newStock);
 
@@ -159,7 +159,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PostStockProduitTest_Moq_InvalidModelState_BadRequest()
         {
-            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = -1 };
+            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = -1 };
 
             var result = PostTest(stock);
 
@@ -169,7 +169,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PostStockProduitTest_Moq_ExistingId_Conflict()
         {
-            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = 1 };
+            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = 1 };
 
             var result = PostTest(stock, exists: true);
 
@@ -179,7 +179,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void PostStockProduitTest_Moq_CreatedAt()
         {
-            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = 1 };
+            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = 1 };
 
             var result = PostTest(stock);
 
@@ -192,7 +192,7 @@ namespace FIFA_API.Controllers.Tests
             var mockRepo = new Mock<IManagerStockProduit>();
             var controller = new StocksController(mockRepo.Object);
 
-            var result = controller.DeleteStockProduit(1, 1).Result;
+            var result = controller.DeleteStockProduit(1, 3).Result;
 
             result.Should().BeOfType<NotFoundResult>();
         }
@@ -200,7 +200,7 @@ namespace FIFA_API.Controllers.Tests
         [TestMethod]
         public void DeleteStockProduitTest_Moq_NoContent()
         {
-            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 1, Stocks = 1 };
+            StockProduit stock = new() { IdVCProduit = 1, IdTaille = 3, Stocks = 1 };
 
             var mockRepo = new Mock<IManagerStockProduit>();
             mockRepo.Setup(m => m.GetById(stock.IdVCProduit, stock.IdTaille)).ReturnsAsync(stock);
