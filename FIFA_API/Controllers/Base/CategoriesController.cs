@@ -47,7 +47,7 @@ namespace FIFA_API.Controllers
             var categorieProduit = await _manager.GetById(id, !seeAll);
 
             if (categorieProduit == null) return NotFound();
-            return categorieProduit;
+            return Ok(categorieProduit);
         }
 
         // PUT: api/Categories/5
@@ -70,27 +70,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutCategorieProduit(int id, CategorieProduit categorieProduit)
         {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != categorieProduit.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(categorieProduit);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(categorieProduit);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -112,6 +105,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<CategorieProduit>> PostCategorieProduit(CategorieProduit categorieProduit)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(categorieProduit);
             await _manager.Save();
 

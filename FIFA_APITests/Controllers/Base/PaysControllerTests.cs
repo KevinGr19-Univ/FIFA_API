@@ -1,6 +1,6 @@
 ﻿using FIFA_API.Models.EntityFramework;
 using FIFA_API.Repositories.Contracts;
-using FIFA_APITests.Controllers.Utils;
+using FIFA_APITests.Utils;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

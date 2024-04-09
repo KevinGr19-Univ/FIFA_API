@@ -52,6 +52,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<ActionResult<Album>> PostAlbum(Album album)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
             await _uow.Albums.Add(album);
             await _uow.SaveChanges();
             return CreatedAtAction("GetAlbum", new { id = album.Id }, album);
@@ -75,18 +77,13 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<IActionResult> PutAlbum(int id, Album album)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             if (id != album.Id) return BadRequest();
 
-            try
-            {
-                await _uow.Albums.Update(album);
-                await _uow.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (!await _uow.Albums.Exists(id)) return NotFound();
-                throw;
-            }
+            if (!await _uow.Albums.Exists(id)) return NotFound();
+
+            await _uow.Albums.Update(album);
+            await _uow.SaveChanges();
 
             return NoContent();
         }

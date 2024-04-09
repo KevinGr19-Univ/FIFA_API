@@ -39,7 +39,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ThemeVote>>> GetThemeVotes()
         {
-            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            bool seeAll = await this.MatchPolicyAsync(MANAGER_POLICY);
             return Ok(await _uow.Themes.GetAll(!seeAll));
         }
 
@@ -56,11 +56,11 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ThemeVote>> GetThemeVote(int id)
         {
-            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            bool seeAll = await this.MatchPolicyAsync(MANAGER_POLICY);
             var themeVote = await _uow.Themes.GetById(id, !seeAll);
 
             if (themeVote == null) return NotFound();
-            return themeVote;
+            return Ok(themeVote);
         }
 
         // PUT: api/ThemeVotes/5
@@ -83,27 +83,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutThemeVote(int id, ThemeVote themeVote)
         {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != themeVote.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _uow.Themes.Exists(id))
             {
-                await _uow.Themes.Update(themeVote);
-                await _uow.SaveChanges();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _uow.Themes.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _uow.Themes.Update(themeVote);
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -125,6 +118,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<ThemeVote>> PostThemeVote(ThemeVote themeVote)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _uow.Themes.Add(themeVote);
             await _uow.SaveChanges();
 

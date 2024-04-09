@@ -52,6 +52,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<ActionResult<Article>> PostArticle(Article article)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _uow.Articles.Add(article);
             await _uow.SaveChanges();
             return CreatedAtAction("GetArticle", new { id = article.Id }, article);
@@ -75,18 +77,13 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = PublicationsController.MANAGER_POLICY)]
         public async Task<IActionResult> PutArticle(int id, Article article)
         {
-            if (id != article.Id) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            try
-            {
-                await _uow.Articles.Update(article);
-                await _uow.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (!await _uow.Articles.Exists(id)) return NotFound();
-                throw;
-            }
+            if (id != article.Id) return BadRequest();
+            if (!await _uow.Articles.Exists(id)) return NotFound();
+
+            await _uow.Articles.Update(article);
+            await _uow.SaveChanges();
 
             return NoContent();
         }

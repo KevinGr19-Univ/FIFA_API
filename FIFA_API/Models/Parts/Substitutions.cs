@@ -12,7 +12,34 @@
 
     public partial class Blog
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Blog blog &&
+                   Type == blog.Type &&
+                   Id == blog.Id &&
+                   Titre == blog.Titre &&
+                   Resume == blog.Resume &&
+                   DatePublication == blog.DatePublication &&
+                   IdPhoto == blog.IdPhoto &&
+                   EqualityComparer<Photo?>.Default.Equals(Photo, blog.Photo) &&
+                   Visible == blog.Visible &&
+                   Texte == blog.Texte;
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Type);
+            hash.Add(Id);
+            hash.Add(Titre);
+            hash.Add(Resume);
+            hash.Add(DatePublication);
+            hash.Add(IdPhoto);
+            hash.Add(Photo);
+            hash.Add(Visible);
+            hash.Add(Texte);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class CategorieProduit
@@ -104,12 +131,35 @@
 
     public partial class Competition
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Competition competition &&
+                   Id == competition.Id &&
+                   Nom == competition.Nom &&
+                   Visible == competition.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom, Visible);
+        }
     }
 
     public partial class Couleur
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Couleur couleur &&
+                   Id == couleur.Id &&
+                   Nom == couleur.Nom &&
+                   CodeHexa == couleur.CodeHexa &&
+                   Visible == couleur.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom, CodeHexa, Visible);
+        }
     }
 
     public partial class Document
@@ -124,7 +174,18 @@
 
     public partial class Genre
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Genre genre &&
+                   Id == genre.Id &&
+                   Nom == genre.Nom &&
+                   Visible == genre.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom, Visible);
+        }
     }
 
     public partial class Joueur
@@ -195,7 +256,18 @@
 
     public partial class Nation
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Nation nation &&
+                   Id == nation.Id &&
+                   Nom == nation.Nom &&
+                   Visible == nation.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom, Visible);
+        }
     }
 
     public partial class Pays
@@ -220,7 +292,40 @@
 
     public partial class Produit
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Produit produit &&
+                   Id == produit.Id &&
+                   Titre == produit.Titre &&
+                   Description == produit.Description &&
+                   IdCompetition == produit.IdCompetition &&
+                   IdNation == produit.IdNation &&
+                   IdGenre == produit.IdGenre &&
+                   IdCategorieProduit == produit.IdCategorieProduit &&
+                   EqualityComparer<Competition?>.Default.Equals(Competition, produit.Competition) &&
+                   EqualityComparer<Nation?>.Default.Equals(Nation, produit.Nation) &&
+                   EqualityComparer<Genre?>.Default.Equals(Genre, produit.Genre) &&
+                   EqualityComparer<CategorieProduit>.Default.Equals(Categorie, produit.Categorie) &&
+                   Visible == produit.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Titre);
+            hash.Add(Description);
+            hash.Add(IdCompetition);
+            hash.Add(IdNation);
+            hash.Add(IdGenre);
+            hash.Add(IdCategorieProduit);
+            hash.Add(Competition);
+            hash.Add(Nation);
+            hash.Add(Genre);
+            hash.Add(Categorie);
+            hash.Add(Visible);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class Publication
@@ -245,12 +350,34 @@
 
     public partial class TailleProduit
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is TailleProduit produit &&
+                   Id == produit.Id &&
+                   Nom == produit.Nom &&
+                   Visible == produit.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Nom, Visible);
+        }
     }
 
     public partial class ThemeVote
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is ThemeVote vote &&
+                   Id == vote.Id &&
+                   NomTheme == vote.NomTheme &&
+                   Visible == vote.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, NomTheme, Visible);
+        }
     }
 
     public partial class ThemeVoteJoueur

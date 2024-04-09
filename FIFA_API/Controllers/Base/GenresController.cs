@@ -54,7 +54,7 @@ namespace FIFA_API.Controllers
             var genre = await _manager.GetById(id, !seeAll);
 
             if (genre == null) return NotFound();
-            return genre;
+            return Ok(genre);
         }
 
         // PUT: api/Genres/5
@@ -77,27 +77,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutGenre(int id, Genre genre)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != genre.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(genre);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(genre);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -119,6 +112,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Genre>> PostGenre(Genre genre)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(genre);
             await _manager.Save();
 

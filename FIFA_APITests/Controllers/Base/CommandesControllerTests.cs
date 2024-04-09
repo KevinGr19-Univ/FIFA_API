@@ -1,7 +1,7 @@
 ﻿using FIFA_API.Models.Controllers;
 using FIFA_API.Models.EntityFramework;
 using FIFA_API.Repositories.Contracts;
-using FIFA_APITests.Controllers.Utils;
+using FIFA_APITests.Utils;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -18,7 +18,7 @@ namespace FIFA_API.Controllers.Tests
         }
 
         [TestMethod()]
-        public void GetCommandesTest_Moq_RightItem()
+        public void GetCommandesTest_Moq_User_RightItem()
         {
             Commande commande = new()
             {

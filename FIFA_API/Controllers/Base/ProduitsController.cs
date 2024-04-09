@@ -73,10 +73,10 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<Produit>> GetProduit(int id)
         {
             bool seeAll = await this.MatchPolicyAsync(SEE_POLICY);
-            var produit = await _uow.Produits.GetById(id, !seeAll);
+            var produit = await _uow.Produits.GetByIdWithAll(id, !seeAll);
 
             if (produit is null)  return NotFound();
-            return produit;
+            return Ok(produit);
         }
 
         // PUT: api/Produits/5
@@ -99,27 +99,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> PutProduit(int id, Produit produit)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != produit.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _uow.Produits.Exists(id))
             {
-                await _uow.Produits.Update(produit);
-                await _uow.SaveChanges();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _uow.Produits.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _uow.Produits.Update(produit);
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -141,6 +134,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ADD_POLICY)]
         public async Task<ActionResult<Produit>> PostProduit(Produit produit)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _uow.Produits.Add(produit);
             await _uow.SaveChanges();
 

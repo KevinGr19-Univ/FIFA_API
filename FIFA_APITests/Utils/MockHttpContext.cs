@@ -11,7 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FIFA_APITests.Controllers.Utils
+namespace FIFA_APITests.Utils
 {
     public class MockHttpContext
     {

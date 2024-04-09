@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Security.Claims;
 
-namespace FIFA_APITests.Controllers.Utils
+namespace FIFA_APITests.Utils
 {
     public static class TestUtils
     {

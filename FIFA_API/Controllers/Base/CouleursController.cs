@@ -54,7 +54,7 @@ namespace FIFA_API.Controllers
             var couleur = await _manager.GetById(id, !seeAll);
 
             if (couleur == null) return NotFound();
-            return couleur;
+            return Ok(couleur);
         }
 
         // PUT: api/Couleurs/5
@@ -77,27 +77,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.EDIT_POLICY)]
         public async Task<IActionResult> PutCouleur(int id, Couleur couleur)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != couleur.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(couleur);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(couleur);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -119,6 +112,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = ProduitsController.ADD_POLICY)]
         public async Task<ActionResult<Couleur>> PostCouleur(Couleur couleur)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(couleur);
             await _manager.Save();
 
