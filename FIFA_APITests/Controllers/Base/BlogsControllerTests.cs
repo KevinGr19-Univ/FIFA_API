@@ -81,7 +81,8 @@ namespace FIFA_API.Controllers.Tests
                 mockUoW.Setup(m => m.Blogs.GetById(id, It.IsAny<bool>())).ReturnsAsync(() => null);
             }
 
-            var controller = new BlogsController(mockUoW.Object);
+            var controller = new BlogsController(mockUoW.Object)
+                .Validating(newBlog);
 
             return controller.PutBlog(id, newBlog).Result;
         }
@@ -124,11 +125,13 @@ namespace FIFA_API.Controllers.Tests
 
             var mockUoW = new Mock<IUnitOfWorkPublication>();
             mockUoW.Setup(m => m.Blogs.Add(blog));
-            var controller = new BlogsController(mockUoW.Object);
+
+            var controller = new BlogsController(mockUoW.Object)
+                .Validating(blog);
 
             var result = controller.PostBlog(blog).Result;
 
-            result.Should().BeOfType<BadRequestObjectResult>();
+            result.Result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [TestMethod]
@@ -138,7 +141,9 @@ namespace FIFA_API.Controllers.Tests
 
             var mockUoW = new Mock<IUnitOfWorkPublication>();
             mockUoW.Setup(m => m.Blogs.Add(blog));
-            var controller = new BlogsController(mockUoW.Object);
+
+            var controller = new BlogsController(mockUoW.Object)
+                .Validating(blog);
 
             var result = controller.PostBlog(blog).Result;
 

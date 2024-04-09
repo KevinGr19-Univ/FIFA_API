@@ -33,7 +33,7 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Competition>>> GetCompetitions()
         {
-            bool seeAll = !await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
+            bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
             return Ok(await _manager.GetAll(!seeAll));
         }
 

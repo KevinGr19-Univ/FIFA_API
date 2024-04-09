@@ -29,7 +29,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new TropheesController(mockRepo.Object);
+            var controller = new TropheesController(mockRepo.Object)
+                .Validating(newTrophee);
 
             return controller.PutTrophee(id, newTrophee).Result;
         }
@@ -135,7 +136,8 @@ namespace FIFA_API.Controllers.Tests
             Trophee trophee = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerTrophee>();
-            var controller = new TropheesController(mockRepo.Object);
+            var controller = new TropheesController(mockRepo.Object)
+                .Validating(trophee);
 
             var result = controller.PostTrophee(trophee).Result;
 
@@ -148,7 +150,8 @@ namespace FIFA_API.Controllers.Tests
             Trophee trophee = new() { Id = 1, Nom = "Trophee1" };
 
             var mockRepo = new Mock<IManagerTrophee>();
-            var controller = new TropheesController(mockRepo.Object);
+            var controller = new TropheesController(mockRepo.Object)
+                .Validating(trophee);
 
             var result = controller.PostTrophee(trophee).Result;
 

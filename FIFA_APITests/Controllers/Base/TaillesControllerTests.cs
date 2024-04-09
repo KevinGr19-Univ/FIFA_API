@@ -86,7 +86,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new TaillesController(mockRepo.Object);
+            var controller = new TaillesController(mockRepo.Object)
+                .Validating(newTailleProduit);
 
             return controller.PutTailleProduit(id, newTailleProduit).Result;
         }
@@ -186,7 +187,8 @@ namespace FIFA_API.Controllers.Tests
             TailleProduit taille = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerTailleProduit>();
-            var controller = new TaillesController(mockRepo.Object);
+            var controller = new TaillesController(mockRepo.Object)
+                .Validating(taille);
 
             var result = controller.PostTailleProduit(taille).Result;
 
@@ -199,7 +201,8 @@ namespace FIFA_API.Controllers.Tests
             TailleProduit taille = Generate(1, false);
 
             var mockRepo = new Mock<IManagerTailleProduit>();
-            var controller = new TaillesController(mockRepo.Object);
+            var controller = new TaillesController(mockRepo.Object)
+                .Validating(taille);
 
             var result = controller.PostTailleProduit(taille).Result;
 

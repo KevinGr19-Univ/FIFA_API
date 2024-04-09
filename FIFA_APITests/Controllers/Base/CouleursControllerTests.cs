@@ -89,7 +89,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new CouleursController(mockRepo.Object);
+            var controller = new CouleursController(mockRepo.Object)
+                .Validating(newCouleur);
 
             return controller.PutCouleur(id, newCouleur).Result;
         }
@@ -189,7 +190,8 @@ namespace FIFA_API.Controllers.Tests
             Couleur couleur = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerCouleur>();
-            var controller = new CouleursController(mockRepo.Object);
+            var controller = new CouleursController(mockRepo.Object)
+                .Validating(couleur);
 
             var result = controller.PostCouleur(couleur).Result;
 
@@ -202,7 +204,8 @@ namespace FIFA_API.Controllers.Tests
             Couleur couleur = Generate(1, false);
 
             var mockRepo = new Mock<IManagerCouleur>();
-            var controller = new CouleursController(mockRepo.Object);
+            var controller = new CouleursController(mockRepo.Object)
+                .Validating(couleur);
 
             var result = controller.PostCouleur(couleur).Result;
 

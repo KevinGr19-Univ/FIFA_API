@@ -28,7 +28,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new LanguesController(mockRepo.Object);
+            var controller = new LanguesController(mockRepo.Object)
+                .Validating(newLangue);
 
             return controller.PutLangue(id, newLangue).Result;
         }
@@ -134,7 +135,8 @@ namespace FIFA_API.Controllers.Tests
             Langue langue = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerLangue>();
-            var controller = new LanguesController(mockRepo.Object);
+            var controller = new LanguesController(mockRepo.Object)
+                .Validating(langue);
 
             var result = controller.PostLangue(langue).Result;
 
@@ -147,7 +149,8 @@ namespace FIFA_API.Controllers.Tests
             Langue langue = new() { Id = 1, Nom = "Langue1" };
 
             var mockRepo = new Mock<IManagerLangue>();
-            var controller = new LanguesController(mockRepo.Object);
+            var controller = new LanguesController(mockRepo.Object)
+                .Validating(langue);
 
             var result = controller.PostLangue(langue).Result;
 

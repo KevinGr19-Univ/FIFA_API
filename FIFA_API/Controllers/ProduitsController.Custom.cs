@@ -79,13 +79,13 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = Policies.User)]
-        public async Task<ActionResult<ProduitsPermissionCheck>> CheckPerms([FromServices] IAuthorizationService authService)
+        public async Task<ActionResult<ProduitsPermissionCheck>> CheckPerms()
         {
             return Ok(new ProduitsPermissionCheck()
             {
-                Add = (await authService.AuthorizeAsync(User, ADD_POLICY)).Succeeded,
-                Edit = (await authService.AuthorizeAsync(User, EDIT_POLICY)).Succeeded,
-                Delete = (await authService.AuthorizeAsync(User, DELETE_POLICY)).Succeeded,
+                Add = await this.MatchPolicyAsync(ADD_POLICY),
+                Edit = await this.MatchPolicyAsync(EDIT_POLICY),
+                Delete = await this.MatchPolicyAsync(DELETE_POLICY),
             });
         }
     }

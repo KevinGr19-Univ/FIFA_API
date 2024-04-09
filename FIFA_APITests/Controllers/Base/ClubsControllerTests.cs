@@ -5,7 +5,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace FIFA_API.Controllers.Tests
 {
@@ -28,7 +27,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new ClubsController(mockRepo.Object);
+            var controller = new ClubsController(mockRepo.Object)
+                .Validating(newClub);
 
             return controller.PutClub(id, newClub).Result;
         }
@@ -133,7 +133,8 @@ namespace FIFA_API.Controllers.Tests
             Club club = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerClub>();
-            var controller = new ClubsController(mockRepo.Object);
+            var controller = new ClubsController(mockRepo.Object)
+                .Validating(club);
 
             var result = controller.PostClub(club).Result;
 
@@ -146,7 +147,8 @@ namespace FIFA_API.Controllers.Tests
             Club club = new() { Id = 1, Nom = "Club1" };
 
             var mockRepo = new Mock<IManagerClub>();
-            var controller = new ClubsController(mockRepo.Object);
+            var controller = new ClubsController(mockRepo.Object)
+                .Validating(club);
 
             var result = controller.PostClub(club).Result;
 

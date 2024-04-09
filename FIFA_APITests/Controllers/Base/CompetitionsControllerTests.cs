@@ -86,7 +86,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new CompetitionsController(mockRepo.Object);
+            var controller = new CompetitionsController(mockRepo.Object)
+                .Validating(newCompetition);
 
             return controller.PutCompetition(id, newCompetition).Result;
         }
@@ -186,7 +187,8 @@ namespace FIFA_API.Controllers.Tests
             Competition competition = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerCompetition>();
-            var controller = new CompetitionsController(mockRepo.Object);
+            var controller = new CompetitionsController(mockRepo.Object)
+                .Validating(competition);
 
             var result = controller.PostCompetition(competition).Result;
 
@@ -199,7 +201,8 @@ namespace FIFA_API.Controllers.Tests
             Competition competition = Generate(1, false);
 
             var mockRepo = new Mock<IManagerCompetition>();
-            var controller = new CompetitionsController(mockRepo.Object);
+            var controller = new CompetitionsController(mockRepo.Object)
+                .Validating(competition);
 
             var result = controller.PostCompetition(competition).Result;
 

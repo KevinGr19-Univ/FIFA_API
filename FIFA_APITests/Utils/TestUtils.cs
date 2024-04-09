@@ -12,7 +12,7 @@ using System.Security.Claims;
 
 namespace FIFA_APITests.Utils
 {
-    public static class TestUtils
+    internal static class TestUtils
     {
         public static FifaDbContext DbContextInMemory(string dbName, IConfiguration? config = null)
         {

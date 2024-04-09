@@ -34,7 +34,7 @@ namespace FIFA_API.Controllers
         public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
         {
             bool seeAll = await this.MatchPolicyAsync(ProduitsController.SEE_POLICY);
-            return Ok(await _manager.GetAll(seeAll));
+            return Ok(await _manager.GetAll(!seeAll));
         }
 
         // GET: api/Genres/5

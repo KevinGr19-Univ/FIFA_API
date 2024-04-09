@@ -2,12 +2,54 @@
 {
     public partial class Album
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Album album &&
+                   Id == album.Id &&
+                   Titre == album.Titre &&
+                   Resume == album.Resume &&
+                   DatePublication == album.DatePublication &&
+                   IdPhoto == album.IdPhoto &&
+                   EqualityComparer<Photo?>.Default.Equals(Photo, album.Photo) &&
+                   Visible == album.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Titre, Resume, DatePublication, IdPhoto, Photo, Visible);
+        }
     }
 
     public partial class Article
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Article article &&
+                   Id == article.Id &&
+                   Titre == article.Titre &&
+                   Resume == article.Resume &&
+                   DatePublication == article.DatePublication &&
+                   IdPhoto == article.IdPhoto &&
+                   EqualityComparer<Photo?>.Default.Equals(Photo, article.Photo) &&
+                   EqualityComparer<ICollection<Joueur>>.Default.Equals(Joueurs, article.Joueurs) &&
+                   Visible == article.Visible &&
+                   Texte == article.Texte;
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Titre);
+            hash.Add(Resume);
+            hash.Add(DatePublication);
+            hash.Add(IdPhoto);
+            hash.Add(Photo);
+            hash.Add(Joueurs);
+            hash.Add(Visible);
+            hash.Add(Texte);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class Blog
@@ -15,7 +57,6 @@
         public override bool Equals(object? obj)
         {
             return obj is Blog blog &&
-                   Type == blog.Type &&
                    Id == blog.Id &&
                    Titre == blog.Titre &&
                    Resume == blog.Resume &&
@@ -29,7 +70,6 @@
         public override int GetHashCode()
         {
             HashCode hash = new HashCode();
-            hash.Add(Type);
             hash.Add(Id);
             hash.Add(Titre);
             hash.Add(Resume);
@@ -164,7 +204,32 @@
 
     public partial class Document
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Document document &&
+                   Id == document.Id &&
+                   Titre == document.Titre &&
+                   Resume == document.Resume &&
+                   DatePublication == document.DatePublication &&
+                   IdPhoto == document.IdPhoto &&
+                   EqualityComparer<Photo?>.Default.Equals(Photo, document.Photo) &&
+                   Visible == document.Visible &&
+                   UrlPdf == document.UrlPdf;
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Titre);
+            hash.Add(Resume);
+            hash.Add(DatePublication);
+            hash.Add(IdPhoto);
+            hash.Add(Photo);
+            hash.Add(Visible);
+            hash.Add(UrlPdf);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class FaqJoueur
@@ -330,12 +395,41 @@
 
     public partial class Publication
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Publication publication &&
+                   Type == publication.Type &&
+                   Id == publication.Id &&
+                   Titre == publication.Titre &&
+                   Resume == publication.Resume &&
+                   DatePublication == publication.DatePublication &&
+                   IdPhoto == publication.IdPhoto &&
+                   EqualityComparer<Photo?>.Default.Equals(Photo, publication.Photo) &&
+                   Visible == publication.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Type, Id, Titre, Resume, DatePublication, IdPhoto, Photo, Visible);
+        }
     }
 
     public partial class Statistiques
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Statistiques statistiques &&
+                   IdJoueur == statistiques.IdJoueur &&
+                   MatchsJoues == statistiques.MatchsJoues &&
+                   Titularisations == statistiques.Titularisations &&
+                   MinutesJouees == statistiques.MinutesJouees &&
+                   Buts == statistiques.Buts;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(IdJoueur, MatchsJoues, Titularisations, MinutesJouees, Buts);
+        }
     }
 
     public partial class StatusCommande

@@ -58,7 +58,7 @@ namespace FIFA_API.Controllers
             var publication = await _uow.Publications.GetByIdWithPhoto(id, !seeAll);
 
             if (publication == null) return NotFound();
-            return publication;
+            return Ok(publication);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> DeletePublication(int id)
         {
-            var publication = await _uow.Publications.GetById(id);
+            var publication = await _uow.Publications.GetById(id, false);
             if (publication == null)
             {
                 return NotFound();

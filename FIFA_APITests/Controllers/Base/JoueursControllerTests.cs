@@ -70,7 +70,8 @@ namespace FIFA_API.Controllers.Tests
                 mockUoW.Setup(m => m.Joueurs.GetById(id)).ReturnsAsync(() => null);
             }
 
-            var controller = new JoueursController(mockUoW.Object);
+            var controller = new JoueursController(mockUoW.Object)
+                .Validating(newJoueur);
 
             return controller.PutJoueur(id, newJoueur).Result;
         }
@@ -178,7 +179,9 @@ namespace FIFA_API.Controllers.Tests
 
             var mockUoW = new Mock<IUnitOfWorkJoueur>();
             mockUoW.Setup(m => m.Joueurs.Add(joueur));
-            var controller = new JoueursController(mockUoW.Object);
+
+            var controller = new JoueursController(mockUoW.Object)
+                .Validating(joueur);
 
             var result = controller.PostJoueur(joueur).Result;
 
@@ -192,7 +195,9 @@ namespace FIFA_API.Controllers.Tests
 
             var mockUoW = new Mock<IUnitOfWorkJoueur>();
             mockUoW.Setup(m => m.Joueurs.Add(joueur));
-            var controller = new JoueursController(mockUoW.Object);
+
+            var controller = new JoueursController(mockUoW.Object)
+                .Validating(joueur);
 
             var result = controller.PostJoueur(joueur).Result;
 

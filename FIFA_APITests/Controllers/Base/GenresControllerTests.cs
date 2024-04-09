@@ -86,7 +86,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new GenresController(mockRepo.Object);
+            var controller = new GenresController(mockRepo.Object)
+                .Validating(newGenre);
 
             return controller.PutGenre(id, newGenre).Result;
         }
@@ -186,7 +187,8 @@ namespace FIFA_API.Controllers.Tests
             Genre genre = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerGenre>();
-            var controller = new GenresController(mockRepo.Object);
+            var controller = new GenresController(mockRepo.Object)
+                .Validating(genre);
 
             var result = controller.PostGenre(genre).Result;
 
@@ -199,7 +201,8 @@ namespace FIFA_API.Controllers.Tests
             Genre genre = Generate(1, false);
 
             var mockRepo = new Mock<IManagerGenre>();
-            var controller = new GenresController(mockRepo.Object);
+            var controller = new GenresController(mockRepo.Object)
+                .Validating(genre);
 
             var result = controller.PostGenre(genre).Result;
 

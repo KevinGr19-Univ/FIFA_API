@@ -103,7 +103,8 @@ namespace FIFA_API.Controllers.Tests
                 mockUoW.Setup(m => m.Produits.GetById(id, It.IsAny<bool>())).ReturnsAsync(() => null);
             }
 
-            var controller = new ProduitsController(mockUoW.Object);
+            var controller = new ProduitsController(mockUoW.Object)
+                .Validating(newProduit);
 
             return controller.PutProduit(id, newProduit).Result;
         }
@@ -198,7 +199,9 @@ namespace FIFA_API.Controllers.Tests
 
             var mockUoW = new Mock<IUnitOfWorkProduit>();
             mockUoW.Setup(m => m.Produits.Add(produit));
-            var controller = new ProduitsController(mockUoW.Object);
+
+            var controller = new ProduitsController(mockUoW.Object)
+                .Validating(produit);
 
             var result = controller.PostProduit(produit).Result;
 
@@ -212,7 +215,9 @@ namespace FIFA_API.Controllers.Tests
 
             var mockUoW = new Mock<IUnitOfWorkProduit>();
             mockUoW.Setup(m => m.Produits.Add(produit));
-            var controller = new ProduitsController(mockUoW.Object);
+
+            var controller = new ProduitsController(mockUoW.Object)
+                .Validating(produit);
 
             var result = controller.PostProduit(produit).Result;
 

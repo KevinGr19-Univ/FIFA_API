@@ -8,6 +8,7 @@ using FIFA_APITests.Utils;
 using FIFA_API.Migrations;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace FIFA_API.Controllers.Tests
 {
@@ -88,7 +89,8 @@ namespace FIFA_API.Controllers.Tests
                 mockUoW.Setup(m => m.Themes.GetById(id, It.IsAny<bool>())).ReturnsAsync(() => null);
             }
 
-            var controller = new ThemeVotesController(mockUoW.Object);
+            var controller = new ThemeVotesController(mockUoW.Object)
+                .Validating(newThemeVote);
 
             return controller.PutThemeVote(id, newThemeVote).Result;
         }
@@ -189,7 +191,9 @@ namespace FIFA_API.Controllers.Tests
 
             var mockUoW = new Mock<IUnitOfWorkVote>();
             mockUoW.Setup(m => m.Themes.Add(themeVote));
-            var controller = new ThemeVotesController(mockUoW.Object);
+
+            var controller = new ThemeVotesController(mockUoW.Object)
+                .Validating(themeVote);
 
             var result = controller.PostThemeVote(themeVote).Result;
 
@@ -203,7 +207,9 @@ namespace FIFA_API.Controllers.Tests
 
             var mockUoW = new Mock<IUnitOfWorkVote>();
             mockUoW.Setup(m => m.Themes.Add(themeVote));
-            var controller = new ThemeVotesController(mockUoW.Object);
+
+            var controller = new ThemeVotesController(mockUoW.Object)
+                .Validating(themeVote);
 
             var result = controller.PostThemeVote(themeVote).Result;
 

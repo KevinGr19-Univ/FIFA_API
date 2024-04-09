@@ -30,7 +30,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new TypesLivraisonController(mockRepo.Object);
+            var controller = new TypesLivraisonController(mockRepo.Object)
+                .Validating(newTypeLivraison);
 
             return controller.PutTypeLivraison(id, newTypeLivraison).Result;
         }
@@ -136,7 +137,8 @@ namespace FIFA_API.Controllers.Tests
             TypeLivraison typeLivraison = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerTypeLivraison>();
-            var controller = new TypesLivraisonController(mockRepo.Object);
+            var controller = new TypesLivraisonController(mockRepo.Object)
+                .Validating(typeLivraison);
 
             var result = controller.PostTypeLivraison(typeLivraison).Result;
 
@@ -149,7 +151,8 @@ namespace FIFA_API.Controllers.Tests
             TypeLivraison typeLivraison = new() { Id = 1, Nom = "TypeLivraison1", MaxBusinessDays = 1, Prix = 1 };
 
             var mockRepo = new Mock<IManagerTypeLivraison>();
-            var controller = new TypesLivraisonController(mockRepo.Object);
+            var controller = new TypesLivraisonController(mockRepo.Object)
+                .Validating(typeLivraison);
 
             var result = controller.PostTypeLivraison(typeLivraison).Result;
 

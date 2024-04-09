@@ -89,7 +89,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new CategoriesController(mockRepo.Object);
+            var controller = new CategoriesController(mockRepo.Object)
+                .Validating(newCategorie);
 
             return controller.PutCategorieProduit(id, newCategorie).Result;
         }
@@ -189,7 +190,8 @@ namespace FIFA_API.Controllers.Tests
             CategorieProduit categorie = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerCategorieProduit>();
-            var controller = new CategoriesController(mockRepo.Object);
+            var controller = new CategoriesController(mockRepo.Object)
+                .Validating(categorie);
 
             var result = controller.PostCategorieProduit(categorie).Result;
 
@@ -202,7 +204,8 @@ namespace FIFA_API.Controllers.Tests
             CategorieProduit categorie = Generate(1, false);
 
             var mockRepo = new Mock<IManagerCategorieProduit>();
-            var controller = new CategoriesController(mockRepo.Object);
+            var controller = new CategoriesController(mockRepo.Object)
+                .Validating(categorie);
 
             var result = controller.PostCategorieProduit(categorie).Result;
 

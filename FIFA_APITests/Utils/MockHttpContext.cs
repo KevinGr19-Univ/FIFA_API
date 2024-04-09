@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FIFA_APITests.Utils
 {
-    public class MockHttpContext
+    internal class MockHttpContext
     {
         private Mock<HttpContext> _mock;
         private ClaimsPrincipal _user;

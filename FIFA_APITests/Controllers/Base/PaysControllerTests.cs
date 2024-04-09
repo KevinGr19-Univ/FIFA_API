@@ -28,7 +28,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new PaysController(mockRepo.Object);
+            var controller = new PaysController(mockRepo.Object)
+                .Validating(newPays);
 
             return controller.PutPays(id, newPays).Result;
         }
@@ -134,7 +135,8 @@ namespace FIFA_API.Controllers.Tests
             Pays pays = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerPays>();
-            var controller = new PaysController(mockRepo.Object);
+            var controller = new PaysController(mockRepo.Object)
+                .Validating(pays);
 
             var result = controller.PostPays(pays).Result;
 
@@ -147,7 +149,8 @@ namespace FIFA_API.Controllers.Tests
             Pays pays = new() { Id = 1, Nom = "Pays1" };
 
             var mockRepo = new Mock<IManagerPays>();
-            var controller = new PaysController(mockRepo.Object);
+            var controller = new PaysController(mockRepo.Object)
+                .Validating(pays);
 
             var result = controller.PostPays(pays).Result;
 

@@ -86,7 +86,8 @@ namespace FIFA_API.Controllers.Tests
                 );
             }
 
-            var controller = new NationsController(mockRepo.Object);
+            var controller = new NationsController(mockRepo.Object)
+                .Validating(newNation);
 
             return controller.PutNation(id, newNation).Result;
         }
@@ -186,7 +187,8 @@ namespace FIFA_API.Controllers.Tests
             Nation nation = new() { Id = 1 };
 
             var mockRepo = new Mock<IManagerNation>();
-            var controller = new NationsController(mockRepo.Object);
+            var controller = new NationsController(mockRepo.Object)
+                .Validating(nation);
 
             var result = controller.PostNation(nation).Result;
 
@@ -199,7 +201,8 @@ namespace FIFA_API.Controllers.Tests
             Nation nation = Generate(1, false);
 
             var mockRepo = new Mock<IManagerNation>();
-            var controller = new NationsController(mockRepo.Object);
+            var controller = new NationsController(mockRepo.Object)
+                .Validating(nation);
 
             var result = controller.PostNation(nation).Result;
 
