@@ -316,7 +316,34 @@
 
     public partial class LigneCommande
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is LigneCommande commande &&
+                   Id == commande.Id &&
+                   Quantite == commande.Quantite &&
+                   PrixUnitaire == commande.PrixUnitaire &&
+                   IdVCProduit == commande.IdVCProduit &&
+                   EqualityComparer<VarianteCouleurProduit>.Default.Equals(VCProduit, commande.VCProduit) &&
+                   IdTaille == commande.IdTaille &&
+                   EqualityComparer<TailleProduit>.Default.Equals(Taille, commande.Taille) &&
+                   IdCommande == commande.IdCommande &&
+                   EqualityComparer<Commande>.Default.Equals(Commande, commande.Commande);
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Quantite);
+            hash.Add(PrixUnitaire);
+            hash.Add(IdVCProduit);
+            hash.Add(VCProduit);
+            hash.Add(IdTaille);
+            hash.Add(Taille);
+            hash.Add(IdCommande);
+            hash.Add(Commande);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class Nation
@@ -439,7 +466,20 @@
 
     public partial class StockProduit
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is StockProduit produit &&
+                   IdVCProduit == produit.IdVCProduit &&
+                   IdTaille == produit.IdTaille &&
+                   EqualityComparer<VarianteCouleurProduit>.Default.Equals(VCProduit, produit.VCProduit) &&
+                   EqualityComparer<TailleProduit>.Default.Equals(Taille, produit.Taille) &&
+                   Stocks == produit.Stocks;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(IdVCProduit, IdTaille, VCProduit, Taille, Stocks);
+        }
     }
 
     public partial class TailleProduit
@@ -513,12 +553,96 @@
 
     public partial class Utilisateur
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is Utilisateur utilisateur &&
+                   Id == utilisateur.Id &&
+                   Prenom == utilisateur.Prenom &&
+                   Surnom == utilisateur.Surnom &&
+                   Telephone == utilisateur.Telephone &&
+                   Mail == utilisateur.Mail &&
+                   StripeId == utilisateur.StripeId &&
+                   RefreshToken == utilisateur.RefreshToken &&
+                   DateNaissance == utilisateur.DateNaissance &&
+                   HashMotDePasse == utilisateur.HashMotDePasse &&
+                   DerniereConnexion == utilisateur.DerniereConnexion &&
+                   DateVerificationEmail == utilisateur.DateVerificationEmail &&
+                   DoubleAuthentification == utilisateur.DoubleAuthentification &&
+                   Token2FA == utilisateur.Token2FA &&
+                   DateVerif2FA == utilisateur.DateVerif2FA &&
+                   Anonyme == utilisateur.Anonyme &&
+                   VerifEmail == utilisateur.VerifEmail &&
+                   Login2FA == utilisateur.Login2FA &&
+                   Role == utilisateur.Role &&
+                   IdLangue == utilisateur.IdLangue &&
+                   EqualityComparer<Langue>.Default.Equals(Langue, utilisateur.Langue) &&
+                   IdPays == utilisateur.IdPays &&
+                   EqualityComparer<Pays>.Default.Equals(Pays, utilisateur.Pays) &&
+                   IdPaysFavori == utilisateur.IdPaysFavori &&
+                   EqualityComparer<Pays?>.Default.Equals(PaysFavori, utilisateur.PaysFavori);
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Prenom);
+            hash.Add(Surnom);
+            hash.Add(Telephone);
+            hash.Add(Mail);
+            hash.Add(StripeId);
+            hash.Add(RefreshToken);
+            hash.Add(DateNaissance);
+            hash.Add(HashMotDePasse);
+            hash.Add(DerniereConnexion);
+            hash.Add(DateVerificationEmail);
+            hash.Add(DoubleAuthentification);
+            hash.Add(Token2FA);
+            hash.Add(DateVerif2FA);
+            hash.Add(Anonyme);
+            hash.Add(VerifEmail);
+            hash.Add(Login2FA);
+            hash.Add(Role);
+            hash.Add(IdLangue);
+            hash.Add(Langue);
+            hash.Add(IdPays);
+            hash.Add(Pays);
+            hash.Add(IdPaysFavori);
+            hash.Add(PaysFavori);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class VarianteCouleurProduit
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is VarianteCouleurProduit produit &&
+                   Id == produit.Id &&
+                   IdProduit == produit.IdProduit &&
+                   IdCouleur == produit.IdCouleur &&
+                   Prix == produit.Prix &&
+                   EqualityComparer<List<string>>.Default.Equals(ImageUrls, produit.ImageUrls) &&
+                   EqualityComparer<Produit>.Default.Equals(Produit, produit.Produit) &&
+                   EqualityComparer<Couleur>.Default.Equals(Couleur, produit.Couleur) &&
+                   EqualityComparer<ICollection<StockProduit>>.Default.Equals(Stocks, produit.Stocks) &&
+                   Visible == produit.Visible;
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(IdProduit);
+            hash.Add(IdCouleur);
+            hash.Add(Prix);
+            hash.Add(ImageUrls);
+            hash.Add(Produit);
+            hash.Add(Couleur);
+            hash.Add(Stocks);
+            hash.Add(Visible);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class Video
@@ -528,7 +652,36 @@
 
     public partial class VoteUtilisateur
     {
+        public override bool Equals(object? obj)
+        {
+            return obj is VoteUtilisateur utilisateur &&
+                   IdUtilisateur == utilisateur.IdUtilisateur &&
+                   IdTheme == utilisateur.IdTheme &&
+                   IdJoueur1 == utilisateur.IdJoueur1 &&
+                   IdJoueur2 == utilisateur.IdJoueur2 &&
+                   IdJoueur3 == utilisateur.IdJoueur3 &&
+                   EqualityComparer<Utilisateur>.Default.Equals(Utilisateur, utilisateur.Utilisateur) &&
+                   EqualityComparer<ThemeVote>.Default.Equals(ThemeVote, utilisateur.ThemeVote) &&
+                   EqualityComparer<Joueur>.Default.Equals(Joueur1, utilisateur.Joueur1) &&
+                   EqualityComparer<Joueur>.Default.Equals(Joueur2, utilisateur.Joueur2) &&
+                   EqualityComparer<Joueur>.Default.Equals(Joueur3, utilisateur.Joueur3);
+        }
 
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(IdUtilisateur);
+            hash.Add(IdTheme);
+            hash.Add(IdJoueur1);
+            hash.Add(IdJoueur2);
+            hash.Add(IdJoueur3);
+            hash.Add(Utilisateur);
+            hash.Add(ThemeVote);
+            hash.Add(Joueur1);
+            hash.Add(Joueur2);
+            hash.Add(Joueur3);
+            return hash.ToHashCode();
+        }
     }
 
     public partial class AuthEmailVerif

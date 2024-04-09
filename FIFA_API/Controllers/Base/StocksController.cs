@@ -11,7 +11,7 @@ using FIFA_API.Utils;
 using FIFA_API.Models;
 using FIFA_API.Repositories.Contracts;
 
-namespace FIFA_API.Controllers.Base
+namespace FIFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -70,7 +70,7 @@ namespace FIFA_API.Controllers.Base
                 return NotFound();
             }
 
-            return stockProduit;
+            return Ok(stockProduit);
         }
 
         // PUT: api/Stocks/5
@@ -94,27 +94,20 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<IActionResult> PutStockProduit(int idvariante, int idtaille, [FromBody] StockProduit stockProduit)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (idvariante != stockProduit.IdVCProduit || idtaille != stockProduit.IdTaille)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(idvariante, idtaille))
             {
-                await _manager.Update(stockProduit);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(idvariante, idtaille))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(stockProduit);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -138,22 +131,15 @@ namespace FIFA_API.Controllers.Base
         [Authorize(Policy = EDIT_POLICY)]
         public async Task<ActionResult<StockProduit>> PostStockProduit(StockProduit stockProduit)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            if (await _manager.Exists(stockProduit.IdVCProduit, stockProduit.IdTaille))
+            {
+                return Conflict();
+            }
+
             await _manager.Add(stockProduit);
-            try
-            {
-                await _manager.Save();
-            }
-            catch (DbUpdateException)
-            {
-                if (await _manager.Exists(stockProduit.IdVCProduit, stockProduit.IdTaille))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _manager.Save();
 
             return CreatedAtAction("GetStockProduit", new { idvariante = stockProduit.IdVCProduit, idtaille = stockProduit.IdTaille }, stockProduit);
         }

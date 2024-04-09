@@ -15,5 +15,10 @@ namespace FIFA_APITests.Utils
             controller.TryValidateModel(model);
             return controller;
         }
+
+        internal static T Random<T>(this T[] array)
+        {
+            return array[new Random().Next(array.Length)];
+        }
     }
 }

@@ -66,7 +66,7 @@ namespace FIFA_API.Controllers
                 return NotFound();
             }
 
-            return voteUtilisateur;
+            return Ok(voteUtilisateur);
         }
 
         // PUT: api/Votes/5
@@ -90,27 +90,23 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutVoteUtilisateur(int idtheme, int iduser, VoteUtilisateur vote)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (iduser != vote.IdUtilisateur || idtheme != vote.IdTheme)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _uow.Votes.Exists(idtheme, iduser))
             {
-                await _uow.Votes.Update(vote);
-                await _uow.SaveChanges();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _uow.Votes.Exists(idtheme, iduser))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            if (!await _uow.IsVoteValid(vote))
+                return BadRequest();
+
+            await _uow.Votes.Update(vote);
+            await _uow.SaveChanges();
 
             return NoContent();
         }
@@ -134,25 +130,18 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<VoteUtilisateur>> PostVoteUtilisateur(VoteUtilisateur vote)
         {
-            if(!await _uow.IsVoteValid(vote))
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            if (await _uow.Votes.Exists(vote.IdTheme, vote.IdUtilisateur))
+            {
+                return Conflict();
+            }
+
+            if (!await _uow.IsVoteValid(vote))
                 return BadRequest();
 
             await _uow.Votes.Add(vote);
-            try
-            {
-                await _uow.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (await _uow.Votes.Exists(vote.IdTheme, vote.IdUtilisateur))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _uow.SaveChanges();
 
             return CreatedAtAction("GetVoteUtilisateur", new { idtheme = vote.IdTheme, iduser = vote.IdUtilisateur }, vote);
         }

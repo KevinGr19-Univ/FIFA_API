@@ -63,7 +63,7 @@ namespace FIFA_API.Controllers
                 return NotFound();
             }
 
-            return utilisateur;
+            return Ok(utilisateur);
         }
 
         // PUT: api/Utilisateurs/5
@@ -86,27 +86,20 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<IActionResult> PutUtilisateur(int id, Utilisateur utilisateur)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (id != utilisateur.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (!await _manager.Exists(id))
             {
-                await _manager.Update(utilisateur);
-                await _manager.Save();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _manager.Exists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _manager.Update(utilisateur);
+            await _manager.Save();
 
             return NoContent();
         }
@@ -128,6 +121,8 @@ namespace FIFA_API.Controllers
         [Authorize(Policy = MANAGER_POLICY)]
         public async Task<ActionResult<Utilisateur>> PostUtilisateur(Utilisateur utilisateur)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             await _manager.Add(utilisateur);
             await _manager.Save();
 
