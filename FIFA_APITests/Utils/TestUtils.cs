@@ -23,15 +23,19 @@ namespace FIFA_APITests.Utils
             return new FifaDbContext(options.Options, config);
         }
 
+        public static void ActionResultShouldGive<TResult, T>(IActionResult? result, T target)
+            where TResult : ObjectResult
+        {
+            result.Should().NotBeNull().And.BeOfType<TResult>()
+                .Subject.Value.Should().BeAssignableTo<T>()
+                .And.BeEquivalentTo(target);
+        }
+
         public static void ActionResultShouldGive<T>(ActionResult<T> result, T target)
             => ActionResultShouldGive<OkObjectResult, T>(result, target);
 
         public static void ActionResultShouldGive<TResult, T>(ActionResult<T> result, T target)
             where TResult : ObjectResult
-        {
-            result.Result.Should().BeOfType<TResult>()
-                .Which.Value.Should().BeAssignableTo<T>()
-                .And.BeEquivalentTo(target);
-        }
+            => ActionResultShouldGive<TResult, T>((IActionResult?)result.Result, target);
     }
 }

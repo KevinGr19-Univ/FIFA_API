@@ -95,9 +95,6 @@ namespace FIFA_API.Controllers
             Utilisateur? user = await this.UtilisateurAsync();
             if (user is null) return Unauthorized();
 
-            var theme = await _uow.Themes.GetById(vote.IdTheme, true);
-            if (theme is null) return NotFound();
-
             vote.IdUtilisateur = user.Id;
             return await PutVoteUtilisateur(vote.IdTheme, user.Id, vote);
         }
