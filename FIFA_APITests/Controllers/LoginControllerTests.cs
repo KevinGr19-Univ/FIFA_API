@@ -21,6 +21,20 @@ namespace FIFA_API.Controllers.Tests
     [TestClass]
     public class LoginControllerTests
     {
+        private LoginController Build(
+            Mock<IManagerUtilisateur>? mockRepo = null,
+            Mock<ILogin2FAService>? mock2FA = null,
+            Mock<IPasswordHasher>? mockHasher = null,
+            Mock<ITokenService>? mockToken = null)
+        {
+            mockRepo ??= new();
+            mock2FA ??= new();
+            mockHasher ??= new();
+            mockToken ??= new();
+
+            return new LoginController(mockRepo.Object, mockHasher.Object, mockToken.Object, mock2FA.Object);
+        }
+
         private Mock<IManagerUtilisateur> MockManagerUtilisateur(Utilisateur user)
         {
             var mockRepo = new Mock<IManagerUtilisateur>();
@@ -53,7 +67,7 @@ namespace FIFA_API.Controllers.Tests
             mock2FA.Setup(m => m.Send2FACodeAsync(user)).ReturnsAsync($"2fa_token_test_{user.Id}");
             mockHasher.Setup(m => m.Verify(user.HashMotDePasse, password)).Returns(true);
 
-            var controller = new LoginController(mockRepo.Object, mockHasher.Object, mockToken.Object, mock2FA.Object);
+            var controller = Build(mockRepo, mock2FA, mockHasher, mockToken);
 
             return (controller, tokens);
         }
@@ -62,12 +76,11 @@ namespace FIFA_API.Controllers.Tests
         {
             var mockRepo = MockManagerUtilisateur(user);
             var mock2FA = new Mock<ILogin2FAService>();
-            var mockHasher = new Mock<IPasswordHasher>();
             (var mockToken, var tokens) = MockTokenService(user);
 
             mock2FA.Setup(m => m.AuthenticateAsync(loginInfo.Token, loginInfo.Code)).ReturnsAsync(user);
 
-            var controller = new LoginController(mockRepo.Object, mockHasher.Object, mockToken.Object, mock2FA.Object);
+            var controller = Build(mockRepo, mock2FA, null, mockToken);
 
             return (controller, tokens);
         }
@@ -75,14 +88,25 @@ namespace FIFA_API.Controllers.Tests
         private (LoginController, APITokenInfo) SetupRefresh(Utilisateur user, APITokenInfo credentials)
         {
             var mockRepo = MockManagerUtilisateur(user);
-            var mock2FA = new Mock<ILogin2FAService>();
-            var mockHasher = new Mock<IPasswordHasher>();
             (var mockToken, var tokens) = MockTokenService(user);
 
             mockToken.Setup(m => m.GetUserFromExpiredAsync(credentials.AccessToken)).ReturnsAsync(user);
 
-            var controller = new LoginController(mockRepo.Object, mockHasher.Object, mockToken.Object, mock2FA.Object);
+            var controller = Build(mockRepo, null, null, mockToken);
             return (controller, tokens);
+        }
+
+        private (LoginController, Mock<IManagerUtilisateur>) SetupRegister(RegisterRequest request)
+        {
+            var mockRepo = new Mock<IManagerUtilisateur>();
+            var mockHasher = new Mock<IPasswordHasher>();
+
+            mockHasher.Setup(m => m.Hash(request.Password)).Returns(request.Password);
+
+            var controller = Build(mockRepo, null, mockHasher, null)
+                .Validating(request);
+
+            return (controller, mockRepo);
         }
 
         private void LoginTest(Utilisateur user, string userPassword, string mail, string password, bool unauthorized)
@@ -146,8 +170,7 @@ namespace FIFA_API.Controllers.Tests
             }).Result;
 
             result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().NotBeNull().And.GetType()
-                .GetMember("token").Should().NotBeNull();
+                .Which.Value.Should().NotBeNull();
         }
 
         [TestMethod]
@@ -268,33 +291,198 @@ namespace FIFA_API.Controllers.Tests
         }
 
         [TestMethod]
-        public void SendEmailVerificationTest()
+        public void RegisterTest_Moq_InvalidModelState_BadRequest()
         {
-            Assert.Fail();
+            RegisterRequest req = new()
+            {
+                Password = "abcABC123$$$"
+            };
+
+            (var controller, var _) = SetupRegister(req);
+
+            var mockEmailVerif = new Mock<IEmailVerificator>();
+            var result = controller.Register(req, mockEmailVerif.Object).Result;
+
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [TestMethod]
-        public void VerifyEmailTest()
+        public void RegisterTest_Moq_EmailTaken_BadRequest()
         {
-            Assert.Fail();
+            RegisterRequest req = new()
+            {
+                Mail = "test@gmail.com",
+                Password = "abcABC123$$$",
+                IdLangue = 1,
+                IdPays = 1,
+                Prenom = "Prenom",
+                Surnom = "Surnom",
+                DateNaissance = DateTime.Today.AddDays(-10),
+                Telephone = "0123456789"
+            };
+
+            (var controller, var mockRepo) = SetupRegister(req);
+            mockRepo.Setup(m => m.IsEmailTaken(req.Mail)).ReturnsAsync(true);
+
+            var mockEmailVerif = new Mock<IEmailVerificator>();
+            var result = controller.Register(req, mockEmailVerif.Object).Result;
+
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [TestMethod]
-        public void SendResetPasswordTest()
+        public void RegisterTest_Moq_Ok_EmailSent()
         {
-            Assert.Fail();
+            RegisterRequest req = new()
+            { 
+                Mail = "test@gmail.com",
+                Password = "abcABC123$$$",
+                IdLangue = 1,
+                IdPays = 1,
+                Prenom = "Prenom",
+                Surnom = "Surnom",
+                DateNaissance = DateTime.Today.AddDays(-10),
+                Telephone = "0123456789"
+            };
+
+            (var controller, var mockRepo) = SetupRegister(req);
+
+            bool emailSent = false;
+            Utilisateur? user = null;
+
+            mockRepo.Setup(m => m.Add(It.IsAny<Utilisateur>())).Callback<Utilisateur>(u => user = u);
+
+            var mockEmailVerif = new Mock<IEmailVerificator>();
+            mockEmailVerif.Setup(m => m.SendVerificationAsync(It.IsAny<Utilisateur>()))
+                .Returns(() => Task.Run(() => { emailSent = true; }));
+
+            var result = controller.Register(req, mockEmailVerif.Object).Result;
+
+            result.Should().BeOfType<NoContentResult>();
+            emailSent.Should().BeTrue();
+            user.Should().NotBeNull();
+
+            user!.Mail.Should().Be(req.Mail);
+            user.HashMotDePasse.Should().Be(req.Password);
+            user.IdPays.Should().Be(req.IdPays);
+            user.IdLangue.Should().Be(req.IdLangue);
+            user.Surnom.Should().Be(req.Surnom);
+            user.Prenom.Should().Be(req.Prenom);
+            user.DateNaissance.Should().Be(req.DateNaissance);
+            user.Telephone.Should().Be(req.Telephone);
         }
 
         [TestMethod]
-        public void ResetPasswordTest()
+        public void SendEmailVerificationTest_Moq_Authenticated_NoContent_EmailSent()
         {
-            Assert.Fail();
+            Utilisateur user = new() { Id = 1 };
+
+            var controller = Build();
+            controller.ControllerContext = new MockHttpContext()
+                .MockAuthentication(user)
+                .ToControllerContext();
+
+            bool emailSent = false;
+            var mockEmailVerif = new Mock<IEmailVerificator>();
+            mockEmailVerif.Setup(m => m.SendVerificationAsync(user))
+                .Callback(() => emailSent = true);
+
+            var result = controller.SendEmailVerification(mockEmailVerif.Object).Result;
+
+            result.Should().BeOfType<NoContentResult>();
+            emailSent.Should().BeTrue();
         }
 
         [TestMethod]
-        public void SendVerify2FATest()
+        public void SendResetPasswordTest_Moq_NoContent_EmailSent()
         {
-            Assert.Fail();
+            string mail = "test@gmail.com";
+            bool emailSent = false;
+
+            var controller = Build();
+            var mockPwdReset = new Mock<IPasswordResetService>();
+            mockPwdReset.Setup(m => m.SendPasswordResetCodeAsync(mail))
+                .Callback(() => emailSent = true);
+
+            var result = controller.SendResetPassword(mail, mockPwdReset.Object).Result;
+
+            result.Should().BeOfType<NoContentResult>();
+            emailSent.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void SendVerify2FATest_Moq_Authenticated_Ok_CodeSent()
+        {
+            Utilisateur user = new()
+            {
+                Id = 1,
+                Telephone = "0123456789",
+                DoubleAuthentification = true,
+                DateVerif2FA = null
+            };
+
+            bool codeSent = false;
+
+            var mock2FA = new Mock<ILogin2FAService>();
+            mock2FA.Setup(m => m.Send2FACodeAsync(user))
+                .ReturnsAsync(() =>
+                {
+                    codeSent = true;
+                    return "2fa_token";
+                });
+
+            var controller = Build(mock2FA: mock2FA);
+            controller.ControllerContext = new MockHttpContext()
+                .MockAuthentication(user)
+                .ToControllerContext();
+
+            var result = controller.SendVerify2FA().Result;
+
+            var objRes = result.Should().BeOfType<OkObjectResult>().Subject;
+            objRes.Value.Should().NotBeNull();
+
+            codeSent.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void SendVerify2FATest_Moq_Authenticated_2FAAlreadyVerified_NoContent()
+        {
+            Utilisateur user = new()
+            {
+                Id = 1,
+                Telephone = "0123456789",
+                DoubleAuthentification = true,
+                DateVerif2FA = DateTime.Today.AddDays(-10)
+            };
+
+            var controller = Build();
+            controller.ControllerContext = new MockHttpContext()
+                .MockAuthentication(user)
+                .ToControllerContext();
+
+            var result = controller.SendVerify2FA().Result;
+
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [TestMethod]
+        public void SendVerify2FATest_Moq_Authenticated_2FAImpossible_BadRequest()
+        {
+            Utilisateur user = new()
+            {
+                Id = 1,
+                Telephone = null,
+                DoubleAuthentification = true
+            };
+
+            var controller = Build();
+            controller.ControllerContext = new MockHttpContext()
+                .MockAuthentication(user)
+                .ToControllerContext();
+
+            var result = controller.SendVerify2FA().Result;
+
+            result.Should().BeOfType<BadRequestResult>();
         }
     }
 }

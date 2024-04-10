@@ -10,6 +10,7 @@ namespace FIFA_API.Models.Controllers
     /// </summary>
     public class RegisterRequest
     {
+        [Required]
         [EmailAddress(ErrorMessage = "Le mail doit être une adresse valide")]
         public string Mail { get; set; }
 

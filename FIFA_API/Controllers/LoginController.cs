@@ -82,6 +82,8 @@ namespace FIFA_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerInfo, [FromServices] IEmailVerificator emailVerificator)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if(await _manager.IsEmailTaken(registerInfo.Mail))
             {
                 return BadRequest(new
